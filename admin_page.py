@@ -1,4 +1,4 @@
-
+#hello
 from tkinter import *
 from tkinter import messagebox
 from tkinter import ttk
@@ -207,6 +207,7 @@ def show_table():
                 query="UPDATE products SET product_name = %s, location = %s, quantity = %s WHERE product_id = %s"
                 # print(product_id_entry)
                 mycursor.execute(query,(product_name_entry_value,location_entry_value,quantity_entry_value,product_id_entry_value))
+                con.commit()
                 messagebox.showinfo('Success','Product Successfully Updated.')
                 
                 
