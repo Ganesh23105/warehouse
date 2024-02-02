@@ -72,7 +72,7 @@ def add_product():
     show_frame(add_frame)
 
 def show_frame(frame):
-    frame.pack(side=LEFT, fill=BOTH, expand=True)
+    frame.pack(fill=BOTH, expand=True)
 
 def hide_frame(frame):
     frame.pack_forget()
@@ -105,14 +105,10 @@ product_add_button.grid(row=0,column=0,padx=10,pady=10)
 right_frame=Frame(root)
 right_frame.pack(side=RIGHT,fill=BOTH,expand=True)
 
-bgfImage= ImageTk.PhotoImage(file='image\\4.2.jpg')
-right_frame=Label(root,image=bgfImage)
-right_frame.pack(side=RIGHT,fill=BOTH,expand=True)
-
 # add button in products
 
-add_frame = Frame(right_frame,bg="white",pady=20)
-add_frame.place(x=200,y=200)
+add_frame = Frame(right_frame)
+add_frame.place(x=0,y=0)
 
 product_id_label=Label(add_frame,text="PRODUCT ID",bd=0,font=("Times New Roman",15,"bold"),bg="white",fg="#163246",activeforeground='#373737')
 product_id_label.grid(row=0,column=0,padx=10,pady=10,sticky="e")
@@ -147,13 +143,11 @@ retrive_frame.pack()
 
 combo_var_stream=StringVar()
 combo_box_stream =ttk.Combobox(retrive_frame,textvariable=combo_var_stream,state="readonly")
-combo_box_stream['values'] = ('Product ID', 'Product Name', 'Location', 'Quantity')
+combo_box_stream['values'] = ('Product ID', 'Product Name', 'Location')
 combo_box_stream.grid(row=0,column=0)
 combo_box_stream.set("Select")
 
 def show_table():
-
-
 
     if combo_box_stream.get()=='Select' or entryfield_entry.get()=='':
         messagebox.showerror('Error','All Fields should be filled.')
@@ -192,21 +186,14 @@ def show_table():
         
                 query='use warehouse'
                 mycursor.execute(query)
-
-                product_id_entry_value = product_id_entry.get()
-                product_name_entry_value = product_name_entry.get()
-                location_entry_value = location_entry.get()
-                quantity_entry_value = quantity_entry.get()
-
                 
                 query="UPDATE products SET product_name = %s, location = %s, quantity = %s WHERE product_id = %s"
                 # print(product_id_entry)
-                mycursor.execute(query,(product_name_entry_value,location_entry_value,quantity_entry_value,product_id_entry_value))
+                mycursor.execute(query,(product_name_entry.get(),location_entry.get(),quantity_entry.get(),product_id_entry.get()))
                 con.commit()
                 messagebox.showinfo('Success','Product Successfully Updated.')
-                
-                
-                # if product_name_entry.get()=='' and product
+                window.destroy()
+
 
             window = Toplevel()
             window.title("Change Products")
@@ -239,28 +226,18 @@ def show_table():
             submit_button=Button(window,text="SUBMIT",command=products_updation)
             submit_button.grid(row=4,column=0,columnspan=2)
 
-
-            
-
-            # if selected_item:
-            #     tree.item(selected_item, values=("99", "Modified Product", "Modified Location", "99"))
-
-            
-
         table_frame = Frame(retrive_frame)
         table_frame.grid(row=1, column=0,columnspan=3)
 
         change_button = Button(retrive_frame, text="Change Selected Row", command=change_selected_row)
         change_button.grid(row=2, column=0,columnspan=3)
 
-        
-
-        tree = ttk.Treeview(table_frame, columns=("Product ID", "Product Name", "Location", "Quantity"), show="headings")
+        tree = ttk.Treeview(table_frame, columns=("Product ID", "Product Name", "Location","Quantity"), show="headings")
 
         tree.heading("Product ID", text="Product ID")
         tree.heading("Product Name", text="Product Name")
         tree.heading("Location", text="Location")
-        tree.heading("Quantity", text="Quantiy")
+        tree.heading("Quantity", text="Quantity")
                 
         # add_data(tree, "John Doe", "25", "USA","ui")
         if combo_box_stream.get()=='Product ID':
@@ -300,9 +277,12 @@ show_button.grid(row=0,column=2)
         
 entryfield_entry=Entry(retrive_frame)
 entryfield_entry.grid(row=0,column=1)
-
+# bgfImage= ImageTk.PhotoImage(file='image\\4.2.jpg')
 empty_frame = Frame(right_frame)
-empty_frame.pack()
+empty_frame.pack(fill=BOTH,expand=True)
+
+# image_label=Label(empty_frame,image=bgfImage)
+# image_label.pack(side=RIGHT,fill=BOTH,expand=True)
 
 # add order
 
