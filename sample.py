@@ -3,15 +3,6 @@ from customtkinter import *
 from tkinter import messagebox
 from PIL import Image,ImageTk
 
-def place_frame(event):
-    width = event.width
-    height = event.height
-
-    x = 900/450 * width
-    y = 650/200 * height
-    # return (x,y)
-    print(width,' ',height)
-
 def stretch_image(event):
 
     global resized_tk
@@ -49,26 +40,25 @@ def fill_image(event):
         anchor = 'center', 
         image = resized_tk)
 
+
 def admin_page():
     select_role.destroy()
-    import employee_login_registration
+    import admin_login_registration
 
-# def staff_page():
-#      select_role.destroy()
-#      import staff_login_registration
 
-# def registration_page():
-#     select_role.destroy()
-#     import manager_login_registration
+def employee_page():
+     select_role.destroy()
+     import employee_login_registration
 
 select_role=Tk()
 select_role.title("WAREHOUSE")
 select_role.geometry("900x650")
+select_role.resizable(False,False)
 
 select_role.columnconfigure(0,weight=1)
 select_role.rowconfigure(0,weight=1)
 
-bgOriginal = Image.open('image\\first.jpg')
+bgOriginal = Image.open('image\\select_role.jpg')
 bgRatio = bgOriginal.size[0] / bgOriginal.size[1]
 # print(bgRatio)
 bgImage = ImageTk.PhotoImage(bgOriginal)
@@ -78,22 +68,16 @@ canvas.grid(column=0, row=0, sticky='nsew')
 # canvas.create_image(0,0, image=bgImage, anchor='nw')
 canvas.bind('<Configure>',fill_image)
 
-sample_frame=Frame(canvas)
-# sample_frame.configure(background='systemTransparent')
-obj = sample_frame.bind('<Configure>', place_frame)
-sample_frame.place(x=obj[0],y=obj[1])
+sample_label = Label(select_role,bg="white")
+sample_label.place(relx=0.75,rely=0.5,anchor=CENTER)
 
+selection_label=Label(sample_label,text="Select a role",font=("Times New Roman", 40,"bold"),bg="white",fg="#373737")
+selection_label.grid(row=0,column=0,padx=5)
 
-sample_label2=Label(sample_frame,text="Select a role")
-sample_label2.grid(row=0,column=0,padx=5)
+role_employee_button=Button(sample_label,text="Employee",command=employee_page,bd=0,font=("Times New Roman",25,"bold"),width=10,bg="#373737",fg="white",activeforeground='#373737')
+role_employee_button.grid(row=1,column=0,padx=50,pady=20)
 
-role_admin_button=CTkButton(sample_frame,text="Employee",command=admin_page)
-role_admin_button.grid(row=1,column=0,padx=50,pady=20)
-
-# role_staff_button=Button(sample_label,text="Admin",command=staff_page, bd=0,font=("Times New Roman",25,"bold"),width=10,bg="#373737",fg="white",activeforeground='#373737')
-# role_staff_button.grid(row=3,column=0,padx=50,pady=20)
-
-# role_manager_button=Button(sample_label,text="MANAGER",command=registration_page, bd=0,font=("Times New Roman",25,"bold"),width=10,bg="#373737",fg="white",activeforeground='#373737')
-# role_manager_button.grid(row=5,column=0,padx=50,pady=20)
+role_admin_button=Button(sample_label,text="Admin",command=admin_page, bd=0,font=("Times New Roman",25,"bold"),width=10,bg="#373737",fg="white",activeforeground='#373737')
+role_admin_button.grid(row=3,column=0,padx=50,pady=20)
 
 select_role.mainloop()

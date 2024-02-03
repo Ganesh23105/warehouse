@@ -1,2 +1,5 @@
- user_register_button=Button(sample_Label,text="Register",bd=0,font=("Times New Roman",15,"bold"),bg="#163246",cursor="hand2",fg="white",activeforeground='#373737',command=register_submit)
-    user_register_button.grid(row=7,column=0,columnspan=2,pady=20)
+ a role")
+# selection_label.grid(row=0,column=0,padx=5)
+
+# role_admin_button=Button(sample_label,text="Employee",command=admin_page)
+# role_admin_button.grid(row=1,column=0,padx=50,pady=20)
