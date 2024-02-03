@@ -1,4 +1,3 @@
-#Warehouse ganesh
 from tkinter import *
 from tkinter import messagebox
 from tkinter import ttk
@@ -69,46 +68,50 @@ def add_product():
     hide_frame(order_update_frame)
     hide_frame(retrive_frame)
     hide_frame(add_order_frame)
-    show_frame(add_frame)
+    add_frame.place(relx=0.5,rely=0.5,anchor='center')
 
 def show_frame(frame):
-    frame.pack(fill=BOTH, expand=True)
+    frame.place(relx=0.5,rely=0.5,anchor='center')
 
 def hide_frame(frame):
-    frame.pack_forget()
+    frame.place_forget()
 
 root = Tk()
 root.title("Home")
-root.geometry("900x650")
+root.geometry("1200x675")
 
 left_frame = Frame(root,bg = "lightgray")
-left_frame.pack(side=LEFT,fill=Y)
+left_frame.place(relx=0,rely=0,relwidth=0.25,relheight=1)
 
+left_frame.columnconfigure(0,weight=1)
+left_frame.rowconfigure((0,1,2,3),weight=1,uniform='a')
+
+#product Lframe
 product_Lframe = LabelFrame(left_frame, text="Products",font=("Poppins",12,"bold"))
-product_Lframe.grid(row=0,column=0,pady=10,padx=10)
+product_Lframe.grid(row=0,column=0,pady=10,padx=10,sticky="nsew")
 
+product_add_button=Button(product_Lframe,text="ADD",command=add_product,bd=0,font=("Times New Roman",15,"bold"),bg="#163246",fg="white")
+product_add_button.pack(expand=True,padx=50,pady=(10,15),fill='both')
+
+product_retrive_button=Button(product_Lframe,command=retrive_product,text="SEARCH",bd=0,font=("Times New Roman",15,"bold"),bg="#163246",fg="white")
+product_retrive_button.pack(expand=True,padx=50,pady=(0,15),fill='both')
+
+#order Lframe
 order_Lframe = LabelFrame(left_frame,text="Orders",font=("Poppins",13,"bold"))
-order_Lframe.grid(row=1,column=0,padx=10,pady=10)
+order_Lframe.grid(row=1,column=0,padx=10,pady=10,sticky="nsew")
 
-order_update_button=Button(order_Lframe,text="UPDATE",command=order_update,bd=0,font=("Times New Roman",15,"bold"),bg="#163246",fg="white",width=13)
-order_update_button.grid(row=1,column=0,padx=10,pady=10)
+order_update_button=Button(order_Lframe,text="UPDATE",command=order_update,bd=0,font=("Times New Roman",15,"bold"),bg="#163246",fg="white")
+order_update_button.pack(expand=True,padx=50,pady=(10,15),fill='both')
 
-order_add_button=Button(order_Lframe,text="ADD",command=order_add,bd=0,font=("Times New Roman",15,"bold"),bg="#163246",fg="white",width=13)
-order_add_button.grid(row=0,column=0,padx=10,pady=10)
-
-product_retrive_button=Button(product_Lframe,command=retrive_product,text="SEARCH",bd=0,font=("Times New Roman",15,"bold"),bg="#163246",fg="white",width=13)
-product_retrive_button.grid(row=1,column=0,padx=10,pady=10)
-
-product_add_button=Button(product_Lframe,text="ADD",command=add_product,bd=0,font=("Times New Roman",15,"bold"),bg="#163246",fg="white",width=13)
-product_add_button.grid(row=0,column=0,padx=10,pady=10)
+order_add_button=Button(order_Lframe,text="ADD",command=order_add,bd=0,font=("Times New Roman",15,"bold"),bg="#163246",fg="white")
+order_add_button.pack(expand=True,padx=50,pady=(0,15),fill='both')
 
 right_frame=Frame(root)
-right_frame.pack(side=RIGHT,fill=BOTH,expand=True)
+right_frame.place(relx=0.25,rely=0,relwidth=0.75,relheight=1)
 
 # add button in products
 
 add_frame = Frame(right_frame)
-add_frame.place(x=0,y=0)
 
 product_id_label=Label(add_frame,text="PRODUCT ID",bd=0,font=("Times New Roman",15,"bold"),bg="white",fg="#163246",activeforeground='#373737')
 product_id_label.grid(row=0,column=0,padx=10,pady=10,sticky="e")
@@ -139,7 +142,6 @@ location_entry.bind('<Return>',lambda event :quantity_entry.focus())
 
 #retrieve product 
 retrive_frame=Frame(right_frame)
-retrive_frame.pack()
 
 combo_var_stream=StringVar()
 combo_box_stream =ttk.Combobox(retrive_frame,textvariable=combo_var_stream,state="readonly")
@@ -279,7 +281,6 @@ entryfield_entry=Entry(retrive_frame)
 entryfield_entry.grid(row=0,column=1)
 # bgfImage= ImageTk.PhotoImage(file='image\\4.2.jpg')
 empty_frame = Frame(right_frame)
-empty_frame.pack(fill=BOTH,expand=True)
 
 # image_label=Label(empty_frame,image=bgfImage)
 # image_label.pack(side=RIGHT,fill=BOTH,expand=True)
@@ -310,7 +311,6 @@ def show1_table():
     y_scrollbar.pack(side="right", fill="y")
 
 add_order_frame = Frame(right_frame)
-add_order_frame.pack()
 
 order_id_label=Label(add_order_frame,text="Order ID")
 order_id_label.grid(row=0,column=0)
@@ -360,7 +360,6 @@ def show2_table():
     y_scrollbar.pack(side="right", fill="y")
 
 order_update_frame = Frame(right_frame)
-order_update_frame.pack()
 
 order_id_label=Label(order_update_frame,text="Order ID")
 order_id_label.grid(row=0,column=0)
@@ -372,10 +371,6 @@ products_in_order_label.grid(row=1,column=0)
 ok_button = Button(order_update_frame,text="Show",command=show2_table)
 ok_button.grid(row=1,column=1)
 
-hide_frame(order_update_frame)
-hide_frame(add_order_frame)
-hide_frame(retrive_frame)
-hide_frame(add_frame)
 show_frame(empty_frame)
 
 root.mainloop()

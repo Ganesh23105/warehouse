@@ -6,7 +6,7 @@ from PIL import Image, ImageTk
 # user_window.destroy()
 admin_login_registration=Tk()
 admin_login_registration.title("ADMIN REGISTRATION")
-admin_login_registration.geometry("900x650")
+admin_login_registration.geometry("1200x675")
 
 bgImage = ImageTk.PhotoImage(file='image\\login.jpg')
 bgLabel=Label(admin_login_registration,image= bgImage)

@@ -51,7 +51,7 @@ def register():
     user_window.destroy()
     registration_window=Tk()
     registration_window.title("REGISTRATION")
-    registration_window.geometry("900x650")
+    registration_window.geometry("1200x675")
 
     bgImage = ImageTk.PhotoImage(file='image\\registration.jpg')
     bgLabel=Label(registration_window,image= bgImage)
@@ -145,7 +145,7 @@ def login():
             import employee_page
 
 user_window=Tk()
-user_window.geometry('900x650')
+user_window.geometry('1200x675')
 user_window.title("LOGIN")
 
 bgImage = ImageTk.PhotoImage(file='image\\login.jpg')
