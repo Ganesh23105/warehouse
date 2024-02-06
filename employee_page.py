@@ -47,20 +47,20 @@ def products_addition():
             quantity_entry.bind('<Return>',product_id_entry.focus())
 
 def order_update():
-    hide_frame(add_frame)
+    add_frame.pack_forget()
     hide_frame(add_order_frame)
     hide_frame(retrive_frame)
     show_frame(order_update_frame)
 
 def order_add():
     hide_frame(order_update_frame)
-    hide_frame(add_frame)
+    add_frame.pack_forget()
     hide_frame(retrive_frame)
     show_frame(add_order_frame)
 
 def retrive_product():
     hide_frame(order_update_frame)
-    hide_frame(add_frame)
+    add_frame.pack_forget()
     hide_frame(add_order_frame)
     show_frame(retrive_frame)
     
@@ -68,7 +68,7 @@ def add_product():
     hide_frame(order_update_frame)
     hide_frame(retrive_frame)
     hide_frame(add_order_frame)
-    add_frame.place(relx=0.5,rely=0.5,anchor='center')
+    add_frame.pack(expand=True,fill='both',padx=25,pady=25)
 
 def show_frame(frame):
     frame.place(relx=0.5,rely=0.5,anchor='center')
@@ -111,7 +111,7 @@ right_frame.place(relx=0.25,rely=0,relwidth=0.75,relheight=1)
 
 # add button in products
 
-add_frame = Frame(right_frame)
+add_frame = Frame(right_frame,borderwidth=5,relief='groove')
 
 product_id_label=Label(add_frame,text="PRODUCT ID",bd=0,font=("Times New Roman",15,"bold"),bg="white",fg="#163246",activeforeground='#373737')
 product_id_label.grid(row=0,column=0,padx=10,pady=10,sticky="e")
@@ -279,6 +279,9 @@ show_button.grid(row=0,column=2)
         
 entryfield_entry=Entry(retrive_frame)
 entryfield_entry.grid(row=0,column=1)
+
+
+
 # bgfImage= ImageTk.PhotoImage(file='image\\4.2.jpg')
 empty_frame = Frame(right_frame)
 
