@@ -164,5 +164,43 @@ student_submit_button.grid(row=14,column=4)
 
 
 
+<<<<<<< HEAD
 
 student_register_window.mainloop()
+=======
+def employee_page():
+     select_role.destroy()
+     import employee_login_registration
+
+select_role=Tk()
+select_role.title("WAREHOUSE")
+select_role.geometry("1200x675")
+# select_role.resizable(False,False)
+
+select_role.columnconfigure(0,weight=1)
+select_role.rowconfigure(0,weight=1)
+
+bgOriginal = Image.open('image\\select_role.jpg')
+bgRatio = bgOriginal.size[0] / bgOriginal.size[1]
+# print(bgRatio)
+bgImage = ImageTk.PhotoImage(bgOriginal)
+
+canvas = Canvas(select_role,bd=0,highlightthickness=0, relief='ridge')
+canvas.grid(column=0, row=0, sticky='nsew')
+# canvas.create_image(0,0, image=bgImage, anchor='nw')
+canvas.bind('<Configure>',fill_image)
+
+sample_label = Label(select_role,bg="white")
+sample_label.place(relx=0.75,rely=0.5,anchor=CENTER)
+
+selection_label=Label(sample_label,text="Select a role",font=("Times New Roman", 40,"bold"),bg="white",fg="#373737")
+selection_label.grid(row=0,column=0,padx=5)
+
+role_employee_button=Button(sample_label,text="Employee",command=employee_page,bd=0,font=("Times New Roman",25,"bold"),width=10,bg="#373737",fg="white",activeforeground='#373737')
+role_employee_button.grid(row=1,column=0,padx=50,pady=20)
+
+role_admin_button=Button(sample_label,text="Admin",command=admin_page, bd=0,font=("Times New Roman",25,"bold"),width=10,bg="#373737",fg="white",activeforeground='#373737')
+role_admin_button.grid(row=3,column=0,padx=50,pady=20)
+
+select_role.mainloop()
+>>>>>>> 58ff93e4d8c44e4471232aed5c9e51d093faaf78
