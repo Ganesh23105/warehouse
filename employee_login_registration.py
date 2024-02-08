@@ -60,6 +60,8 @@ def register():
     sample_Label=Label(registration_window,bg="white")
     sample_Label.place(x=200,y=130)
 
+
+
     user_name_label=Label(sample_Label,text="USER NAME",bd=0,font=("Times New Roman",15,"bold"),bg="white",fg="#163246",activeforeground='#373737')
     user_name_label.grid(row=0,column=0,padx=10,pady=10,sticky="e")
     user_name_entry=Entry(sample_Label,font=("arial"),bd=4,relief=GROOVE)

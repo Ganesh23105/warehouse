@@ -45,15 +45,14 @@ def admin_page():
     select_role.destroy()
     import admin_login_registration
 
-
 def employee_page():
      select_role.destroy()
      import employee_login_registration
 
 select_role=Tk()
 select_role.title("WAREHOUSE")
-select_role.geometry("900x650")
-select_role.resizable(False,False)
+select_role.geometry("1200x675")
+# select_role.resizable(False,False)
 
 select_role.columnconfigure(0,weight=1)
 select_role.rowconfigure(0,weight=1)

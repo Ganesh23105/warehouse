@@ -1,5 +1,2 @@
- a role")
-# selection_label.grid(row=0,column=0,padx=5)
-
-# role_admin_button=Button(sample_label,text="Employee",command=admin_page)
-# role_admin_button.grid(row=1,column=0,padx=50,pady=20)
+e one",command=register,bd=0,font=("Times New Roman",15,"bold"),bg="white",fg="#163246",activeforeground='#373737',cursor="hand2",activebackground="white")
+# register_page_button.grid(row=4,column=0,pady=20,columnspan=2)
