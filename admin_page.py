@@ -38,10 +38,8 @@ def going_to_add():
 
     date_of_birth_label=Label(personal_details_Lframe,text="Date of Birth")
     date_of_birth_label.grid(row=3,column=0)
-    student_DOB_label=Label(student_register_window,text="DOB",pady=10)
-    student_DOB_label.grid(row=2,column=0)
-    student_birth_date = DateEntry(student_register_window)
-    student_birth_date.grid(row=3,column=0)
+    birth_date = DateEntry(personal_details_Lframe)
+    birth_date.grid(row=3,column=1)
 
 
 
