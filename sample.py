@@ -245,3 +245,31 @@
 
 # root.mainloop()
 
+import tkinter as tk
+from tkinter import filedialog
+from PIL import Image, ImageTk
+
+def open_image():
+    file_path = filedialog.askopenfilename()
+    if file_path:
+        image = Image.open(file_path)
+        image.thumbnail((50, 50))
+        photo = ImageTk.PhotoImage(image)
+        photo_label.config(image=photo)
+        photo_label.image = photo
+
+# Create the main Tkinter window
+root = tk.Tk()
+
+# Create a label for displaying the photo
+photo_label = tk.Label(root)
+
+# Use the grid geometry manager to allocate a place for the label
+photo_label.grid(row=0, column=0, padx=10, pady=10)  # You can adjust padx and pady as needed
+
+# Create a button to open the file dialog
+open_button = tk.Button(root, text="Open Image", command=open_image)
+open_button.grid(row=1, column=0, padx=10, pady=10)  # Adjust padx and pady as needed
+
+# Run the Tkinter event loop
+root.mainloop()

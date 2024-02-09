@@ -15,7 +15,7 @@ def products_addition():
         messagebox.showerror('Error','All Fields should be filled.')
     else:
         try:
-            con = pymysql.connect(host='localhost',user='root',password='root')
+            con = pymysql.connect(host='localhost',user='root',password='Ganesh@23105')
             mycursor = con.cursor()
         except:
             messagebox.showerror('Error','Connection is not established try again.')
@@ -155,7 +155,7 @@ def show_table():
         messagebox.showerror('Error','All Fields should be filled.')
     else:
         try:
-            con = pymysql.connect(host='localhost',user='root',password='root')
+            con = pymysql.connect(host='localhost',user='root',password='Ganesh@23105')
             mycursor = con.cursor()
         except:
             messagebox.showerror('Error','Connection is not established try again.')
@@ -180,7 +180,7 @@ def show_table():
 
             def products_updation():
                 try:
-                    con = pymysql.connect(host='localhost',user='root',password='root')
+                    con = pymysql.connect(host='localhost',user='root',password='Ganesh@23105')
                     mycursor = con.cursor()
                 except:
                     messagebox.showerror('Error','Connection is not established try again.')
