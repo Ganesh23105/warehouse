@@ -16,7 +16,7 @@ def register():
             messagebox.showerror('Error','Password does not match')
         else:
             try:
-                con = pymysql.connect(host='localhost',user='root',password='root')
+                con = pymysql.connect(host='localhost',user='root',password='Ganesh@23105')
                 mycursor = con.cursor()
             except:
                 messagebox.showerror('Error','Database Connectivity Issue, Try Again')
@@ -118,7 +118,7 @@ def login():
     else:
 
         try:
-            con = pymysql.connect(host='localhost',user='root',password='root')
+            con = pymysql.connect(host='localhost',user='root',password='Ganesh@23105')
             mycursor = con.cursor()
         except:
             messagebox.showerror('Error','Connection is not established try again.')
