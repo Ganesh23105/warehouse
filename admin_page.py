@@ -135,7 +135,9 @@ employee_month_entry=Entry(search_frame)
 employee_month_entry.grid(row=2,column=6) 
 
 employee_reset_button=Button(search_frame,text="RESET")
-employee_reset_button.grid(row=3,column=4)
+employee_reset_button.grid(row=3,column=1)
 
+employee_select_button=Button(search_frame,text="SEARCH")
+employee_select_button.grid(row=3,column=2)
 
 admin_page.mainloop()
