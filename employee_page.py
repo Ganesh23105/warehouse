@@ -269,8 +269,6 @@ def show_table():
             else:
                 for i in row:
                     add_data(tree,i[0],i[1],i[2],i[3])
-
-        
             
         tree.pack(side="left", fill="both", expand=True)
 
