@@ -6,10 +6,6 @@ from PIL import Image, ImageTk
 from tkcalendar import DateEntry
 from tkinter import filedialog
 
-def hide_frame(frame):
-    frame.place_forget()
-
-
 
 def going_to_add():
     search_frame.grid_forget()
@@ -41,21 +37,22 @@ admin_page.resizable(0,0)
 admin_page_left_frame=Frame(admin_page)
 admin_page_left_frame.place(relx=0,rely=0,relwidth=0.25,relheight=1)
 
+admin_page_left_frame.rowconfigure((0,1,2,3,4),weight=1, uniform = 'a')
+admin_page_left_frame.columnconfigure(0,weight=1)
+
 admin_page_left_add_button=Button(admin_page_left_frame,text="ADD",command=going_to_add)
-admin_page_left_add_button.grid(row=0,column=0)
+admin_page_left_add_button.grid(row=0,column=0,sticky='nsew',padx=10,pady=10)
 
 admin_page_search_button=Button(admin_page_left_frame,text="SEARCH",command=search)
-admin_page_search_button.grid(row=1,column=0)
+admin_page_search_button.grid(row=1,column=0,sticky='nsew',padx=10,pady=10)
 
 # right frame
 
 admin_page_right_frame=Frame(admin_page)
 admin_page_right_frame.place(relx=0.25,rely=0,relwidth=0.75,relheight=1)
 
-
 # add frame
 add_frame=Frame(admin_page_right_frame)
-
 
 personal_details_Lframe=LabelFrame(add_frame,text= "Personal Details")
 personal_details_Lframe.grid(row=0,column=0)
