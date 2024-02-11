@@ -46,7 +46,7 @@ def submit_employee_details():
             return
 
         query="insert into user (first_name,middle_name,last_name,email_address,contact_no,birth_date,date_of_joining,image_data) VALUES(%s,%s,%s,%s,%s,%s,%s,%s)"
-        mycursor.execute(query,(first_name_entry.get(),middle_name_entry.get(),last_name_entry.get(),email_address_entry.get(),contact_no_entry.get(),birth_date.get_date(),join_date.get_date()))
+        mycursor.execute(query,(first_name_entry.get(),middle_name_entry.get(),last_name_entry.get(),email_address_entry.get(),contact_no_entry.get(),birth_date.get_date(),join_date.get_date(),image_data))
         con.commit()
         con.close()
         messagebox.showinfo('Success','Registration is Successful')
@@ -73,6 +73,8 @@ def upload_photo():
         image = Image.open(file_path)
         image.thumbnail((50, 50))  
         photo = ImageTk.PhotoImage(image)
+        global uploaded_image
+        uploaded_image = photo
         uploaded_label.config(image=photo)
         uploaded_label.image = photo
 
