@@ -73,9 +73,11 @@ def now_date():
     return eighteen_years_ago
 
 def update_age(event):
-    selected_date = birth_date.get_date()
+    # selected_date = birth_date.get_date()
+    # birthdate = datetime.strptime(birthdate, '%Y-%m-%d')
+    selected_date = datetime.strptime(str(birth_date.get_date()), '%Y-%m-%d')
 
-    today = datetime.now()
+    today = datetime.today()
     age = today.year - selected_date.year - ((today.month, today.day) < (selected_date.month, selected_date.day))
 
     age_entry.config(state=NORMAL)
