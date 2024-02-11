@@ -3,12 +3,45 @@ from tkinter import messagebox
 import pymysql
 from PIL import Image, ImageTk
 
+def fill_image(event):
+	global resized_tk
 
-# user_window.destroy()
+	# current ratio 
+	canvas_ratio = event.width / event.height
+
+	# get coordinates 
+	if canvas_ratio > image_ratio: # canvas is wider than the image
+		width = int(event.width) 
+		height = int(width / image_ratio)
+	else: # canvas is narrower than the image
+		height = int(event.height)
+		width = int(height * image_ratio) 
+
+	resized_image = image_original.resize((width, height))
+	resized_tk = ImageTk.PhotoImage(resized_image)
+	canvas.create_image(
+		int(event.width / 2),
+		int(event.height / 2),
+		anchor = 'center',
+		image = resized_tk)
+
 admin_login_registration=Tk()
 admin_login_registration.title("ADMIN REGISTRATION")
 admin_login_registration.geometry("1200x675")
 admin_login_registration.minsize(800,450)
+
+admin_login_registration.columnconfigure(0, weight = 1, uniform = 'a')
+admin_login_registration.rowconfigure(0, weight = 1)
+
+# import an image 
+image_original = Image.open('image\\login.jpg')
+image_ratio = image_original.size[0] / image_original.size[1]
+image_tk = ImageTk.PhotoImage(image_original)
+
+canvas = Canvas(admin_login_registration, background = 'black', bd = 0, highlightthickness = 0, relief = 'ridge')
+canvas.grid(column = 0, row = 0, sticky = 'nsew')
+
+canvas.bind('<Configure>', fill_image)
 
 def admin_page():
     if user_name_entry.get()=='' and password_entry.get():
@@ -43,28 +76,28 @@ def admin_page():
             admin_login_registration.destroy()
             import admin_page
 
-
-bgImage = ImageTk.PhotoImage(file='image\\login.jpg')
-bgLabel=Label(admin_login_registration,image= bgImage)
-bgLabel.place(x=0, y=0)
-
 sample_Label=Label(admin_login_registration,bg="white")
-sample_Label.place(x=250,y=230)
+sample_Label.place(relx=0.5,rely=0.5,anchor=CENTER,relwidth=0.4,relheight=0.5)
+sample_Label.rowconfigure((0,3),weight=2,uniform="b")
+sample_Label.rowconfigure((1,2),weight=1,uniform="a")
+sample_Label.columnconfigure((0,1),weight=1,uniform="A")
 
-user_name_label=Label(sample_Label,text="USER NAME",bd=0,font=("Times New Roman",15,"bold"),bg="white",fg="#163246",activeforeground='#373737')
-user_name_label.grid(row=0,column=0,padx=10,pady=10,sticky="e")
-user_name_entry=Entry(sample_Label,font=("arial"),bd=4,relief=GROOVE)
-user_name_entry.grid(row=0,column=1,padx=10,pady=10) 
+login_heading_label=Label(sample_Label,text="ADMIN LOGIN",bd=0,font=("Times New Roman",35,"bold"),bg="white",fg="#373737")
+login_heading_label.grid(row=0,column=0,columnspan=2)
 
-password_label=Label(sample_Label,text="PASSWORD",bd=0,font=("Times New Roman",15,"bold"),bg="white",fg="#163246",activeforeground='#373737')
-password_label.grid(row=1,column=0,padx=10,pady=10,sticky="w")
-password_entry=Entry(sample_Label,font=("arial"),bd=4,relief=GROOVE)
-password_entry.grid(row=1,column=1,padx=10,pady=10)
+user_name_label=Label(sample_Label,text="USER NAME",bd=0,font=("Times New Roman",18,"bold"),width=10,bg="white",fg="#373737",activeforeground='#373737')
+user_name_label.grid(row=1,column=0,sticky="nsew")
+user_name_entry=Entry(sample_Label,font=("arial",13),bd=4,relief=GROOVE,width=20)
+user_name_entry.grid(row=1,column=1,sticky='w')
 
-Login_button=Button(sample_Label,text="Login",bd=0,font=("Times New Roman",15,"bold"),bg="#163246",cursor="hand2",fg="white",activeforeground='#373737',command=admin_page,width=13)
-Login_button.grid(row=3,column=0,columnspan=2,pady=20)
+password_label=Label(sample_Label,text="PASSWORD",bd=0,font=("Times New Roman",18,"bold"),width=10,bg="white",fg="#373737",activeforeground='#373737')
+password_label.grid(row=2,column=0,sticky="nsew")
+password_entry=Entry(sample_Label,font=("arial",13),bd=4,relief=GROOVE,width=20)
+password_entry.grid(row=2,column=1,sticky='w')
+
+Login_button=Button(sample_Label,text="SUBMIT",bd=0,cursor="hand2",font=("Times New Roman",20,"bold"),width=12,bg="#373737",fg="white",activeforeground='#373737',command=admin_page)
+Login_button.grid(row=3,column=0,columnspan=2,sticky='nsew',padx=175,pady=30)
 
 user_name_entry.bind("<Return>",lambda event:password_entry.focus())
 
 admin_login_registration.mainloop()
-    

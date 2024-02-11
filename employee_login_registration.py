@@ -83,7 +83,7 @@ sample_Label.rowconfigure((0,3),weight=2,uniform="b")
 sample_Label.rowconfigure((1,2),weight=1,uniform="a")
 sample_Label.columnconfigure((0,1),weight=1,uniform="A")
 
-login_heading_label=Label(sample_Label,text="LOGIN",bd=0,font=("Times New Roman",50,"bold"),bg="white",fg="#373737")
+login_heading_label=Label(sample_Label,text="EMPLOYEE LOGIN",bd=0,font=("Times New Roman",35,"bold"),bg="white",fg="#373737")
 login_heading_label.grid(row=0,column=0,columnspan=2)
 
 user_name_label=Label(sample_Label,text="USER NAME",bd=0,font=("Times New Roman",18,"bold"),width=10,bg="white",fg="#373737",activeforeground='#373737')

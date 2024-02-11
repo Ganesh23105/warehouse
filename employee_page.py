@@ -82,33 +82,33 @@ root.geometry("1200x675")
 root.minsize(1200,675)
 
  
-left_frame = Frame(root,bg ="#C8972A")
+left_frame = Frame(root,bg ="#E9E3D5")
 left_frame.place(relx=0,rely=0,relwidth=0.25,relheight=1)
 
 left_frame.columnconfigure(0,weight=1)
 left_frame.rowconfigure((0,1,2,3),weight=1,uniform='a')
 
 #product Lframe
-product_Lframe = LabelFrame(left_frame, text="Products",font=("Poppins",12,"bold"),bg="#041b3b",fg="white")
+product_Lframe = LabelFrame(left_frame, text="Products",font=("Poppins",12,"bold"),bg="#E9E3D5")
 product_Lframe.grid(row=0,column=0,pady=10,padx=10,sticky="nsew")
 
-product_add_button=Button(product_Lframe,text="ADD",command=add_product,bd=0,font=("Times New Roman",15,"bold"),bg="#38c4dd",fg="#021530",activeforeground="#021530",activebackground="white",cursor="hand2")
+product_add_button=Button(product_Lframe,text="ADD",command=add_product,bd=0,font=("Times New Roman",15,"bold"),bg="#033043",fg="white",activeforeground="#092337",activebackground="white",cursor="hand2")
 product_add_button.pack(expand=True,padx=50,pady=(10,15),fill='both')
 
-product_retrive_button=Button(product_Lframe,command=retrive_product,text="SEARCH",bd=0,font=("Times New Roman",15,"bold"),bg="#38c4dd",fg="#021530",activeforeground="#021530",activebackground="white",cursor="hand2")
+product_retrive_button=Button(product_Lframe,command=retrive_product,text="SEARCH",bd=0,font=("Times New Roman",15,"bold"),bg="#033043",fg="white",activeforeground="#092337",activebackground="white",cursor="hand2")
 product_retrive_button.pack(expand=True,padx=50,pady=(0,15),fill='both')
 
 #order Lframe
-order_Lframe = LabelFrame(left_frame,text="Orders",font=("Poppins",13,"bold"),bg="#041b3b",fg="white")
+order_Lframe = LabelFrame(left_frame,text="Orders",font=("Poppins",13,"bold"),bg="#E9E3D5")
 order_Lframe.grid(row=1,column=0,padx=10,pady=10,sticky="nsew")
 
-order_update_button=Button(order_Lframe,text="UPDATE",command=order_update,bd=0,font=("Times New Roman",15,"bold"),bg="#38c4dd",fg="#021530",activeforeground="#021530",activebackground="white",cursor="hand2")
+order_update_button=Button(order_Lframe,text="UPDATE",command=order_update,bd=0,font=("Times New Roman",15,"bold"),bg="#033043",fg="white",activeforeground="#092337",activebackground="white",cursor="hand2")
 order_update_button.pack(expand=True,padx=50,pady=(10,15),fill='both')
 
-order_add_button=Button(order_Lframe,text="ADD",command=order_add,bd=0,font=("Times New Roman",15,"bold"),bg="#38c4dd",fg="#021530",activeforeground="#021530",activebackground="white",cursor="hand2")
+order_add_button=Button(order_Lframe,text="ADD",command=order_add,bd=0,font=("Times New Roman",15,"bold"),bg="#033043",fg="white",activeforeground="#092337",activebackground="white",cursor="hand2")
 order_add_button.pack(expand=True,padx=50,pady=(0,15),fill='both')
 
-right_frame=Frame(root,bg ="#021530")
+right_frame=Frame(root,bg ="#E9E3D5")
 right_frame.place(relx=0.25,rely=0,relwidth=0.75,relheight=1)
 
 # add button in products
@@ -135,7 +135,7 @@ quantity_label.grid(row=3,column=0,padx=10,pady=10,sticky="e")
 quantity_entry=Entry(add_frame,bd=4,relief=GROOVE,width=25)
 quantity_entry.grid(row=3,column=1,padx=10,pady=10)
 
-submit_button=Button(add_frame,text="SUBMIT",bd=0,font=("Times New Roman",15,"bold"),bg="#021530",fg="white",activeforeground="#021530",activebackground="white",cursor="hand2",width=12,command=products_addition)
+submit_button=Button(add_frame,text="SUBMIT",font=10,width=15,bg="white",fg="#033043",cursor="hand2",command=products_addition)
 submit_button.grid(row=4,column=0,columnspan=2)
 
 product_id_entry.bind('<Return>',lambda event :product_name_entry.focus())
@@ -275,7 +275,7 @@ def show_table():
             
         tree.pack(side="left", fill="both", expand=True)
 
-show_button=Button(retrive_frame,text="SHOW",command=show_table)
+show_button=Button(retrive_frame,text="SHOW",font=10,width=8,bg="white",fg="#033043",cursor="hand2",command=show_table)
 show_button.grid(row=0,column=2)
         
 entryfield_entry=Entry(retrive_frame)
