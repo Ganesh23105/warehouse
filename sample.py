@@ -1,105 +1,61 @@
 from tkinter import *
-from tkinter import messagebox
-import pymysql
-from PIL import Image, ImageTk
+from tkinter.ttk import Combobox, Treeview
 
-def fill_image(event):
-	global resized_tk
+search_frame=Tk()
 
-	# current ratio 
-	canvas_ratio = event.width / event.height
+attributes_frame = Frame(search_frame)
+attributes_frame.place(relx=0,rely=0,relwidth=1,relheight=0.25)
 
-	# get coordinates 
-	if canvas_ratio > image_ratio: # canvas is wider than the image
-		width = int(event.width) 
-		height = int(width / image_ratio)
-	else: # canvas is narrower than the image
-		height = int(event.height)
-		width = int(height * image_ratio) 
+employee_role_label=Label(attributes_frame,text="ROLE")
+employee_role_label.grid(row=0,column=0)
+search_role_combo_var=StringVar()
+search_role_combo_box = Combobox(attributes_frame,textvariable=search_role_combo_var,state="readonly")
+search_role_combo_box['values'] = ('Admin', 'Employee')
+search_role_combo_box.grid(row=0,column=1)
+search_role_combo_box.set("Select")
 
-	resized_image = image_original.resize((width, height))
-	resized_tk = ImageTk.PhotoImage(resized_image)
-	canvas.create_image(
-		int(event.width / 2),
-		int(event.height / 2),
-		anchor = 'center',
-		image = resized_tk)
+employee_username_label=Label(attributes_frame,text="USERNAME")
+employee_username_label.grid(row=1,column=0)
+employee_username_entry=Entry(attributes_frame)
+employee_username_entry.grid(row=1,column=1)
 
-def login():
-    if user_name_entry.get()=='' and user_password_entry.get():
-        messagebox.showerror("ERROR","All fields should be filled.")
-    else:
+employee_year_label=Label(attributes_frame,text="YEAR")
+employee_year_label.grid(row=2,column=0)
+employee_year_entry=Entry(attributes_frame)
+employee_year_entry.grid(row=2,column=1)   
 
-        try:
-            con = pymysql.connect(host='localhost',user='root',password='root')
-            mycursor = con.cursor()
-        except:
-            messagebox.showerror('Error','Connection is not established try again.')
-            return
+employee_month_label=Label(attributes_frame,text="MONTH")
+employee_month_label.grid(row=2,column=4)
+employee_month_entry=Entry(attributes_frame)
+employee_month_entry.grid(row=2,column=6) 
 
-        query = 'use warehouse'
-        mycursor.execute(query)
-        query = 'select * from user where user_name=%s'
-        mycursor.execute(query,(user_name_entry.get()))
-        row=mycursor.fetchone()
+employee_reset_button=Button(attributes_frame,text="RESET")
+employee_reset_button.grid(row=3,column=1)
 
-        if row == None:
-            messagebox.showerror('Error','INVALID USERNAME')
-            return
-        else:
-            query = 'use warehouse'
-            mycursor.execute(query)
-            query='SELECT user_password FROM user WHERE user_name=%s'
-            mycursor.execute(query,user_name_entry.get())
-            sql_password=mycursor.fetchone()
-        if user_password_entry.get()!=sql_password[0]:
-            messagebox.showerror('ERROR','INVALID PASSWORD')
-        else:
-            messagebox.showinfo('Success','LOGIN SUCCESSFUL')
-            user_window.destroy()
-            import employee_page
+employee_select_button=Button(attributes_frame,text="SEARCH")
+employee_select_button.grid(row=3,column=2)
 
-user_window=Tk()
-user_window.geometry('1200x675')
-user_window.minsize(800,450)
-user_window.title("LOGIN")
+tree_scroll_frame = Frame(search_frame)
+tree_scroll_frame.place(relx=0,rely=0.25,relwidth=1,relheight=0.75)
 
-user_window.columnconfigure(0, weight = 1, uniform = 'a')
-user_window.rowconfigure(0, weight = 1)
+tree = Treeview(tree_scroll_frame, columns=(1,2,3,4,5,6,7,8), show="headings")
+tree.heading(1, text="ROLE")
+tree.heading(2, text="USERNAME")
+tree.heading(3, text="FIRST_NAME")
+tree.heading(4, text="LAST_NAME")
+tree.heading(5, text="EMAIL_ADDRESS")
+tree.heading(6, text="CONTACT_NO")
+tree.heading(7, text="BIRTH_DATE")
+tree.heading(8, text="JOINING_DATE")
 
-# import an image 
-image_original = Image.open('image\\login.jpg')
-image_ratio = image_original.size[0] / image_original.size[1]
-image_tk = ImageTk.PhotoImage(image_original)
+# tree_y_scroll = Scrollbar(search_frame, orient="vertical", command=tree.yview)
+# tree.configure(yscrollcommand=tree_y_scroll.set)
+# tree_y_scroll.grid(row=4, column=5,sticky="ns")
 
-canvas = Canvas(user_window, background = 'black', bd = 0, highlightthickness = 0, relief = 'ridge')
-canvas.grid(column = 0, row = 0, sticky = 'nsew')
+tree_x_scroll = Scrollbar(tree_scroll_frame, orient="horizontal", command=tree.xview)
+tree.configure(xscrollcommand=tree_x_scroll.set)
+tree_x_scroll.pack(side='bottom',fill=X)
 
-canvas.bind('<Configure>', fill_image)
+tree.pack()
 
-sample_Label=Label(user_window,bg="white")
-sample_Label.place(relx=0.5,rely=0.5,anchor=CENTER,relwidth=0.4,relheight=0.5)
-sample_Label.rowconfigure((0,3),weight=2,uniform="b")
-sample_Label.rowconfigure((1,2),weight=1,uniform="a")
-sample_Label.columnconfigure((0,1),weight=1,uniform="A")
-
-login_heading_label=Label(sample_Label,text="LOGIN",bd=0,font=("Times New Roman",50,"bold"),bg="white",fg="#373737")
-login_heading_label.grid(row=0,column=0,columnspan=2)
-
-user_name_label=Label(sample_Label,text="USER NAME",bd=0,font=("Times New Roman",18,"bold"),width=10,bg="white",fg="#373737",activeforeground='#373737')
-user_name_label.grid(row=1,column=0,sticky="nsew")
-user_name_entry=Entry(sample_Label,font=("arial",15),bd=4,relief=GROOVE,width=20)
-user_name_entry.grid(row=1,column=1,sticky='w')
-
-user_password_label=Label(sample_Label,text="PASSWORD",bd=0,font=("Times New Roman",18,"bold"),width=10,bg="white",fg="#373737",activeforeground='#373737')
-user_password_label.grid(row=2,column=0,sticky="nsew")
-user_password_entry=Entry(sample_Label,font=("arial",15),bd=4,relief=GROOVE,width=20)
-user_password_entry.grid(row=2,column=1,sticky='w')
-
-user_login_button=Button(sample_Label,text="SUBMIT",bd=0,cursor="hand2",font=("Times New Roman",20,"bold"),width=12,bg="#373737",fg="white",activeforeground='#373737',command=login)
-user_login_button.grid(row=3,column=0,columnspan=2,sticky='nsew',padx=175,pady=30)
-
-
-user_name_entry.bind('<Return>',lambda event:user_password_entry.focus())
-
-user_window.mainloop()
+search_frame.mainloop()
