@@ -8,6 +8,7 @@ from PIL import Image, ImageTk
 admin_login_registration=Tk()
 admin_login_registration.title("ADMIN REGISTRATION")
 admin_login_registration.geometry("1200x675")
+admin_login_registration.minsize(800,450)
 
 def admin_page():
     if user_name_entry.get()=='' and password_entry.get():
@@ -60,7 +61,7 @@ password_label.grid(row=1,column=0,padx=10,pady=10,sticky="w")
 password_entry=Entry(sample_Label,font=("arial"),bd=4,relief=GROOVE)
 password_entry.grid(row=1,column=1,padx=10,pady=10)
 
-Login_button=Button(sample_Label,text="Login",bd=0,font=("Times New Roman",15,"bold"),bg="#163246",cursor="hand2",fg="white",activeforeground='#373737',command=admin_page)
+Login_button=Button(sample_Label,text="Login",bd=0,font=("Times New Roman",15,"bold"),bg="#163246",cursor="hand2",fg="white",activeforeground='#373737',command=admin_page,width=13)
 Login_button.grid(row=3,column=0,columnspan=2,pady=20)
 
 user_name_entry.bind("<Return>",lambda event:password_entry.focus())
