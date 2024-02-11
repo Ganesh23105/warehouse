@@ -16,7 +16,7 @@ def register():
             messagebox.showerror('Error','Password does not match')
         else:
             try:
-                con = pymysql.connect(host='localhost',user='root',password='Ganesh@23105')
+                con = pymysql.connect(host='localhost',user='root',password='root')
                 mycursor = con.cursor()
             except:
                 messagebox.showerror('Error','Database Connectivity Issue, Try Again')
@@ -39,7 +39,7 @@ def register():
             if row != None:
                 messagebox.showerror('Error','username Already Exists')
             else:
-                query = 'insert into user(user_name, email, user_password, role) values(%s,%s,%s,\'admin\')'
+                query = 'insert into user(user_name, email, user_password, role) values(%s,%s,%s,\'employee\')'
                 mycursor.execute(query,(user_name_entry.get(),user_email_entry.get(),user_password_entry.get()))
                 con.commit()
                 con.close()
@@ -118,7 +118,7 @@ def login():
     else:
 
         try:
-            con = pymysql.connect(host='localhost',user='root',password='Ganesh@23105')
+            con = pymysql.connect(host='localhost',user='root',password='root')
             mycursor = con.cursor()
         except:
             messagebox.showerror('Error','Connection is not established try again.')

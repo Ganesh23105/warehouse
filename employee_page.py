@@ -15,7 +15,7 @@ def products_addition():
         messagebox.showerror('Error','All Fields should be filled.')
     else:
         try:
-            con = pymysql.connect(host='localhost',user='root',password='Ganesh@23105')
+            con = pymysql.connect(host='localhost',user='root',password='root')
             mycursor = con.cursor()
         except:
             messagebox.showerror('Error','Connection is not established try again.')
@@ -155,7 +155,7 @@ def show_table():
         messagebox.showerror('Error','All Fields should be filled.')
     else:
         try:
-            con = pymysql.connect(host='localhost',user='root',password='Ganesh@23105')
+            con = pymysql.connect(host='localhost',user='root',password='root')
             mycursor = con.cursor()
         except:
             messagebox.showerror('Error','Connection is not established try again.')
@@ -180,7 +180,7 @@ def show_table():
 
             def products_updation():
                 try:
-                    con = pymysql.connect(host='localhost',user='root',password='Ganesh@23105')
+                    con = pymysql.connect(host='localhost',user='root',password='root')
                     mycursor = con.cursor()
                 except:
                     messagebox.showerror('Error','Connection is not established try again.')
@@ -241,7 +241,6 @@ def show_table():
         tree.heading("Location", text="Location")
         tree.heading("Quantity", text="Quantity")
                 
-        # add_data(tree, "John Doe", "25", "USA","ui")
         if combo_box_stream.get()=='Product ID':
             query='select * from products where product_id=%s'
             mycursor.execute(query,entryfield_entry.get())
@@ -269,6 +268,8 @@ def show_table():
             else:
                 for i in row:
                     add_data(tree,i[0],i[1],i[2],i[3])
+
+        
             
         tree.pack(side="left", fill="both", expand=True)
 

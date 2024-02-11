@@ -5,7 +5,57 @@ import pymysql
 from PIL import Image, ImageTk
 from tkcalendar import DateEntry
 from tkinter import filedialog
+import datetime
 
+def clear():
+    first_name_entry.delete(0, END)
+    middle_name_entry.delete(0, END)
+    last_name_entry.delete(0,END)
+    email_address_entry.delete(0,END) 
+    contact_no_entry.delete(0,END)
+    age_entry.delete(0,END)
+
+def submit_employee_details():
+    if first_name_entry.get()==""and middle_name_entry.get()=="" and last_name_entry.get()=="" and age_entry.get()=="" and contact_no_entry.get()=="" and email_address_entry.get()=="":
+        messagebox.showerror(title="Error", message="Please fill all the fields")
+    # print(birth_date.get_date())
+    else:
+        try:
+            con = pymysql.connect(host='localhost',user='root',password='root')
+            mycursor = con.cursor()
+        except:
+            messagebox.showerror('Error','Database Connectivity Issue, Try Again')
+            return 
+        try:
+            query='create database warehouse'
+            mycursor.execute(query)
+            query='use warehouse'
+            mycursor.execute(query)
+            query = 'create table user(first_name VARCHAR(255) NOT NULL ,middle_name VARCHAR(255) NOT NULL,last_name VARCHAR(225) NOT NULL,email_address VARCHAR(255) NOT NULL,contact_no VARCHAR(10),birth_date DATE,date_of_joining DATE,image_data BLOB)'
+            mycursor.execute(query)
+        except:
+            query='use warehouse'
+            mycursor.execute(query)
+        file_path = filedialog.askopenfilename()
+        if file_path:
+        # Read the image file as binary data
+            with open(file_path, 'rb') as file:
+                image_data = file.read()
+        else:
+            messagebox.showerror(title="Error",message="photo not Selected!")
+            return
+
+        query="insert into user (first_name,middle_name,last_name,email_address,contact_no,birth_date,date_of_joining,image_data) VALUES(%s,%s,%s,%s,%s,%s,%s,%s)"
+        mycursor.execute(query,(first_name_entry.get(),middle_name_entry.get(),last_name_entry.get(),email_address_entry.get(),contact_no_entry.get(),birth_date.get_date(),join_date.get_date()))
+        con.commit()
+        con.close()
+        messagebox.showinfo('Success','Registration is Successful')
+        clear()  
+          
+
+
+
+ 
 
 def going_to_add():
     search_frame.grid_forget()
@@ -41,10 +91,10 @@ admin_page_left_frame.rowconfigure((0,1,2,3,4),weight=1, uniform = 'a')
 admin_page_left_frame.columnconfigure(0,weight=1)
 
 admin_page_left_add_button=Button(admin_page_left_frame,text="ADD",command=going_to_add)
-admin_page_left_add_button.grid(row=0,column=0,sticky='nsew',padx=20,pady=20)
+admin_page_left_add_button.grid(row=0,column=0,sticky='nsew',padx=10,pady=10)
 
 admin_page_search_button=Button(admin_page_left_frame,text="SEARCH",command=search)
-admin_page_search_button.grid(row=1,column=0,sticky='nsew',padx=20,pady=20)
+admin_page_search_button.grid(row=1,column=0,sticky='nsew',padx=10,pady=10)
 
 # right frame
 
@@ -103,7 +153,7 @@ photo_label.grid(row=8, column=0)
 upload_button=Button(personal_details_Lframe,text="UPLOAD",command=upload_photo)
 upload_button.grid(row=8,column=1)
 
-submit_button=Button(personal_details_Lframe,text="SUBMIT")
+submit_button=Button(personal_details_Lframe,text="SUBMIT",command=submit_employee_details)
 submit_button.grid(row=9,columnspan=2)
 
 
@@ -132,7 +182,9 @@ employee_month_entry=Entry(search_frame)
 employee_month_entry.grid(row=2,column=6) 
 
 employee_reset_button=Button(search_frame,text="RESET")
-employee_reset_button.grid(row=3,column=4)
+employee_reset_button.grid(row=3,column=1)
 
+employee_select_button=Button(search_frame,text="SEARCH")
+employee_select_button.grid(row=3,column=2)
 
 admin_page.mainloop()
