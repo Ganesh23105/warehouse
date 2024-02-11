@@ -31,7 +31,7 @@ def upload_photo():
 admin_page=Tk()
 admin_page.title("WAREHOUSE")
 admin_page.geometry("1200x675")
-admin_page.resizable(0,0)
+
 
 # left frame
 admin_page_left_frame=Frame(admin_page)
@@ -41,10 +41,10 @@ admin_page_left_frame.rowconfigure((0,1,2,3,4),weight=1, uniform = 'a')
 admin_page_left_frame.columnconfigure(0,weight=1)
 
 admin_page_left_add_button=Button(admin_page_left_frame,text="ADD",command=going_to_add)
-admin_page_left_add_button.grid(row=0,column=0,sticky='nsew',padx=10,pady=10)
+admin_page_left_add_button.grid(row=0,column=0,sticky='nsew',padx=20,pady=20)
 
 admin_page_search_button=Button(admin_page_left_frame,text="SEARCH",command=search)
-admin_page_search_button.grid(row=1,column=0,sticky='nsew',padx=10,pady=10)
+admin_page_search_button.grid(row=1,column=0,sticky='nsew',padx=20,pady=20)
 
 # right frame
 
