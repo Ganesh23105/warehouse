@@ -5,7 +5,53 @@ import pymysql
 from PIL import Image, ImageTk
 from tkcalendar import DateEntry
 from tkinter import filedialog
-import datetime
+from datetime import datetime, timedelta
+import secrets
+import string
+
+
+def generate_username():
+    try:
+        con = pymysql.connect(host='localhost',user='root',password='root',database='warehouse')
+        mycursor = con.cursor()
+    except:
+        messagebox.showerror('Error','Database Connectivity Issue, Try Again')
+        return
+
+    fname = first_name_entry.get()
+    mname = middle_name_entry.get()
+    lname = last_name_entry.get()
+    eighteen_years_ago = now_date()
+    username = role_combo_box.get()[0] + fname[0].lower() + mname[0].lower() + lname[0].lower() + str(eighteen_years_ago.year)
+
+    check_username_query = 'select username from user where username = %s'
+    mycursor.execute(check_username_query,username)
+    row = mycursor.fetchone()
+    if row == None:
+        return username
+
+def generate_password():
+    # Define character sets
+    lowercase_chars = string.ascii_lowercase
+    uppercase_chars = string.ascii_uppercase
+    digit_chars = string.digits
+    punctuation_chars = string.punctuation
+
+    # Generate components of the password
+    lowercase_part = ''.join(secrets.choice(lowercase_chars) for _ in range(4))
+    uppercase_part = secrets.choice(uppercase_chars)
+    digit_part = ''.join(secrets.choice(digit_chars) for _ in range(2))
+    punctuation_part = secrets.choice(punctuation_chars)
+
+    # Combine components to form the password
+    password = lowercase_part + uppercase_part + digit_part + punctuation_part
+
+    # Shuffle the password to make it more secure
+    password_list = list(password)
+    secrets.SystemRandom().shuffle(password_list)
+    shuffled_password = ''.join(password_list)
+
+    return shuffled_password
 
 def clear():
     first_name_entry.delete(0, END)
@@ -14,11 +60,34 @@ def clear():
     email_address_entry.delete(0,END) 
     contact_no_entry.delete(0,END)
     age_entry.delete(0,END)
+    uploaded_label.grid_forget()
+    role_combo_box.set("Select")
+    age_entry.config(state=NORMAL)
+    age_entry.delete(0, END)
+    age_entry.config(state=DISABLED)
+
+def now_date():
+    current_date = datetime.now()
+    eighteen_years_ago = current_date - timedelta(days=365.25 * 18)
+    # eighteen_years_ago_date = eighteen_years_ago.date()
+    return eighteen_years_ago
+
+def update_age(event):
+    selected_date = birth_date.get_date()
+
+    today = datetime.now()
+    age = today.year - selected_date.year - ((today.month, today.day) < (selected_date.month, selected_date.day))
+
+    age_entry.config(state=NORMAL)
+    age_entry.delete(0, END)
+    age_entry.insert(0, str(age))
+    age_entry.config(state=DISABLED)
 
 def submit_employee_details():
-    if first_name_entry.get()==""and middle_name_entry.get()=="" and last_name_entry.get()=="" and age_entry.get()=="" and contact_no_entry.get()=="" and email_address_entry.get()=="":
+    role_combo_box.config(state=NORMAL)
+    if first_name_entry.get()=="" or middle_name_entry.get()=="" or last_name_entry.get()=="" or contact_no_entry.get()=="" or email_address_entry.get()=="" or role_combo_box.get()=="Select":
         messagebox.showerror(title="Error", message="Please fill all the fields")
-    # print(birth_date.get_date())
+    # print(birth_date.get_date())     
     else:
         try:
             con = pymysql.connect(host='localhost',user='root',password='root')
@@ -31,52 +100,46 @@ def submit_employee_details():
             mycursor.execute(query)
             query='use warehouse'
             mycursor.execute(query)
-            query = 'create table user(first_name VARCHAR(255) NOT NULL ,middle_name VARCHAR(255) NOT NULL,last_name VARCHAR(225) NOT NULL,email_address VARCHAR(255) NOT NULL,contact_no VARCHAR(10),birth_date DATE,date_of_joining DATE,image_data BLOB)'
+            query = 'create table user(username VARCHAR(50) NOT NULL PRIMARY KEY,password VARCHAR(50) NOT NULL,role VARCHAR(25) NOT NULL, first_name VARCHAR(255) NOT NULL ,middle_name VARCHAR(255) NOT NULL,last_name VARCHAR(225) NOT NULL,email_address VARCHAR(255) NOT NULL,contact_no VARCHAR(10),birth_date DATE,date_of_joining DATE,image_data LONGBLOB)'
             mycursor.execute(query)
         except:
             query='use warehouse'
             mycursor.execute(query)
-        file_path = filedialog.askopenfilename()
+        # file_path = filedialog.askopenfilename()
         if file_path:
         # Read the image file as binary data
             with open(file_path, 'rb') as file:
                 image_data = file.read()
         else:
-            messagebox.showerror(title="Error",message="photo not Selected!")
+            messagebox.showerror("Error", "Please Upload Photo.")
             return
 
-        query="insert into user (first_name,middle_name,last_name,email_address,contact_no,birth_date,date_of_joining,image_data) VALUES(%s,%s,%s,%s,%s,%s,%s,%s)"
-        mycursor.execute(query,(first_name_entry.get(),middle_name_entry.get(),last_name_entry.get(),email_address_entry.get(),contact_no_entry.get(),birth_date.get_date(),join_date.get_date()))
+        query="insert into user (username,password,role, first_name,middle_name,last_name,email_address,contact_no,birth_date,date_of_joining,image_data) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+        mycursor.execute(query,(generate_username(),generate_password(),role_combo_box.get(),first_name_entry.get(),middle_name_entry.get(),last_name_entry.get(),email_address_entry.get(),contact_no_entry.get(),birth_date.get_date(),join_date.get_date(),image_data))
         con.commit()
         con.close()
         messagebox.showinfo('Success','Registration is Successful')
         clear()  
           
-
-
-
- 
-
-def going_to_add():
-    search_frame.grid_forget()
-    add_frame.grid(row=0,column=8)
-
-def search():
-    add_frame.grid_forget()
-    search_frame.grid(row=0,column=8)
-
 def upload_photo():
+    global file_path
     file_path = filedialog.askopenfilename()
     if file_path:
-        uploaded_label = Label(personal_details_Lframe)
-        uploaded_label.grid(row=8,column=2)
+
+        uploaded_label.grid(row=9,column=2)
         image = Image.open(file_path)
         image.thumbnail((50, 50))  
         photo = ImageTk.PhotoImage(image)
         uploaded_label.config(image=photo)
         uploaded_label.image = photo
 
+def going_to_add_frame():
+    search_frame.grid_forget()
+    add_frame.grid(row=0,column=8)
 
+def search_frame():
+    add_frame.grid_forget()
+    search_frame.grid(row=0,column=8)
 
 admin_page=Tk()
 admin_page.title("WAREHOUSE")
@@ -90,11 +153,11 @@ admin_page_left_frame.place(relx=0,rely=0,relwidth=0.25,relheight=1)
 admin_page_left_frame.rowconfigure((0,1,2,3,4),weight=1, uniform = 'a')
 admin_page_left_frame.columnconfigure(0,weight=1)
 
-admin_page_left_add_button=Button(admin_page_left_frame,text="ADD",command=going_to_add)
-admin_page_left_add_button.grid(row=0,column=0,sticky='nsew',padx=10,pady=10)
+admin_page_left_add_button=Button(admin_page_left_frame,text="ADD",command=going_to_add_frame)
+admin_page_left_add_button.grid(row=0,column=0,sticky='nsew',padx=20,pady=25)
 
-admin_page_search_button=Button(admin_page_left_frame,text="SEARCH",command=search)
-admin_page_search_button.grid(row=1,column=0,sticky='nsew',padx=10,pady=10)
+admin_page_search_button=Button(admin_page_left_frame,text="SEARCH",command=search_frame)
+admin_page_search_button.grid(row=1,column=0,sticky='nsew',padx=20,pady=25)
 
 # right frame
 
@@ -107,54 +170,69 @@ add_frame=Frame(admin_page_right_frame)
 personal_details_Lframe=LabelFrame(add_frame,text= "Personal Details")
 personal_details_Lframe.grid(row=0,column=0)
 
+role_selection_label=Label(personal_details_Lframe,text="ROLE")
+role_selection_label.grid(row=0,column=0)
+role_combo_var=StringVar()
+role_combo_box =ttk.Combobox(personal_details_Lframe,textvariable=role_combo_var,state="readonly")
+role_combo_box['values'] = ('Admin', 'Employee')
+role_combo_box.grid(row=0,column=1)
+role_combo_box.set("Select")
+
 first_name_label=Label(personal_details_Lframe,text="FIRST NAME")
-first_name_label.grid(row=0,column=0)
+first_name_label.grid(row=1,column=0)
 first_name_entry=Entry(personal_details_Lframe)
-first_name_entry.grid(row=0,column=1)
+first_name_entry.grid(row=1,column=1)
 
 middle_name_label=Label(personal_details_Lframe,text="MIDDLE NAME")
-middle_name_label.grid(row=1,column=0)
+middle_name_label.grid(row=2,column=0)
 middle_name_entry=Entry(personal_details_Lframe)
-middle_name_entry.grid(row=1,column=1)
+middle_name_entry.grid(row=2,column=1)
 
 last_name_label=Label(personal_details_Lframe,text="LAST NAME")
-last_name_label.grid(row=2,column=0)
+last_name_label.grid(row=3,column=0)
 last_name_entry=Entry(personal_details_Lframe)
-last_name_entry.grid(row=2,column=1)
+last_name_entry.grid(row=3,column=1)
 
 date_of_birth_label=Label(personal_details_Lframe,text="Date of Birth")
-date_of_birth_label.grid(row=3,column=0)
-birth_date = DateEntry(personal_details_Lframe)
-birth_date.grid(row=3,column=1)
+date_of_birth_label.grid(row=4,column=0)
+birth_date = DateEntry(personal_details_Lframe,state='readonly')
+birth_date.grid(row=4,column=1)
+
+eighteen_years_ago = now_date()
+birth_date.set_date(eighteen_years_ago.date())
+birth_date.configure(maxdate=eighteen_years_ago.date())
+birth_date.bind("<<DateEntrySelected>>", update_age)
 
 age_label=Label(personal_details_Lframe,text="AGE")
-age_label.grid(row=4,column=0)
-age_entry=Entry(personal_details_Lframe)
-age_entry.grid(row=4,column=1)
+age_label.grid(row=5,column=0)
+age_entry=Entry(personal_details_Lframe, state='readonly')
+age_entry.grid(row=5,column=1)
 
 contact_no_label=Label(personal_details_Lframe,text="CONTACT NO")
-contact_no_label.grid(row=5,column=0)
+contact_no_label.grid(row=6,column=0)
 contact_no_entry=Entry(personal_details_Lframe)
-contact_no_entry.grid(row=5,column=1)
+contact_no_entry.grid(row=6,column=1)
 
 email_address_label=Label(personal_details_Lframe,text="EMAIL")
-email_address_label.grid(row=6,column=0)
+email_address_label.grid(row=7,column=0)
 email_address_entry=Entry(personal_details_Lframe)
-email_address_entry.grid(row=6,column=1)
+email_address_entry.grid(row=7,column=1)
 
     
 date_of_joining_label=Label(personal_details_Lframe,text="Date of Joining")
-date_of_joining_label.grid(row=7,column=0)
-join_date = DateEntry(personal_details_Lframe)
-join_date.grid(row=7,column=1)
+date_of_joining_label.grid(row=8,column=0)
+join_date = DateEntry(personal_details_Lframe,state='readonly')
+join_date.grid(row=8,column=1)
 
 photo_label=Label(personal_details_Lframe,text="PASSPORT PHOTO")
-photo_label.grid(row=8, column=0)
+photo_label.grid(row=9, column=0)
 upload_button=Button(personal_details_Lframe,text="UPLOAD",command=upload_photo)
-upload_button.grid(row=8,column=1)
+upload_button.grid(row=9,column=1)
+
+uploaded_label = Label(personal_details_Lframe)
 
 submit_button=Button(personal_details_Lframe,text="SUBMIT",command=submit_employee_details)
-submit_button.grid(row=9,columnspan=2)
+submit_button.grid(row=10,columnspan=2)
 
 
 # search frame
