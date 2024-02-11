@@ -136,12 +136,14 @@ def upload_photo():
         uploaded_label.image = photo
 
 def going_to_add_frame():
-    search_frame.grid_forget()
-    add_frame.grid(row=0,column=8)
+    search_attributes_frame.place_forget()
+    search_tree_scroll_frame.place_forget()
+    add_frame.place(relx=0,rely=0,relheight=1,relwidth=1)
 
 def search_frame():
-    add_frame.grid_forget()
-    search_frame.grid(row=0,column=8)
+    add_frame.place_forget()
+    search_attributes_frame.place(relx=0,rely=0,relwidth=1,relheight=0.25)
+    search_tree_scroll_frame.place(relx=0,rely=0.25,relwidth=1,relheight=0.75)
 
 admin_page=Tk()
 admin_page.title("WAREHOUSE")
@@ -150,7 +152,7 @@ admin_page.geometry("1200x675")
 
 # left frame
 admin_page_left_frame=Frame(admin_page)
-admin_page_left_frame.place(relx=0,rely=0,relwidth=0.25,relheight=1)
+admin_page_left_frame.place(relx=0,rely=0,relwidth=0.20,relheight=1)
 
 admin_page_left_frame.rowconfigure((0,1,2,3,4),weight=1, uniform = 'a')
 admin_page_left_frame.columnconfigure(0,weight=1)
@@ -164,13 +166,13 @@ admin_page_search_button.grid(row=1,column=0,sticky='nsew',padx=20,pady=25)
 # right frame
 
 admin_page_right_frame=Frame(admin_page)
-admin_page_right_frame.place(relx=0.25,rely=0,relwidth=0.75,relheight=1)
+admin_page_right_frame.place(relx=0.20,rely=0,relwidth=0.80,relheight=1)
 
 # add frame
 add_frame=Frame(admin_page_right_frame)
 
 personal_details_Lframe=LabelFrame(add_frame,text= "Personal Details")
-personal_details_Lframe.grid(row=0,column=0)
+personal_details_Lframe.pack(expand = True, fill=BOTH)
 
 role_selection_label=Label(personal_details_Lframe,text="ROLE")
 role_selection_label.grid(row=0,column=0)
@@ -241,40 +243,70 @@ middle_name_entry.bind("<Return>",lambda event:last_name_entry.focus())
 contact_no_entry.bind("<Return>",lambda event:email_address_entry.focus())
 
 # search frame
-search_frame=Frame(admin_page_right_frame)
+# search_frame=Frame(admin_page_right_frame)
+
+search_attributes_frame = Frame(admin_page_right_frame)
+
+search_attributes_frame.columnconfigure((0,1,2,3),weight=1,uniform = 'a')
+search_attributes_frame.rowconfigure((0,1),weight=1,uniform='a')
+search_attributes_frame.rowconfigure(2,weight=2,uniform='a')
+
+style = ttk.Style()
+style.theme_create("custom_style", parent="alt", settings={
+    "TCombobox": {
+        "configure": {
+            "background": "white",
+            "foreground": "#163246",
+            "selectbackground": "white",
+            "selectforeground": "#163246",
+            "arrowcolor": "#163246",
+        },
+        "map": {
+            "background": [("active", "white")],
+            "foreground": [("active", "#163246")],
+        },
+    },
+})
+
+style.theme_use("custom_style")
 
 
-employee_role_label=Label(search_frame,text="ROLE")
-employee_role_label.grid(row=0,column=0)
+employee_role_label=Label(search_attributes_frame,text="ROLE")
+employee_role_label.grid(row=0,column=0,sticky='e')
 search_role_combo_var=StringVar()
-search_role_combo_box =ttk.Combobox(search_frame,textvariable=search_role_combo_var,state="readonly")
+search_role_combo_box =ttk.Combobox(search_attributes_frame,textvariable=search_role_combo_var,state="readonly", style="TCombobox",font=('Times New Roman',15))
 search_role_combo_box['values'] = ('Admin', 'Employee')
-search_role_combo_box.grid(row=0,column=1)
+search_role_combo_box.grid(row=0,column=1,sticky='nsew',padx=10,pady=5)
 search_role_combo_box.set("Select")
 
-employee_username_label=Label(search_frame,text="USERNAME")
-employee_username_label.grid(row=1,column=0)
-employee_username_entry=Entry(search_frame)
-employee_username_entry.grid(row=1,column=1)
+employee_username_label=Label(search_attributes_frame,text="USERNAME")
+employee_username_label.grid(row=0,column=2,sticky='e')
+employee_username_entry=Entry(search_attributes_frame)
+employee_username_entry.grid(row=0,column=3)
 
-employee_year_label=Label(search_frame,text="YEAR")
-employee_year_label.grid(row=2,column=0)
-employee_year_entry=Entry(search_frame)
-employee_year_entry.grid(row=2,column=1)   
+employee_year_label=Label(search_attributes_frame,text="YEAR")
+employee_year_label.grid(row=1,column=0,sticky='e')
+employee_year_entry=Entry(search_attributes_frame)
+employee_year_entry.grid(row=1,column=1)   
 
-employee_month_label=Label(search_frame,text="MONTH")
-employee_month_label.grid(row=2,column=4)
-employee_month_entry=Entry(search_frame)
-employee_month_entry.grid(row=2,column=6) 
+employee_month_label=Label(search_attributes_frame,text="MONTH")
+employee_month_label.grid(row=1,column=2,sticky='e')
+employee_month_entry=Entry(search_attributes_frame)
+employee_month_entry.grid(row=1,column=3) 
 
-employee_reset_button=Button(search_frame,text="RESET")
-employee_reset_button.grid(row=3,column=1)
+employee_reset_button=Button(search_attributes_frame,text="RESET")
+employee_reset_button.grid(row=2,column=0)
 
-employee_select_button=Button(search_frame,text="SEARCH")
-employee_select_button.grid(row=3,column=2)
+employee_select_button=Button(search_attributes_frame,text="SEARCH")
+employee_select_button.grid(row=2,column=1,columnspan=2)
+
+employee_select_button=Button(search_attributes_frame,text="UPDATE")
+employee_select_button.grid(row=2,column=3)
+
+search_tree_scroll_frame = Frame(admin_page_right_frame)
 
 
-tree = ttk.Treeview(search_frame, columns=(1,2,3,4,5,6,7,8), show="headings")
+tree = ttk.Treeview(search_tree_scroll_frame, columns=(1,2,3,4,5,6,7,8), show="headings",height=100)
 tree.heading(1, text="ROLE")
 tree.heading(2, text="USERNAME")
 tree.heading(3, text="FIRST_NAME")
@@ -284,16 +316,16 @@ tree.heading(6, text="CONTACT_NO")
 tree.heading(7, text="BIRTH_DATE")
 tree.heading(8, text="JOINING_DATE")
 
-tree_y_scroll = Scrollbar(search_frame, orient="vertical", command=tree.yview)
+tree_y_scroll = Scrollbar(search_tree_scroll_frame, orient="vertical", command=tree.yview)
 tree.configure(yscrollcommand=tree_y_scroll.set)
-tree_y_scroll.grid(row=4, column=5,sticky="ns")
+tree_y_scroll.pack(side='right',fill=Y)
 
-tree_x_scroll = Scrollbar(search_frame, orient="horizontal", command=tree.xview)
-tree.configure(yscrollcommand=tree_x_scroll.set)
-tree_x_scroll.grid(row=5, column=0,sticky="ew")
+tree_x_scroll = Scrollbar(search_tree_scroll_frame, orient="horizontal", command=tree.xview)
+tree.configure(xscrollcommand=tree_x_scroll.set)
+tree_x_scroll.pack(side='bottom',fill=X)
 
-tree.grid(row=4,column=0,columnspan=5)
-
+tree.pack()
+# search_frame.columnconfigure(0, weight=1)
 
 
 admin_page.mainloop()
