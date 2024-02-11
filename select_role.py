@@ -14,8 +14,7 @@ def fill_image(event):
 
 	# current ratio 
 	canvas_ratio = event.width / event.height
-# hi
-	# get coordinates 
+		# get coordinates 
 	if canvas_ratio > image_ratio: # canvas is wider than the image
 		width = int(event.width) 
 		height = int(width / image_ratio)
