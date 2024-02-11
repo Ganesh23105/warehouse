@@ -9,7 +9,6 @@ from datetime import datetime, timedelta
 import secrets
 import string
 
-
 def generate_username():
     try:
         con = pymysql.connect(host='localhost',user='root',password='root',database='warehouse')
@@ -153,13 +152,13 @@ admin_page.minsize(1200,650)
 
 
 # left frame
-admin_page_left_frame=Frame(admin_page,bg ="#021530")
+admin_page_left_frame=Frame(admin_page,bg ="#E1E1DA")
 admin_page_left_frame.place(relx=0,rely=0,relwidth=0.20,relheight=1)
 
 admin_page_left_frame.rowconfigure((0,1,2,3,4),weight=1, uniform = 'a')
 admin_page_left_frame.columnconfigure(0,weight=1)
 
-admin_page_left_add_button=Button(admin_page_left_frame,text="ADD",command=going_to_add_frame,bd=0,font=("Times New Roman",15,"bold"),bg="#38c4dd",fg="#021530",activeforeground="#021530",activebackground="white",cursor="hand2")
+admin_page_left_add_button=Button(admin_page_left_frame,text="ADD",command=going_to_add_frame,bd=0,font=("Times New Roman",15,"bold"),bg="#092337",fg="#021530",activeforeground="#021530",activebackground="white",cursor="hand2")
 admin_page_left_add_button.grid(row=0,column=0,sticky='nsew',padx=50,pady=40)
 
 admin_page_search_button=Button(admin_page_left_frame,text="SEARCH",command=search_frame,bd=0,font=("Times New Roman",15,"bold"),bg="#38c4dd",fg="#021530",activeforeground="#021530",activebackground="white",cursor="hand2")
