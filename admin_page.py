@@ -114,8 +114,8 @@ def submit_employee_details():
             messagebox.showerror("Error", "Please Upload Photo.")
             return
 
-        query="insert into user (first_name,middle_name,last_name,email_address,contact_no,birth_date,date_of_joining,image_data) VALUES(%s,%s,%s,%s,%s,%s,%s,%s)"
-        mycursor.execute(query,(first_name_entry.get(),middle_name_entry.get(),last_name_entry.get(),email_address_entry.get(),contact_no_entry.get(),birth_date.get_date(),join_date.get_date()))
+        query="insert into user (username,password,role, first_name,middle_name,last_name,email_address,contact_no,birth_date,date_of_joining,image_data) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+        mycursor.execute(query,(generate_username(),generate_password(),role_combo_box.get(),first_name_entry.get(),middle_name_entry.get(),last_name_entry.get(),email_address_entry.get(),contact_no_entry.get(),birth_date.get_date(),join_date.get_date(),image_data))
         con.commit()
         con.close()
         messagebox.showinfo('Success','Registration is Successful')
@@ -130,8 +130,6 @@ def upload_photo():
         image = Image.open(file_path)
         image.thumbnail((50, 50))  
         photo = ImageTk.PhotoImage(image)
-        global uploaded_image
-        uploaded_image = photo
         uploaded_label.config(image=photo)
         uploaded_label.image = photo
 
@@ -236,6 +234,9 @@ uploaded_label = Label(personal_details_Lframe)
 submit_button=Button(personal_details_Lframe,text="SUBMIT",command=submit_employee_details)
 submit_button.grid(row=10,columnspan=2)
 
+first_name_entry.bind("<Return>",lambda event:middle_name_entry.focus())
+middle_name_entry.bind("<Return>",lambda event:last_name_entry.focus())
+contact_no_entry.bind("<Return>",lambda event:email_address_entry.focus())
 
 # search frame
 search_frame=Frame(admin_page_right_frame)
@@ -243,8 +244,11 @@ search_frame=Frame(admin_page_right_frame)
 
 employee_role_label=Label(search_frame,text="ROLE")
 employee_role_label.grid(row=0,column=0)
-employee_role_entry=Entry(search_frame)
-employee_role_entry.grid(row=0,column=1)
+search_role_combo_var=StringVar()
+search_role_combo_box =ttk.Combobox(search_frame,textvariable=search_role_combo_var,state="readonly")
+search_role_combo_box['values'] = ('Admin', 'Employee')
+search_role_combo_box.grid(row=0,column=1)
+search_role_combo_box.set("Select")
 
 employee_username_label=Label(search_frame,text="USERNAME")
 employee_username_label.grid(row=1,column=0)
@@ -266,5 +270,28 @@ employee_reset_button.grid(row=3,column=1)
 
 employee_select_button=Button(search_frame,text="SEARCH")
 employee_select_button.grid(row=3,column=2)
+
+
+tree = ttk.Treeview(search_frame, columns=(1,2,3,4,5,6,7,8), show="headings")
+tree.heading(1, text="ROLE")
+tree.heading(2, text="USERNAME")
+tree.heading(3, text="FIRST_NAME")
+tree.heading(4, text="LAST_NAME")
+tree.heading(5, text="EMAIL_ADDRESS")
+tree.heading(6, text="CONTACT_NO")
+tree.heading(7, text="BIRTH_DATE")
+tree.heading(8, text="JOINING_DATE")
+
+tree_y_scroll = Scrollbar(search_frame, orient="vertical", command=tree.yview)
+tree.configure(yscrollcommand=tree_y_scroll.set)
+tree_y_scroll.grid(row=4, column=5,sticky="ns")
+
+tree_x_scroll = Scrollbar(search_frame, orient="horizontal", command=tree.xview)
+tree.configure(yscrollcommand=tree_x_scroll.set)
+tree_x_scroll.grid(row=5, column=0,sticky="ew")
+
+tree.grid(row=4,column=0,columnspan=5)
+
+
 
 admin_page.mainloop()
