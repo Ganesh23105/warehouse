@@ -79,61 +79,63 @@ def hide_frame(frame):
 root = Tk()
 root.title("Home")
 root.geometry("1200x675")
+root.minsize(1200,675)
 
-left_frame = Frame(root,bg = "lightgray")
+ 
+left_frame = Frame(root,bg ="#C8972A")
 left_frame.place(relx=0,rely=0,relwidth=0.25,relheight=1)
 
 left_frame.columnconfigure(0,weight=1)
 left_frame.rowconfigure((0,1,2,3),weight=1,uniform='a')
 
 #product Lframe
-product_Lframe = LabelFrame(left_frame, text="Products",font=("Poppins",12,"bold"))
+product_Lframe = LabelFrame(left_frame, text="Products",font=("Poppins",12,"bold"),bg="#041b3b",fg="white")
 product_Lframe.grid(row=0,column=0,pady=10,padx=10,sticky="nsew")
 
-product_add_button=Button(product_Lframe,text="ADD",command=add_product,bd=0,font=("Times New Roman",15,"bold"),bg="#163246",fg="white")
+product_add_button=Button(product_Lframe,text="ADD",command=add_product,bd=0,font=("Times New Roman",15,"bold"),bg="#38c4dd",fg="#021530",activeforeground="#021530",activebackground="white",cursor="hand2")
 product_add_button.pack(expand=True,padx=50,pady=(10,15),fill='both')
 
-product_retrive_button=Button(product_Lframe,command=retrive_product,text="SEARCH",bd=0,font=("Times New Roman",15,"bold"),bg="#163246",fg="white")
+product_retrive_button=Button(product_Lframe,command=retrive_product,text="SEARCH",bd=0,font=("Times New Roman",15,"bold"),bg="#38c4dd",fg="#021530",activeforeground="#021530",activebackground="white",cursor="hand2")
 product_retrive_button.pack(expand=True,padx=50,pady=(0,15),fill='both')
 
 #order Lframe
-order_Lframe = LabelFrame(left_frame,text="Orders",font=("Poppins",13,"bold"))
+order_Lframe = LabelFrame(left_frame,text="Orders",font=("Poppins",13,"bold"),bg="#041b3b",fg="white")
 order_Lframe.grid(row=1,column=0,padx=10,pady=10,sticky="nsew")
 
-order_update_button=Button(order_Lframe,text="UPDATE",command=order_update,bd=0,font=("Times New Roman",15,"bold"),bg="#163246",fg="white")
+order_update_button=Button(order_Lframe,text="UPDATE",command=order_update,bd=0,font=("Times New Roman",15,"bold"),bg="#38c4dd",fg="#021530",activeforeground="#021530",activebackground="white",cursor="hand2")
 order_update_button.pack(expand=True,padx=50,pady=(10,15),fill='both')
 
-order_add_button=Button(order_Lframe,text="ADD",command=order_add,bd=0,font=("Times New Roman",15,"bold"),bg="#163246",fg="white")
+order_add_button=Button(order_Lframe,text="ADD",command=order_add,bd=0,font=("Times New Roman",15,"bold"),bg="#38c4dd",fg="#021530",activeforeground="#021530",activebackground="white",cursor="hand2")
 order_add_button.pack(expand=True,padx=50,pady=(0,15),fill='both')
 
-right_frame=Frame(root)
+right_frame=Frame(root,bg ="#021530")
 right_frame.place(relx=0.25,rely=0,relwidth=0.75,relheight=1)
 
 # add button in products
 
-add_frame = Frame(right_frame,borderwidth=5,relief='groove')
+add_frame = Frame(right_frame,borderwidth=5,relief='groove',bg="white")
 
-product_id_label=Label(add_frame,text="PRODUCT ID",bd=0,font=("Times New Roman",15,"bold"),bg="white",fg="#163246",activeforeground='#373737')
+product_id_label=Label(add_frame,text="PRODUCT ID",bd=0,font=("Times New Roman",15,"bold"),bg="white",fg="#021530",activeforeground='#373737',width=15)
 product_id_label.grid(row=0,column=0,padx=10,pady=10,sticky="e")
-product_id_entry=Entry(add_frame,bd=4,relief=GROOVE)
+product_id_entry=Entry(add_frame,bd=4,relief=GROOVE,width=25)
 product_id_entry.grid(row=0,column=1,padx=10,pady=10)
 
-product_name_label=Label(add_frame,text="PRODUCT NAME",bd=0,font=("Times New Roman",15,"bold"),bg="white",fg="#163246",activeforeground='#373737')
+product_name_label=Label(add_frame,text="PRODUCT NAME",bd=0,font=("Times New Roman",15,"bold"),bg="white",fg="#021530",activeforeground='#373737',width=15)
 product_name_label.grid(row=1,column=0,padx=10,pady=10,sticky="e")
-product_name_entry=Entry(add_frame,bd=4,relief=GROOVE)
+product_name_entry=Entry(add_frame,bd=4,relief=GROOVE,width=25)
 product_name_entry.grid(row=1,column=1,padx=10,pady=10)
 
-location_label=Label(add_frame,text="LOCATION",bd=0,font=("Times New Roman",15,"bold"),bg="white",fg="#163246",activeforeground='#373737')
+location_label=Label(add_frame,text="LOCATION",bd=0,font=("Times New Roman",15,"bold"),bg="white",fg="#021530",activeforeground='#373737',width=15)
 location_label.grid(row=2,column=0,padx=10,pady=10,sticky="e")
-location_entry=Entry(add_frame,bd=4,relief=GROOVE)
+location_entry=Entry(add_frame,bd=4,relief=GROOVE,width=25)
 location_entry.grid(row=2,column=1,padx=10,pady=10)
 
-quantity_label=Label(add_frame,text="QUANTITY",bd=0,font=("Times New Roman",15,"bold"),bg="white",fg="#163246",activeforeground='#373737')
+quantity_label=Label(add_frame,text="QUANTITY",bd=0,font=("Times New Roman",15,"bold"),bg="white",fg="#021530",activeforeground='#373737',width=15)
 quantity_label.grid(row=3,column=0,padx=10,pady=10,sticky="e")
-quantity_entry=Entry(add_frame,bd=4,relief=GROOVE)
+quantity_entry=Entry(add_frame,bd=4,relief=GROOVE,width=25)
 quantity_entry.grid(row=3,column=1,padx=10,pady=10)
 
-submit_button=Button(add_frame,text="SUBMIT",bd=0,font=("Times New Roman",15,"bold"),bg="#163246",fg="white",width=13,command=products_addition)
+submit_button=Button(add_frame,text="SUBMIT",bd=0,font=("Times New Roman",15,"bold"),bg="#021530",fg="white",activeforeground="#021530",activebackground="white",cursor="hand2",width=12,command=products_addition)
 submit_button.grid(row=4,column=0,columnspan=2)
 
 product_id_entry.bind('<Return>',lambda event :product_name_entry.focus())

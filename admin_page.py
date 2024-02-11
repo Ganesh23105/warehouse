@@ -138,7 +138,7 @@ def upload_photo():
 def going_to_add_frame():
     search_attributes_frame.place_forget()
     search_tree_scroll_frame.place_forget()
-    add_frame.place(relx=0,rely=0,relheight=1,relwidth=1)
+    add_frame.pack(expand=TRUE,fill=BOTH,padx=50,pady=50)
 
 def search_frame():
     add_frame.place_forget()
@@ -148,31 +148,33 @@ def search_frame():
 admin_page=Tk()
 admin_page.title("WAREHOUSE")
 admin_page.geometry("1200x675")
+admin_page.title("admin_page")
+admin_page.minsize(1200,650)
 
 
 # left frame
-admin_page_left_frame=Frame(admin_page)
+admin_page_left_frame=Frame(admin_page,bg ="#021530")
 admin_page_left_frame.place(relx=0,rely=0,relwidth=0.20,relheight=1)
 
 admin_page_left_frame.rowconfigure((0,1,2,3,4),weight=1, uniform = 'a')
 admin_page_left_frame.columnconfigure(0,weight=1)
 
-admin_page_left_add_button=Button(admin_page_left_frame,text="ADD",command=going_to_add_frame)
-admin_page_left_add_button.grid(row=0,column=0,sticky='nsew',padx=20,pady=25)
+admin_page_left_add_button=Button(admin_page_left_frame,text="ADD",command=going_to_add_frame,bd=0,font=("Times New Roman",15,"bold"),bg="#38c4dd",fg="#021530",activeforeground="#021530",activebackground="white",cursor="hand2")
+admin_page_left_add_button.grid(row=0,column=0,sticky='nsew',padx=50,pady=40)
 
-admin_page_search_button=Button(admin_page_left_frame,text="SEARCH",command=search_frame)
-admin_page_search_button.grid(row=1,column=0,sticky='nsew',padx=20,pady=25)
+admin_page_search_button=Button(admin_page_left_frame,text="SEARCH",command=search_frame,bd=0,font=("Times New Roman",15,"bold"),bg="#38c4dd",fg="#021530",activeforeground="#021530",activebackground="white",cursor="hand2")
+admin_page_search_button.grid(row=1,column=0,sticky='nsew',padx=50,pady=40)
 
 # right frame
 
-admin_page_right_frame=Frame(admin_page)
+admin_page_right_frame=Frame(admin_page,bg ="#021530")
 admin_page_right_frame.place(relx=0.20,rely=0,relwidth=0.80,relheight=1)
 
 # add frame
-add_frame=Frame(admin_page_right_frame)
+add_frame=Frame(admin_page_right_frame,borderwidth=5,relief='groove',bg="white")
 
-personal_details_Lframe=LabelFrame(add_frame,text= "Personal Details")
-personal_details_Lframe.pack(expand = True, fill=BOTH)
+personal_details_Lframe=LabelFrame(add_frame,text= "Personal Details",font=("Poppins",12,"bold"),bg="white")
+personal_details_Lframe.pack(expand = True, fill=BOTH,padx=25,pady=25)
 
 role_selection_label=Label(personal_details_Lframe,text="ROLE")
 role_selection_label.grid(row=0,column=0)
@@ -182,22 +184,22 @@ role_combo_box['values'] = ('Admin', 'Employee')
 role_combo_box.grid(row=0,column=1)
 role_combo_box.set("Select")
 
-first_name_label=Label(personal_details_Lframe,text="FIRST NAME")
+first_name_label=Label(personal_details_Lframe,text="FIRST NAME",bd=0,font=("Times New Roman",15,"bold"),bg="white",fg="#021530",activeforeground='#373737',width=15)
 first_name_label.grid(row=1,column=0)
-first_name_entry=Entry(personal_details_Lframe)
+first_name_entry=Entry(personal_details_Lframe,bd=4,relief=GROOVE,width=25)
 first_name_entry.grid(row=1,column=1)
 
-middle_name_label=Label(personal_details_Lframe,text="MIDDLE NAME")
+middle_name_label=Label(personal_details_Lframe,text="MIDDLE NAME",bd=0,font=("Times New Roman",15,"bold"),bg="white",fg="#021530",activeforeground='#373737',width=15)
 middle_name_label.grid(row=2,column=0)
-middle_name_entry=Entry(personal_details_Lframe)
+middle_name_entry=Entry(personal_details_Lframe,bd=4,relief=GROOVE,width=25)
 middle_name_entry.grid(row=2,column=1)
 
-last_name_label=Label(personal_details_Lframe,text="LAST NAME")
+last_name_label=Label(personal_details_Lframe,text="LAST NAME",bd=0,font=("Times New Roman",15,"bold"),bg="white",fg="#021530",activeforeground='#373737',width=15)
 last_name_label.grid(row=3,column=0)
-last_name_entry=Entry(personal_details_Lframe)
+last_name_entry=Entry(personal_details_Lframe,bd=4,relief=GROOVE,width=25)
 last_name_entry.grid(row=3,column=1)
 
-date_of_birth_label=Label(personal_details_Lframe,text="Date of Birth")
+date_of_birth_label=Label(personal_details_Lframe,text="Date of Birth",bd=0,font=("Times New Roman",15,"bold"),bg="white",fg="#021530",activeforeground='#373737',width=15)
 date_of_birth_label.grid(row=4,column=0)
 birth_date = DateEntry(personal_details_Lframe,state='readonly')
 birth_date.grid(row=4,column=1)
@@ -207,28 +209,28 @@ birth_date.set_date(eighteen_years_ago.date())
 birth_date.configure(maxdate=eighteen_years_ago.date())
 birth_date.bind("<<DateEntrySelected>>", update_age)
 
-age_label=Label(personal_details_Lframe,text="AGE")
+age_label=Label(personal_details_Lframe,text="AGE",bd=0,font=("Times New Roman",15,"bold"),bg="white",fg="#021530",activeforeground='#373737',width=20)
 age_label.grid(row=5,column=0)
-age_entry=Entry(personal_details_Lframe, state='readonly')
+age_entry=Entry(personal_details_Lframe, state='readonly',bd=4,relief=GROOVE,width=25)
 age_entry.grid(row=5,column=1)
 
-contact_no_label=Label(personal_details_Lframe,text="CONTACT NO")
+contact_no_label=Label(personal_details_Lframe,text="CONTACT NO",bd=0,font=("Times New Roman",15,"bold"),bg="white",fg="#021530",activeforeground='#373737',width=20)
 contact_no_label.grid(row=6,column=0)
-contact_no_entry=Entry(personal_details_Lframe)
+contact_no_entry=Entry(personal_details_Lframe,bd=4,relief=GROOVE,width=25)
 contact_no_entry.grid(row=6,column=1)
 
-email_address_label=Label(personal_details_Lframe,text="EMAIL")
+email_address_label=Label(personal_details_Lframe,text="EMAIL",bd=0,font=("Times New Roman",15,"bold"),bg="white",fg="#021530",activeforeground='#373737',width=20)
 email_address_label.grid(row=7,column=0)
-email_address_entry=Entry(personal_details_Lframe)
+email_address_entry=Entry(personal_details_Lframe,bd=4,relief=GROOVE,width=25)
 email_address_entry.grid(row=7,column=1)
 
     
-date_of_joining_label=Label(personal_details_Lframe,text="Date of Joining")
+date_of_joining_label=Label(personal_details_Lframe,text="Date of Joining",bd=0,font=("Times New Roman",15,"bold"),bg="white",fg="#021530",activeforeground='#373737',width=20)
 date_of_joining_label.grid(row=8,column=0)
 join_date = DateEntry(personal_details_Lframe,state='readonly')
 join_date.grid(row=8,column=1)
 
-photo_label=Label(personal_details_Lframe,text="PASSPORT PHOTO")
+photo_label=Label(personal_details_Lframe,text="PASSPORT PHOTO",bd=0,font=("Times New Roman",15,"bold"),bg="white",fg="#021530",activeforeground='#373737',width=20)
 photo_label.grid(row=9, column=0)
 upload_button=Button(personal_details_Lframe,text="UPLOAD",command=upload_photo)
 upload_button.grid(row=9,column=1)
