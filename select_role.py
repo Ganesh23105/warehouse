@@ -41,7 +41,7 @@ select_role.columnconfigure(0, weight = 1, uniform = 'a')
 select_role.rowconfigure(0, weight = 1)
 
 # import an image 
-image_original = Image.open('image\\select_role.jpg')
+image_original = Image.open('image\\select_role.png')
 image_ratio = image_original.size[0] / image_original.size[1]
 image_tk = ImageTk.PhotoImage(image_original)
 

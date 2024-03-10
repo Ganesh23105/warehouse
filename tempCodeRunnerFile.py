@@ -1,1 +1,2 @@
-#033043
+    # Initialize flag variable outside the loop
+    flag = None  

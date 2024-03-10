@@ -1,4 +1,5 @@
 from tkinter import *
+from customtkinter import *
 from tkinter import messagebox
 from tkinter import ttk
 import pymysql
@@ -8,26 +9,60 @@ from tkinter import filedialog
 from datetime import datetime, timedelta
 import secrets
 import string
+import qrcode
+from PIL import Image, ImageDraw, ImageFont
+import os
 
-def generate_username():
-    try:
-        con = pymysql.connect(host='localhost',user='root',password='root',database='warehouse')
-        mycursor = con.cursor()
-    except:
-        messagebox.showerror('Error','Database Connectivity Issue, Try Again')
-        return
+def generate_qrcode(data_tuple):
 
-    fname = first_name_entry.get()
-    mname = middle_name_entry.get()
-    lname = last_name_entry.get()
-    eighteen_years_ago = now_date()
-    username = role_combo_box.get()[0] + fname[0].lower() + mname[0].lower() + lname[0].lower() + str(eighteen_years_ago.year)
+    # Data to be stored in the QR code
+    # data_tuple = ("John Doe", "john.doe@example.com", "123456789")
 
-    check_username_query = 'select username from user where username = %s'
-    mycursor.execute(check_username_query,username)
-    row = mycursor.fetchone()
-    if row == None:
-        return username
+    # Combine the data into a single string
+    combined_data = "\n".join(data_tuple)
+
+    # Create a QRCode instance
+    qr = qrcode.QRCode(
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_L,
+        box_size=10,
+        border=4,
+    )
+
+    # Add data to the QRCode instance
+    qr.add_data(combined_data)
+    qr.make(fit=True)
+
+    # Create an image from the QRCode instance
+    qr_img = qr.make_image(fill_color="black", back_color="white")
+
+    # Create a drawing object
+    draw = ImageDraw.Draw(qr_img)
+
+    # Specify the path to your custom font file
+    font_path = "font/Roboto-Regular.ttf"  # Adjust this path accordingly
+
+    # Load the custom font
+    font = ImageFont.truetype(font_path, size=25)
+
+    # Get the text to be added (in this case, the name from the data list)
+    name_tup = (data_tuple[0][0],data_tuple[1],data_tuple[3])
+    name = '_'.join(name_tup)  # Replace spaces with underscores for a clean filename
+
+    # Calculate the position for top-center
+    text_bbox = draw.textbbox((0, 0), name, font=font)
+    text_width = text_bbox[2] - text_bbox[0]  # right - left
+    image_width, _ = qr_img.size
+    text_position = ((image_width - text_width) / 2, 10)
+
+    # Add the name to the image
+    draw.text(text_position, name, font=font, fill="black")
+
+    return qr_img
+
+    # Save the image with the added name
+    # filename = f"qrcode_{name}.png"
+    # qr_img.save(filename)
 
 def generate_password():
     # Define character sets
@@ -58,12 +93,17 @@ def clear():
     last_name_entry.delete(0,END)
     email_address_entry.delete(0,END) 
     contact_no_entry.delete(0,END)
-    age_entry.delete(0,END)
     uploaded_label.grid_forget()
     role_combo_box.set("Select")
     age_entry.config(state=NORMAL)
     age_entry.delete(0, END)
     age_entry.config(state=DISABLED)
+    eighteen_years_ago = now_date()
+    birth_date.set_date(eighteen_years_ago.date())
+    try:
+        join_date.set_date(today.date())
+    except:
+        pass
 
 def now_date():
     current_date = datetime.now()
@@ -72,6 +112,7 @@ def now_date():
     return eighteen_years_ago
 
 def update_age(event):
+    global today
     # selected_date = birth_date.get_date()
     # birthdate = datetime.strptime(birthdate, '%Y-%m-%d')
     selected_date = datetime.strptime(str(birth_date.get_date()), '%Y-%m-%d')
@@ -84,44 +125,127 @@ def update_age(event):
     age_entry.insert(0, str(age))
     age_entry.config(state=DISABLED)
 
-def submit_employee_details():
-    role_combo_box.config(state=NORMAL)
+def confirm_dialog():
+    def delete_info():
+        clear()
+        dialog.destroy()
+
+    def add_info():
+        bool = submit_employee_details(user_entry.get())
+        if bool == True:
+            dialog.destroy()
+        
     if first_name_entry.get()=="" or middle_name_entry.get()=="" or last_name_entry.get()=="" or contact_no_entry.get()=="" or email_address_entry.get()=="" or role_combo_box.get()=="Select":
         messagebox.showerror(title="Error", message="Please fill all the fields")
-    # print(birth_date.get_date())     
     else:
-        try:
-            con = pymysql.connect(host='localhost',user='root',password='root')
-            mycursor = con.cursor()
-        except:
-            messagebox.showerror('Error','Database Connectivity Issue, Try Again')
-            return 
-        try:
-            query='create database warehouse'
-            mycursor.execute(query)
-            query='use warehouse'
-            mycursor.execute(query)
-            query = 'create table user(username VARCHAR(50) NOT NULL PRIMARY KEY,password VARCHAR(50) NOT NULL,role VARCHAR(25) NOT NULL, first_name VARCHAR(255) NOT NULL ,middle_name VARCHAR(255) NOT NULL,last_name VARCHAR(225) NOT NULL,email_address VARCHAR(255) NOT NULL,contact_no VARCHAR(10),birth_date DATE,date_of_joining DATE,image_data LONGBLOB)'
-            mycursor.execute(query)
-        except:
-            query='use warehouse'
-            mycursor.execute(query)
-        # file_path = filedialog.askopenfilename()
-        if file_path:
-        # Read the image file as binary data
-            with open(file_path, 'rb') as file:
-                image_data = file.read()
-        else:
-            messagebox.showerror("Error", "Please Upload Photo.")
-            return
+        dialog = Toplevel()
+        dialog.grab_set()
+        dialog.title('Confirmation')
+        dialog.geometry('400x400')
+        dialog.resizable(0,0)
 
-        query="insert into user (username,password,role, first_name,middle_name,last_name,email_address,contact_no,birth_date,date_of_joining,image_data) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-        mycursor.execute(query,(generate_username(),generate_password(),role_combo_box.get(),first_name_entry.get(),middle_name_entry.get(),last_name_entry.get(),email_address_entry.get(),contact_no_entry.get(),birth_date.get_date(),join_date.get_date(),image_data))
+        dialog.rowconfigure((0,2), weight = 2, uniform = 'a')
+        dialog.rowconfigure((1,3,4), weight = 1, uniform = 'a')
+        dialog.columnconfigure((0,1), weight = 1, uniform = 'a')
+
+        photo_lbl = Label(dialog)
+        photo_lbl.grid(row=0,column=0, columnspan=2)
+        image = Image.open(file_path)
+        image.thumbnail((125, 125))  
+        photo = ImageTk.PhotoImage(image)
+        photo_lbl.config(image=photo)
+        photo_lbl.image = photo
+
+        user_label = Label(dialog, text = "USERNAME")
+        user_label.grid(row=1, column = 0)
+        user_entry = Entry(dialog)
+        user_entry.grid(row=1, column= 1)
+        user_entry.insert(0,email_address_entry.get())
+
+        qr_lbl = Label(dialog)
+        qr_lbl.grid(row=2,column=0, columnspan=2)
+        data_tuple = (role_combo_box.get(),first_name_entry.get(),middle_name_entry.get(),last_name_entry.get(),str(birth_date.get_date()),str(join_date.get_date()))
+        qr_img = generate_qrcode(data_tuple)
+        qr_img.thumbnail((125, 125))
+        qr_photo = ImageTk.PhotoImage(qr_img)
+        qr_lbl.config(image=qr_photo)
+        qr_lbl.image = qr_photo
+
+        question_label = Label(dialog, text = 'Do you want to add the member in the warehouse?')
+        question_label.grid(row=3,column=0, columnspan= 2)
+
+        yes_button = CTkButton(dialog, text = "YES",command=add_info)
+        yes_button.grid(row=4,column=0)
+
+        no_button = CTkButton(dialog,text = "NO", command=delete_info)
+        no_button.grid(row=4,column=1) 
+
+        dialog.mainloop()
+
+def submit_employee_details(username):
+    role_combo_box.config(state=NORMAL)
+
+    try:
+        con = pymysql.connect(host='localhost',user='root',password='root')
+        mycursor = con.cursor()
+    except:
+        messagebox.showerror('Error','Database Connectivity Issue, Try Again')
+        return 
+    try:
+        query='create database warehouse'
+        mycursor.execute(query)
+        query='use warehouse'
+        mycursor.execute(query)
+        create_table_query = 'create table user(username VARCHAR(50) NOT NULL PRIMARY KEY,password VARCHAR(50) NOT NULL,role VARCHAR(25) NOT NULL, first_name VARCHAR(255) NOT NULL ,middle_name VARCHAR(255) NOT NULL,last_name VARCHAR(225) NOT NULL,email_address VARCHAR(255) NOT NULL,contact_no VARCHAR(10),birth_date DATE,date_of_joining DATE,image_data LONGBLOB)'
+        mycursor.execute(create_table_query)
+    except:
+        query='use warehouse'
+        mycursor.execute(query)
+        # file_path = filedialog.askopenfilename()
+    if file_path:
+        # Read the image file as binary data
+        with open(file_path, 'rb') as file:
+            image_data = file.read()
+    else:
+        messagebox.showerror("Error", "Please Upload Photo.")
+        return
+    
+    check_user_query = 'select * from user where username=%s'
+    mycursor.execute(check_user_query,username)
+    tup = mycursor.fetchone()
+    if tup != None:
+        messagebox.showerror('Error','Username Already Exist. Please Use Other Username.')
+        return False
+    else:
+        insert_user_query="insert into user (username,password,role, first_name,middle_name,last_name,email_address,contact_no,birth_date,date_of_joining,image_data) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+        mycursor.execute(insert_user_query,(username,generate_password(),role_combo_box.get(),first_name_entry.get(),middle_name_entry.get(),last_name_entry.get(),email_address_entry.get(),contact_no_entry.get(),birth_date.get_date(),join_date.get_date(),image_data))
         con.commit()
         con.close()
         messagebox.showinfo('Success','Registration is Successful')
-        clear()  
-          
+        save_qr()
+        clear()
+        return True
+
+def save_qr():
+    data_tuple = (role_combo_box.get(),first_name_entry.get(),middle_name_entry.get(),last_name_entry.get(),str(birth_date.get_date()),str(join_date.get_date()))
+    qr_img = generate_qrcode(data_tuple)
+    
+    name_tup = data_tuple[0:4]
+    name = '_'.join(name_tup)  # Replace spaces with underscores for a clean filename
+
+    # Specify the folder to save the image
+    save_folder = "qr"
+
+    # Create the folder if it doesn't exist
+    os.makedirs(save_folder, exist_ok=True)
+
+    # Save the image with the added name
+    filename = f"qrcode_{name}.png"
+
+    # Save the image in the specified folder with a custom name
+    save_path = os.path.join(save_folder, filename)
+    qr_img.save(save_path)
+
 def upload_photo():
     global file_path
     file_path = filedialog.askopenfilename()
@@ -130,6 +254,7 @@ def upload_photo():
         uploaded_label.grid(row=9,column=2)
         image = Image.open(file_path)
         image.thumbnail((50, 50))  
+        # print(image)
         photo = ImageTk.PhotoImage(image)
         uploaded_label.config(image=photo)
         uploaded_label.image = photo
@@ -149,7 +274,6 @@ admin_page.title("WAREHOUSE")
 admin_page.geometry("1200x675")
 admin_page.title("admin_page")
 admin_page.minsize(1200,650)
-
 
 # left frame
 admin_page_left_frame=Frame(admin_page,bg ="#E9E3D5")
@@ -200,7 +324,7 @@ last_name_entry.grid(row=3,column=1)
 
 date_of_birth_label=Label(personal_details_Lframe,text="DATE OF BIRTH",bd=0,font=("Times New Roman",15,"bold"),bg="white",fg="#021530",activeforeground='#373737',width=40)
 date_of_birth_label.grid(row=4,column=0,pady=8)
-birth_date = DateEntry(personal_details_Lframe,state='readonly')
+birth_date = DateEntry(personal_details_Lframe,state='readonly', date_pattern='yyyy-mm-dd')
 birth_date.grid(row=4,column=1)
 
 eighteen_years_ago = now_date()
@@ -222,11 +346,10 @@ email_address_label=Label(personal_details_Lframe,text="EMAIL",bd=0,font=("Times
 email_address_label.grid(row=7,column=0,pady=8)
 email_address_entry=Entry(personal_details_Lframe,bd=4,relief=GROOVE,width=25)
 email_address_entry.grid(row=7,column=1)
-
     
 date_of_joining_label=Label(personal_details_Lframe,text="DATE OF JOINING",bd=0,font=("Times New Roman",15,"bold"),bg="white",fg="#021530",activeforeground='#373737',width=40)
 date_of_joining_label.grid(row=8,column=0,pady=8)
-join_date = DateEntry(personal_details_Lframe,state='readonly')
+join_date = DateEntry(personal_details_Lframe,state='readonly', date_pattern='yyyy-mm-dd')
 join_date.grid(row=8,column=1)
 
 photo_label=Label(personal_details_Lframe,text="PASSPORT PHOTO",bd=0,font=("Times New Roman",15,"bold"),bg="white",fg="#021530",activeforeground='#373737',width=40)
@@ -236,7 +359,7 @@ upload_button.grid(row=9,column=1)
 
 uploaded_label = Label(personal_details_Lframe)
 
-submit_button=Button(personal_details_Lframe,text="SUBMIT",font=10,command=submit_employee_details,width=15,bg="white",fg="#033043")
+submit_button=Button(personal_details_Lframe,text="SUBMIT",font=10,command=confirm_dialog,width=15,bg="white",fg="#033043")
 submit_button.grid(row=11,column=1,sticky="w")
 
 first_name_entry.bind("<Return>",lambda event:middle_name_entry.focus())
@@ -251,26 +374,6 @@ search_attributes_frame = Frame(admin_page_right_frame)
 search_attributes_frame.columnconfigure((0,1,2,3),weight=1,uniform = 'a')
 search_attributes_frame.rowconfigure((0,1),weight=1,uniform='a')
 search_attributes_frame.rowconfigure(2,weight=2,uniform='a')
-
-style = ttk.Style()
-style.theme_create("custom_style", parent="alt", settings={
-    "TCombobox": {
-        "configure": {
-            "background": "white",
-            "foreground": "#163246",
-            "selectbackground": "white",
-            "selectforeground": "#163246",
-            "arrowcolor": "#163246",
-        },
-        "map": {
-            "background": [("active", "white")],
-            "foreground": [("active", "#163246")],
-        },
-    },
-})
-
-style.theme_use("custom_style")
-
 
 employee_role_label=Label(search_attributes_frame,text="ROLE")
 employee_role_label.grid(row=0,column=0,sticky='e')
