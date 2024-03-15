@@ -143,6 +143,7 @@ def confirm_dialog():
         dialog.title('Confirmation')
         dialog.geometry('400x400')
         dialog.resizable(0,0)
+        dialog.config(background='#e9e3d5')
 
         dialog.rowconfigure((0,2), weight = 2, uniform = 'a')
         dialog.rowconfigure((1,3,4), weight = 1, uniform = 'a')
@@ -156,11 +157,17 @@ def confirm_dialog():
         photo_lbl.config(image=photo)
         photo_lbl.image = photo
 
-        user_label = Label(dialog, text = "USERNAME")
+        user_label = Label(dialog, text = "USERNAME",
+                           bg ="#e9e3d5",bd=0,fg="#021530",
+                           font=("Times New Roman",20,"bold"))
         user_label.grid(row=1, column = 0)
-        user_entry = Entry(dialog)
+        user_entry = CTkEntry(dialog,width=185,height=35,
+                              corner_radius=10.5,border_color='#373737',
+                              fg_color='#e9e3d5',text_color='#373737',
+                              font=("Times New Roman",14,"bold"))
         user_entry.grid(row=1, column= 1)
         user_entry.insert(0,email_address_entry.get())
+        # password_entry = CTkEntry(main_frame,width=185,height=35,corner_radius=10.5,border_color='#373737',show='*',fg_color='#e9e3d5',text_color='#373737',font=("Times New Roman",14,"bold"))
 
         qr_lbl = Label(dialog)
         qr_lbl.grid(row=2,column=0, columnspan=2)
@@ -171,13 +178,18 @@ def confirm_dialog():
         qr_lbl.config(image=qr_photo)
         qr_lbl.image = qr_photo
 
-        question_label = Label(dialog, text = 'Do you want to add the member in the warehouse?')
+        question_label = Label(dialog, text = 'Do you want to add the member in the warehouse?',
+                               bg ="#e9e3d5",bd=0,font=("Times New Roman",12,"bold"),fg="#021530")
         question_label.grid(row=3,column=0, columnspan= 2)
 
-        yes_button = CTkButton(dialog, text = "YES",command=add_info)
+        yes_button = CTkButton(dialog, text = "YES",command=add_info,width=120,height=30,
+                               corner_radius=12,font=("Times New Roman",25,"bold"),
+                               fg_color='#373737',text_color='#e9e3d5',hover_color='white')
         yes_button.grid(row=4,column=0)
 
-        no_button = CTkButton(dialog,text = "NO", command=delete_info)
+        no_button = CTkButton(dialog,text = "NO", command=delete_info,width=120,height=30,
+                              corner_radius=12,font=("Times New Roman",25,"bold"),
+                              fg_color='#373737',text_color='#e9e3d5',hover_color='white')
         no_button.grid(row=4,column=1) 
 
         dialog.mainloop()
@@ -218,7 +230,7 @@ def submit_employee_details(username):
         return False
     else:
         insert_user_query="insert into user (username,password,role, first_name,middle_name,last_name,email_address,contact_no,birth_date,date_of_joining,image_data) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-        mycursor.execute(insert_user_query,(username,generate_password(),role_combo_box.get(),first_name_entry.get(),middle_name_entry.get(),last_name_entry.get(),email_address_entry.get(),contact_no_entry.get(),birth_date.get_date(),join_date.get_date(),image_data))
+        mycursor.execute(insert_user_query,(username,generate_password(),role_combo_box.get(),first_name_entry.get().capitalize(),middle_name_entry.get(),last_name_entry.get(),email_address_entry.get(),contact_no_entry.get(),birth_date.get_date(),join_date.get_date(),image_data))
         con.commit()
         con.close()
         messagebox.showinfo('Success','Registration is Successful')
@@ -260,14 +272,44 @@ def upload_photo():
         uploaded_label.image = photo
 
 def going_to_add_frame():
-    search_attributes_frame.place_forget()
-    search_tree_scroll_frame.place_forget()
+    search_frame.place_forget()
     add_frame.pack(expand=TRUE,fill=BOTH,padx=50,pady=50)
 
 def search_frame():
     add_frame.place_forget()
-    search_attributes_frame.place(relx=0,rely=0,relwidth=1,relheight=0.25)
-    search_tree_scroll_frame.place(relx=0,rely=0.25,relwidth=1,relheight=0.75)
+    search_frame.place(relx=0,rely=0,relwidth=1,relheight=1)
+
+def retrieve_data():
+
+    try:
+        con = pymysql.connect(host='localhost',user='root',password='root')
+        mycursor = con.cursor()
+    except:
+        messagebox.showerror('Error','Database Connectivity Issue, Try Again')
+        return 
+    
+    try:
+        query='create database warehouse'
+        mycursor.execute(query)
+        query='use warehouse'
+        mycursor.execute(query)
+        create_table_query = 'create table user(username VARCHAR(50) NOT NULL PRIMARY KEY,password VARCHAR(50) NOT NULL,role VARCHAR(25) NOT NULL, first_name VARCHAR(255) NOT NULL ,middle_name VARCHAR(255) NOT NULL,last_name VARCHAR(225) NOT NULL,email_address VARCHAR(255) NOT NULL,contact_no VARCHAR(10),birth_date DATE,date_of_joining DATE,image_data LONGBLOB)'
+        mycursor.execute(create_table_query)
+    except:
+        query='use warehouse'
+        mycursor.execute(query)
+
+    all_data = "select * from user"
+    mycursor.execute(all_data)
+    fetch_all = mycursor.fetchall()
+    for i in fetch_all:
+        tree.insert("", "end", values=(i[2], i[0], i[3], i[5],i[6],i[7],i[8],[9]))
+
+def sort_treeview():
+    data = [(tree.set(child, 1),tree.set(child, 3), child) for child in tree.get_children('')]
+    data.sort(key=lambda x: (x[0], x[1]))
+    for index, (role,fname, child) in enumerate(data):
+        tree.move(child, '', index)
 
 admin_page=Tk()
 admin_page.title("WAREHOUSE")
@@ -279,14 +321,11 @@ admin_page.minsize(1200,650)
 admin_page_left_frame=Frame(admin_page,bg ="#E9E3D5")
 admin_page_left_frame.place(relx=0,rely=0,relwidth=0.20,relheight=1)
 
-admin_page_left_frame.rowconfigure((0,1,2,3,4),weight=1, uniform = 'a')
-admin_page_left_frame.columnconfigure(0,weight=1)
+admin_page_left_add_button=Button(admin_page_left_frame,text="ADD",command=going_to_add_frame)
+admin_page_left_add_button.grid(row=0,column=0)
 
-admin_page_left_add_button=Button(admin_page_left_frame,text="ADD",command=going_to_add_frame,bd=0,font=("Times New Roman",20,"bold"),bg="#033043",fg="white",activeforeground="#092337",activebackground="white",cursor="hand2")
-admin_page_left_add_button.grid(row=0,column=0,sticky='nsew',padx=50,pady=40)
-
-admin_page_search_button=Button(admin_page_left_frame,text="SEARCH",command=search_frame,bd=0,font=("Times New Roman",20,"bold"),bg="#033043",fg="white",activeforeground="#092337",activebackground="white",cursor="hand2")
-admin_page_search_button.grid(row=1,column=0,sticky='nsew',padx=50,pady=40)
+admin_page_search_button=Button(admin_page_left_frame,text="SEARCH",command=search_frame)
+admin_page_search_button.grid(row=1,column=0)
 
 # right frame
 
@@ -366,49 +405,34 @@ first_name_entry.bind("<Return>",lambda event:middle_name_entry.focus())
 middle_name_entry.bind("<Return>",lambda event:last_name_entry.focus())
 contact_no_entry.bind("<Return>",lambda event:email_address_entry.focus())
 
+#---------------------------------------------------------------------------------------------------
+
 # search frame
-# search_frame=Frame(admin_page_right_frame)
+search_frame=Frame(admin_page_right_frame)
 
-search_attributes_frame = Frame(admin_page_right_frame)
-
-search_attributes_frame.columnconfigure((0,1,2,3),weight=1,uniform = 'a')
-search_attributes_frame.rowconfigure((0,1),weight=1,uniform='a')
-search_attributes_frame.rowconfigure(2,weight=2,uniform='a')
+search_attributes_frame = Frame(search_frame)
+search_attributes_frame.place(relx=0,rely=0,relwidth=1,relheight=0.15)
 
 employee_role_label=Label(search_attributes_frame,text="ROLE")
 employee_role_label.grid(row=0,column=0,sticky='e')
 search_role_combo_var=StringVar()
-search_role_combo_box =ttk.Combobox(search_attributes_frame,textvariable=search_role_combo_var,state="readonly", style="TCombobox",font=('Times New Roman',15))
+search_role_combo_box =ttk.Combobox(search_attributes_frame,textvariable=search_role_combo_var,state="readonly")
 search_role_combo_box['values'] = ('Admin', 'Employee')
 search_role_combo_box.grid(row=0,column=1,sticky='nsew',padx=10,pady=5)
 search_role_combo_box.set("Select")
 
 employee_username_label=Label(search_attributes_frame,text="USERNAME")
-employee_username_label.grid(row=0,column=2,sticky='e')
+employee_username_label.grid(row=0,column=2)
 employee_username_entry=Entry(search_attributes_frame)
 employee_username_entry.grid(row=0,column=3)
 
 employee_year_label=Label(search_attributes_frame,text="YEAR")
-employee_year_label.grid(row=1,column=0,sticky='e')
+employee_year_label.grid(row=0,column=4)
 employee_year_entry=Entry(search_attributes_frame)
-employee_year_entry.grid(row=1,column=1)   
+employee_year_entry.grid(row=0,column=5)   
 
-employee_month_label=Label(search_attributes_frame,text="MONTH")
-employee_month_label.grid(row=1,column=2,sticky='e')
-employee_month_entry=Entry(search_attributes_frame)
-employee_month_entry.grid(row=1,column=3) 
-
-employee_reset_button=Button(search_attributes_frame,text="RESET")
-employee_reset_button.grid(row=2,column=0)
-
-employee_select_button=Button(search_attributes_frame,text="SEARCH")
-employee_select_button.grid(row=2,column=1,columnspan=2)
-
-employee_select_button=Button(search_attributes_frame,text="UPDATE")
-employee_select_button.grid(row=2,column=3)
-
-search_tree_scroll_frame = Frame(admin_page_right_frame)
-
+search_tree_scroll_frame = Frame(search_frame)
+search_tree_scroll_frame.place(relx=0,rely=0.15,relwidth=1,relheight=0.7)
 
 tree = ttk.Treeview(search_tree_scroll_frame, columns=(1,2,3,4,5,6,7,8), show="headings",height=100)
 tree.heading(1, text="ROLE")
@@ -429,7 +453,20 @@ tree.configure(xscrollcommand=tree_x_scroll.set)
 tree_x_scroll.pack(side='bottom',fill=X)
 
 tree.pack()
-# search_frame.columnconfigure(0, weight=1)
 
+retrieve_data()
+sort_treeview()
+
+search_button_frame = Frame(search_frame)
+search_button_frame.place(relx=0,rely=0.85,relheight=0.15,relwidth=1)
+
+employee_reset_button=Button(search_button_frame,text="RESET")
+employee_reset_button.grid(row=0,column=0)
+
+employee_select_button=Button(search_button_frame,text="SEARCH")
+employee_select_button.grid(row=0,column=1)
+
+employee_select_button=Button(search_button_frame,text="UPDATE")
+employee_select_button.grid(row=0,column=3)
 
 admin_page.mainloop()
