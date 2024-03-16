@@ -10,7 +10,7 @@ def clear():
     location_entry.delete(0,END)
     quantity_entry.delete(0, END)
 
-def products_addition():
+def database_add_products():
     if product_id_entry.get()=='' or product_name_entry.get()=='' or location_entry.get()=='' or quantity_entry.get()=='':
         messagebox.showerror('Error','All Fields should be filled.')
     else:
@@ -46,29 +46,29 @@ def products_addition():
             clear()
             quantity_entry.bind('<Return>',product_id_entry.focus())
 
-def order_update():
+def order_view():
     add_frame.pack_forget()
     hide_frame(add_order_frame)
-    hide_frame(retrive_frame)
-    show_frame(order_update_frame)
+    hide_frame(view_product_frame)
+    show_frame(order_view_frame)
 
 def order_add():
-    hide_frame(order_update_frame)
+    hide_frame(order_view_frame)
     add_frame.pack_forget()
-    hide_frame(retrive_frame)
+    hide_frame(view_product_frame)
     show_frame(add_order_frame)
 
-def retrive_product():
-    hide_frame(order_update_frame)
+def view_product():
+    hide_frame(order_view_frame)
     add_frame.pack_forget()
     hide_frame(add_order_frame)
-    show_frame(retrive_frame)
+    show_frame(view_product_frame)
     
 def add_product():
-    hide_frame(order_update_frame)
-    hide_frame(retrive_frame)
+    hide_frame(order_view_frame)
+    hide_frame(view_product_frame)
     hide_frame(add_order_frame)
-    add_frame.pack(expand=True,fill='both',padx=25,pady=25)
+    add_frame.place(relx=0.025,rely=0.05,relwidth=0.95,relheight=0.9)
 
 def show_frame(frame):
     frame.place(relx=0.5,rely=0.5,anchor='center')
@@ -77,65 +77,65 @@ def hide_frame(frame):
     frame.place_forget()
 
 root = Tk()
-root.title("Home")
+root.title("employee page")
 root.geometry("1200x675")
-root.minsize(1200,675)
+root.resizable(0,0)
 
- 
 left_frame = Frame(root,bg ="#E9E3D5")
-left_frame.place(relx=0,rely=0,relwidth=0.25,relheight=1)
+left_frame.place(relx=0,rely=0,relwidth=0.2,relheight=1)
 
 left_frame.columnconfigure(0,weight=1)
-left_frame.rowconfigure((0,1,2,3),weight=1,uniform='a')
 
 #product Lframe
-product_Lframe = LabelFrame(left_frame, text="Products",font=("Poppins",12,"bold"),bg="#E9E3D5")
+product_Lframe = LabelFrame(left_frame, text="Products")
 product_Lframe.grid(row=0,column=0,pady=10,padx=10,sticky="nsew")
+product_Lframe.columnconfigure(0,weight=1)
 
-product_add_button=Button(product_Lframe,text="ADD",command=add_product,bd=0,font=("Times New Roman",15,"bold"),bg="#033043",fg="white",activeforeground="#092337",activebackground="white",cursor="hand2")
-product_add_button.pack(expand=True,padx=50,pady=(10,15),fill='both')
+product_add_button=Button(product_Lframe,text="ADD",command=add_product)
+product_add_button.grid(row=0,column=0)
 
-product_retrive_button=Button(product_Lframe,command=retrive_product,text="SEARCH",bd=0,font=("Times New Roman",15,"bold"),bg="#033043",fg="white",activeforeground="#092337",activebackground="white",cursor="hand2")
-product_retrive_button.pack(expand=True,padx=50,pady=(0,15),fill='both')
+product_view_button=Button(product_Lframe,text="VIEW",command=view_product)
+product_view_button.grid(row=1,column=0)
 
 #order Lframe
-order_Lframe = LabelFrame(left_frame,text="Orders",font=("Poppins",13,"bold"),bg="#E9E3D5")
+order_Lframe = LabelFrame(left_frame,text="Orders")
 order_Lframe.grid(row=1,column=0,padx=10,pady=10,sticky="nsew")
+order_Lframe.columnconfigure(0,weight=1)
 
-order_update_button=Button(order_Lframe,text="UPDATE",command=order_update,bd=0,font=("Times New Roman",15,"bold"),bg="#033043",fg="white",activeforeground="#092337",activebackground="white",cursor="hand2")
-order_update_button.pack(expand=True,padx=50,pady=(10,15),fill='both')
+order_add_button=Button(order_Lframe,text="ADD",command=order_add)
+order_add_button.grid(row=0,column=0)
 
-order_add_button=Button(order_Lframe,text="ADD",command=order_add,bd=0,font=("Times New Roman",15,"bold"),bg="#033043",fg="white",activeforeground="#092337",activebackground="white",cursor="hand2")
-order_add_button.pack(expand=True,padx=50,pady=(0,15),fill='both')
+order_view_button=Button(order_Lframe,text="VIEW",command=order_view)
+order_view_button.grid(row=1,column=0)
 
 right_frame=Frame(root,bg ="#E9E3D5")
-right_frame.place(relx=0.25,rely=0,relwidth=0.75,relheight=1)
+right_frame.place(relx=0.2,rely=0,relwidth=0.8,relheight=1)
 
 # add button in products
 
 add_frame = Frame(right_frame,borderwidth=5,relief='groove',bg="white")
 
-product_id_label=Label(add_frame,text="PRODUCT ID",bd=0,font=("Times New Roman",15,"bold"),bg="white",fg="#021530",activeforeground='#373737',width=15)
-product_id_label.grid(row=0,column=0,padx=10,pady=10,sticky="e")
-product_id_entry=Entry(add_frame,bd=4,relief=GROOVE,width=25)
-product_id_entry.grid(row=0,column=1,padx=10,pady=10)
+product_id_label=Label(add_frame,text="PRODUCT ID")
+product_id_label.grid(row=0,column=0)
+product_id_entry=Entry(add_frame)
+product_id_entry.grid(row=0,column=1)
 
-product_name_label=Label(add_frame,text="PRODUCT NAME",bd=0,font=("Times New Roman",15,"bold"),bg="white",fg="#021530",activeforeground='#373737',width=15)
-product_name_label.grid(row=1,column=0,padx=10,pady=10,sticky="e")
-product_name_entry=Entry(add_frame,bd=4,relief=GROOVE,width=25)
-product_name_entry.grid(row=1,column=1,padx=10,pady=10)
+product_name_label=Label(add_frame,text="PRODUCT NAME")
+product_name_label.grid(row=1,column=0)
+product_name_entry=Entry(add_frame)
+product_name_entry.grid(row=1,column=1)
 
-location_label=Label(add_frame,text="LOCATION",bd=0,font=("Times New Roman",15,"bold"),bg="white",fg="#021530",activeforeground='#373737',width=15)
-location_label.grid(row=2,column=0,padx=10,pady=10,sticky="e")
-location_entry=Entry(add_frame,bd=4,relief=GROOVE,width=25)
-location_entry.grid(row=2,column=1,padx=10,pady=10)
+location_label=Label(add_frame,text="LOCATION")
+location_label.grid(row=2,column=0)
+location_entry=Entry(add_frame)
+location_entry.grid(row=2,column=1)
 
-quantity_label=Label(add_frame,text="QUANTITY",bd=0,font=("Times New Roman",15,"bold"),bg="white",fg="#021530",activeforeground='#373737',width=15)
-quantity_label.grid(row=3,column=0,padx=10,pady=10,sticky="e")
-quantity_entry=Entry(add_frame,bd=4,relief=GROOVE,width=25)
-quantity_entry.grid(row=3,column=1,padx=10,pady=10)
+quantity_label=Label(add_frame,text="QUANTITY")
+quantity_label.grid(row=3,column=0)
+quantity_entry=Entry(add_frame)
+quantity_entry.grid(row=3,column=1)
 
-submit_button=Button(add_frame,text="SUBMIT",font=10,width=15,bg="white",fg="#033043",cursor="hand2",command=products_addition)
+submit_button=Button(add_frame,text="SUBMIT",command=database_add_products)
 submit_button.grid(row=4,column=0,columnspan=2)
 
 product_id_entry.bind('<Return>',lambda event :product_name_entry.focus())
@@ -143,13 +143,16 @@ product_name_entry.bind('<Return>',lambda event :location_entry.focus())
 location_entry.bind('<Return>',lambda event :quantity_entry.focus())
 
 #retrieve product 
-retrive_frame=Frame(right_frame)
+view_product_frame=Frame(right_frame)
 
 combo_var_stream=StringVar()
-combo_box_stream =ttk.Combobox(retrive_frame,textvariable=combo_var_stream,state="readonly")
+combo_box_stream =ttk.Combobox(view_product_frame,textvariable=combo_var_stream,state="readonly")
 combo_box_stream['values'] = ('Product ID', 'Product Name', 'Location')
 combo_box_stream.grid(row=0,column=0)
 combo_box_stream.set("Select")
+
+entryfield_entry=Entry(view_product_frame)
+entryfield_entry.grid(row=0,column=1)
 
 def show_table():
 
@@ -230,10 +233,10 @@ def show_table():
             submit_button=Button(window,text="SUBMIT",command=products_updation)
             submit_button.grid(row=4,column=0,columnspan=2)
 
-        table_frame = Frame(retrive_frame)
+        table_frame = Frame(view_product_frame)
         table_frame.grid(row=1, column=0,columnspan=3)
 
-        change_button = Button(retrive_frame, text="Change Selected Row", command=change_selected_row)
+        change_button = Button(view_product_frame, text="Change Selected Row", command=change_selected_row)
         change_button.grid(row=2, column=0,columnspan=3)
 
         tree = ttk.Treeview(table_frame, columns=("Product ID", "Product Name", "Location","Quantity"), show="headings")
@@ -275,12 +278,8 @@ def show_table():
             
         tree.pack(side="left", fill="both", expand=True)
 
-show_button=Button(retrive_frame,text="SHOW",font=10,width=8,bg="white",fg="#033043",cursor="hand2",command=show_table)
+show_button=Button(view_product_frame,text="SHOW",font=10,width=8,bg="white",fg="#033043",cursor="hand2",command=show_table)
 show_button.grid(row=0,column=2)
-        
-entryfield_entry=Entry(retrive_frame)
-entryfield_entry.grid(row=0,column=1)
-
 
 
 # bgfImage= ImageTk.PhotoImage(file='image\\4.2.jpg')
@@ -345,7 +344,7 @@ def show2_table():
     def add_data(tree, product_id, product_name, location, quantity):
         tree.insert("", "end", values=(product_id, product_name, location, quantity))
 
-    table_frame = Frame(order_update_frame)
+    table_frame = Frame(order_view_frame)
     table_frame.grid(row=2, column=0,columnspan=2)
 
     tree = ttk.Treeview(table_frame, columns=("Product ID", "Product Name", "Location", "Quantity"), show="headings")
@@ -357,22 +356,22 @@ def show2_table():
             
     add_data(tree, "John Doe", "25", "USA","ui")
 
-    y_scrollbar = ttk.Scrollbar(order_update_frame, orient="vertical", command=tree.yview)
+    y_scrollbar = ttk.Scrollbar(order_view_frame, orient="vertical", command=tree.yview)
     tree.configure(yscrollcommand=y_scrollbar.set)
         
     tree.pack(side="left", fill="both", expand=True)
     y_scrollbar.pack(side="right", fill="y")
 
-order_update_frame = Frame(right_frame)
+order_view_frame = Frame(right_frame)
 
-order_id_label=Label(order_update_frame,text="Order ID")
+order_id_label=Label(order_view_frame,text="Order ID")
 order_id_label.grid(row=0,column=0)
-order_id_entry=Entry(order_update_frame)
+order_id_entry=Entry(order_view_frame)
 order_id_entry.grid(row=0,column=1)
 
-products_in_order_label = Label(order_update_frame,text="Products")
+products_in_order_label = Label(order_view_frame,text="Products")
 products_in_order_label.grid(row=1,column=0)
-ok_button = Button(order_update_frame,text="Show",command=show2_table)
+ok_button = Button(order_view_frame,text="Show",command=show2_table)
 ok_button.grid(row=1,column=1)
 
 show_frame(empty_frame)
