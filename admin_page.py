@@ -277,7 +277,7 @@ def going_to_add_frame():
 
 def search_frame():
     add_frame.place_forget()
-    search_frame.place(relx=0,rely=0,relwidth=1,relheight=1)
+    search_frame.place(relx=0.0,rely=0.05,relwidth=0.95,relheight=0.9)
 
 def retrieve_data():
 
@@ -315,17 +315,20 @@ admin_page=Tk()
 admin_page.title("WAREHOUSE")
 admin_page.geometry("1200x675")
 admin_page.title("admin_page")
-admin_page.minsize(1200,650)
+admin_page.resizable(0,0)
 
 # left frame
 admin_page_left_frame=Frame(admin_page,bg ="#E9E3D5")
 admin_page_left_frame.place(relx=0,rely=0,relwidth=0.20,relheight=1)
 
-admin_page_left_add_button=Button(admin_page_left_frame,text="ADD",command=going_to_add_frame)
-admin_page_left_add_button.grid(row=0,column=0)
+admin_page_left_frame.columnconfigure(0,weight=1,uniform="A")
 
-admin_page_search_button=Button(admin_page_left_frame,text="SEARCH",command=search_frame)
-admin_page_search_button.grid(row=1,column=0)
+admin_page_left_add_button=CTkButton(admin_page_left_frame,text="ADD",command=going_to_add_frame,width=150,height=40,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
+admin_page_left_add_button.grid(row=0,column=0,pady=(50,10))
+
+
+admin_page_search_button=CTkButton(admin_page_left_frame,text="SEARCH",command=search_frame,width=150,height=40,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
+admin_page_search_button.grid(row=1,column=0,pady=10)
 
 # right frame
 
@@ -408,33 +411,56 @@ contact_no_entry.bind("<Return>",lambda event:email_address_entry.focus())
 #---------------------------------------------------------------------------------------------------
 
 # search frame
-search_frame=Frame(admin_page_right_frame)
+search_frame=Frame(admin_page_right_frame,borderwidth=5,relief='groove',bg="white")
 
-search_attributes_frame = Frame(search_frame)
+search_attributes_frame = Frame(search_frame,bg="white")
 search_attributes_frame.place(relx=0,rely=0,relwidth=1,relheight=0.15)
+search_attributes_frame.rowconfigure(0,weight=1)
+search_attributes_frame.columnconfigure((0,1,2,3,4,5),weight=1)
 
-employee_role_label=Label(search_attributes_frame,text="ROLE")
+employee_role_label=CTkLabel(search_attributes_frame,text="ROLE",fg_color="#373737",font=("Times New Roman",20,"bold"),text_color="#e9e3d5",corner_radius=15)
 employee_role_label.grid(row=0,column=0,sticky='e')
-search_role_combo_var=StringVar()
-search_role_combo_box =ttk.Combobox(search_attributes_frame,textvariable=search_role_combo_var,state="readonly")
-search_role_combo_box['values'] = ('Admin', 'Employee')
-search_role_combo_box.grid(row=0,column=1,sticky='nsew',padx=10,pady=5)
-search_role_combo_box.set("Select")
+search_role_combo_var=StringVar(value="SELECT")
+search_role_combo_box=CTkComboBox(search_attributes_frame,variable=search_role_combo_var,
+                                  values=["ADMIN", "EMPLOYEE"],width=140,height=40,
+								   corner_radius=15,
+								   fg_color='#e9e3d5',text_color='#373737',
+								   border_color='#373737',
+								   button_color='#373737',
+								   font=("Times New Roman",12,"bold"),
+								   button_hover_color='#e9e3d5',
+								   dropdown_fg_color='white',
+								   dropdown_hover_color='#e9e3d5',
+								   dropdown_font=("Times New Roman",15,"bold"),
+								   dropdown_text_color='#373737',
+								   justify='center',
+								   state='readonly',
+								   border_width=3)
 
-employee_username_label=Label(search_attributes_frame,text="USERNAME")
+search_role_combo_box.grid(row=0,column=1,padx=10,pady=5)
+search_role_combo_box.set("SELECT")
+
+employee_username_label=CTkLabel(search_attributes_frame,text="USERNAME",fg_color="#373737",font=("Times New Roman",20,"bold"),text_color="#e9e3d5",corner_radius=15)
 employee_username_label.grid(row=0,column=2)
-employee_username_entry=Entry(search_attributes_frame)
+employee_username_entry=CTkEntry(search_attributes_frame,width=185,height=35,corner_radius=10.5,border_color='#373737',fg_color='#e9e3d5',text_color='#373737',font=("Times New Roman",14,"bold"))
 employee_username_entry.grid(row=0,column=3)
 
-employee_year_label=Label(search_attributes_frame,text="YEAR")
+employee_year_label=CTkLabel(search_attributes_frame,text="YEAR",fg_color="#373737",font=("Times New Roman",20,"bold"),text_color="#e9e3d5",corner_radius=15)
 employee_year_label.grid(row=0,column=4)
-employee_year_entry=Entry(search_attributes_frame)
+employee_year_entry=CTkEntry(search_attributes_frame,width=185,height=35,corner_radius=10.5,border_color='#373737',fg_color='#e9e3d5',text_color='#373737',font=("Times New Roman",14,"bold"))
 employee_year_entry.grid(row=0,column=5)   
 
-search_tree_scroll_frame = Frame(search_frame)
+search_tree_scroll_frame = Frame(search_frame,bg="white")
 search_tree_scroll_frame.place(relx=0,rely=0.15,relwidth=1,relheight=0.7)
 
+style=ttk.Style()
+style.configure("Treeview.Heading",
+                background="green",
+                foreground="black")
+
 tree = ttk.Treeview(search_tree_scroll_frame, columns=(1,2,3,4,5,6,7,8), show="headings",height=100)
+
+
 tree.heading(1, text="ROLE")
 tree.heading(2, text="USERNAME")
 tree.heading(3, text="FIRST_NAME")
@@ -457,16 +483,18 @@ tree.pack()
 retrieve_data()
 sort_treeview()
 
-search_button_frame = Frame(search_frame)
+search_button_frame = Frame(search_frame,bg="white")
 search_button_frame.place(relx=0,rely=0.85,relheight=0.15,relwidth=1)
+search_button_frame.rowconfigure(0,weight=1)
+search_button_frame.columnconfigure((0,1,2),weight=1)
 
-employee_reset_button=Button(search_button_frame,text="RESET")
+employee_reset_button=CTkButton(search_button_frame,text="RESET",width=150,height=40,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
 employee_reset_button.grid(row=0,column=0)
 
-employee_select_button=Button(search_button_frame,text="SEARCH")
+employee_select_button=CTkButton(search_button_frame,text="SEARCH",width=150,height=40,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
 employee_select_button.grid(row=0,column=1)
 
-employee_select_button=Button(search_button_frame,text="UPDATE")
-employee_select_button.grid(row=0,column=3)
+employee_select_button=CTkButton(search_button_frame,text="UPDATE",width=150,height=40,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
+employee_select_button.grid(row=0,column=2)
 
 admin_page.mainloop()
