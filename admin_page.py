@@ -12,6 +12,7 @@ import string
 import qrcode
 from PIL import Image, ImageDraw, ImageFont
 import os
+import ttkthemes
 
 def generate_qrcode(data_tuple):
 
@@ -230,7 +231,7 @@ def submit_employee_details(username):
         return False
     else:
         insert_user_query="insert into user (username,password,role, first_name,middle_name,last_name,email_address,contact_no,birth_date,date_of_joining,image_data) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-        mycursor.execute(insert_user_query,(username,generate_password(),role_combo_box.get(),first_name_entry.get().capitalize(),middle_name_entry.get(),last_name_entry.get(),email_address_entry.get(),contact_no_entry.get(),birth_date.get_date(),join_date.get_date(),image_data))
+        mycursor.execute(insert_user_query,(username,generate_password(),role_combo_box.get(),first_name_entry.get().capitalize(),middle_name_entry.get().capitalize(),last_name_entry.get().capitalize(),email_address_entry.get(),contact_no_entry.get(),birth_date.get_date(),join_date.get_date(),image_data))
         con.commit()
         con.close()
         messagebox.showinfo('Success','Registration is Successful')
@@ -273,11 +274,15 @@ def upload_photo():
 
 def going_to_add_frame():
     search_frame.place_forget()
-    add_frame.pack(expand=TRUE,fill=BOTH,padx=50,pady=50)
+    add_frame.place(relx=0.0,rely=0.05,relwidth=0.95,relheight=0.9)
 
 def search_frame():
     add_frame.place_forget()
     search_frame.place(relx=0.0,rely=0.05,relwidth=0.95,relheight=0.9)
+    # Iterate over all items in the treeview and delete them
+    for item in tree.get_children():
+        tree.delete(item)
+    retrieve_data()
 
 def retrieve_data():
 
@@ -305,7 +310,6 @@ def retrieve_data():
     for i in fetch_all:
         tree.insert("", "end", values=(i[2], i[0], i[3], i[5],i[6],i[7],i[8],[9]))
 
-def sort_treeview():
     data = [(tree.set(child, 1),tree.set(child, 3), child) for child in tree.get_children('')]
     data.sort(key=lambda x: (x[0], x[1]))
     for index, (role,fname, child) in enumerate(data):
@@ -453,10 +457,6 @@ employee_year_entry.grid(row=0,column=5)
 search_tree_scroll_frame = Frame(search_frame,bg="white")
 search_tree_scroll_frame.place(relx=0,rely=0.15,relwidth=1,relheight=0.7)
 
-style=ttk.Style()
-style.configure("Treeview.Heading",
-                background="green",
-                foreground="black")
 
 tree = ttk.Treeview(search_tree_scroll_frame, columns=(1,2,3,4,5,6,7,8), show="headings",height=100)
 
@@ -480,8 +480,13 @@ tree_x_scroll.pack(side='bottom',fill=X)
 
 tree.pack()
 
-retrieve_data()
-sort_treeview()
+style=ttkthemes.ThemedStyle(tree)
+# print(style.get_themes)
+style.theme_use('clam')
+style.configure('Treeview',font=("Times New Roman",10),foreground='black',background="white")
+style.configure('Treeview.Heading',font=("Times New Roman",10,"bold"),foreground='#e9e3d5',background='#373737')
+style.map("Treeview", background= [('selected','#e9e3d5')], foreground= [('selected','#373737')])
+style.map("Treeview.Heading", background= [('selected','#373737')], foreground= [('selected','#e9e3d5')])
 
 search_button_frame = Frame(search_frame,bg="white")
 search_button_frame.place(relx=0,rely=0.85,relheight=0.15,relwidth=1)
