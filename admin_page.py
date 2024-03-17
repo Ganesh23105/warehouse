@@ -279,13 +279,12 @@ def going_to_add_frame():
 def search_frame():
     add_frame.place_forget()
     search_frame.place(relx=0.0,rely=0.05,relwidth=0.95,relheight=0.9)
-    # Iterate over all items in the treeview and delete them
-    for item in tree.get_children():
-        tree.delete(item)
     retrieve_data()
 
 def retrieve_data():
-
+    # Iterate over all items in the treeview and delete them
+    for item in tree.get_children():
+        tree.delete(item)
     try:
         con = pymysql.connect(host='localhost',user='root',password='root')
         mycursor = con.cursor()
@@ -496,10 +495,10 @@ search_button_frame.columnconfigure((0,1,2),weight=1)
 employee_reset_button=CTkButton(search_button_frame,text="RESET",width=150,height=40,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
 employee_reset_button.grid(row=0,column=0)
 
-employee_select_button=CTkButton(search_button_frame,text="SEARCH",width=150,height=40,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
-employee_select_button.grid(row=0,column=1)
+employee_search_button=CTkButton(search_button_frame,text="SEARCH",width=150,height=40,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
+employee_search_button.grid(row=0,column=1)
 
-employee_select_button=CTkButton(search_button_frame,text="UPDATE",width=150,height=40,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
-employee_select_button.grid(row=0,column=2)
+employee_view_button=CTkButton(search_button_frame,text="VIEW",width=150,height=40,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
+employee_view_button.grid(row=0,column=2)
 
 admin_page.mainloop()
