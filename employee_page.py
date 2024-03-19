@@ -4,6 +4,7 @@ from tkinter import messagebox
 from tkinter import ttk
 import pymysql
 from PIL import Image, ImageTk
+import ttkthemes
 
 def clear():
     product_id_entry.delete(0, END)
@@ -266,10 +267,10 @@ product_Lframe = LabelFrame(left_frame, text="Products")
 product_Lframe.grid(row=0,column=0,pady=10,padx=10,sticky="nsew")
 product_Lframe.columnconfigure(0,weight=1)
 
-product_add_button=Button(product_Lframe,text="ADD",command=add_product)
+product_add_button=CTkButton(product_Lframe,text="ADD",command=add_product,width=100,height=20,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
 product_add_button.grid(row=0,column=0)
 
-product_view_button=Button(product_Lframe,text="VIEW",command=view_product)
+product_view_button=CTkButton(product_Lframe,text="VIEW",command=view_product,width=100,height=20,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
 product_view_button.grid(row=1,column=0)
 
 #order Lframe
@@ -277,10 +278,10 @@ order_Lframe = LabelFrame(left_frame,text="Orders")
 order_Lframe.grid(row=1,column=0,padx=10,pady=10,sticky="nsew")
 order_Lframe.columnconfigure(0,weight=1)
 
-order_add_button=Button(order_Lframe,text="ADD",command=order_add)
+order_add_button=CTkButton(order_Lframe,text="ADD",command=order_add,width=100,height=20,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
 order_add_button.grid(row=0,column=0)
 
-order_view_button=Button(order_Lframe,text="VIEW",command=order_view)
+order_view_button=CTkButton(order_Lframe,text="VIEW",command=order_view,width=100,height=20,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
 order_view_button.grid(row=1,column=0)
 
 right_frame=Frame(root,bg ="#E9E3D5")
@@ -290,14 +291,14 @@ right_frame.place(relx=0.2,rely=0,relwidth=0.8,relheight=1)
 
 add_frame = Frame(right_frame,borderwidth=5,relief='groove',bg="white")
 
-product_id_label=Label(add_frame,text="PRODUCT ID")
+product_id_label=CTkLabel(add_frame,text="PRODUCT ID",width=150,height=10,corner_radius=12,font=("Times New Roman",15,"bold"),fg_color='#373737',text_color='#e9e3d5')
 product_id_label.grid(row=0,column=0)
-product_id_entry=Entry(add_frame)
+product_id_entry=CTkEntry(add_frame,width=120,height=10,corner_radius=10.5,border_color='#373737',fg_color='#e9e3d5',text_color='#373737',font=("Times New Roman",14,"bold"))
 product_id_entry.grid(row=0,column=1)
 
-product_name_label=Label(add_frame,text="PRODUCT NAME")
+product_name_label=CTkLabel(add_frame,text="PRODUCT NAME",width=150,height=10,corner_radius=12,font=("Times New Roman",15,"bold"),fg_color='#373737',text_color='#e9e3d5')
 product_name_label.grid(row=1,column=0)
-product_name_entry=Entry(add_frame)
+product_name_entry=CTkEntry(add_frame,width=120,height=10,corner_radius=10.5,border_color='#373737',fg_color='#e9e3d5',text_color='#373737',font=("Times New Roman",14,"bold"))
 product_name_entry.grid(row=1,column=1)
 
 brand_nt, category_nt = combo_group_by()
@@ -306,7 +307,7 @@ category_values = flatten_tuple(category_nt)
 brand_values.append('NEW')
 category_values.append('NEW')
 
-product_brand_label=Label(add_frame,text="BRAND")
+product_brand_label=CTkLabel(add_frame,text="BRAND",width=150,height=10,corner_radius=12,font=("Times New Roman",15,"bold"),fg_color='#373737',text_color='#e9e3d5')
 product_brand_label.grid(row=2,column=0)
 brand_combobox_var=StringVar()
 brand_combobox =ttk.Combobox(add_frame,textvariable=brand_combobox_var,state="readonly")
@@ -317,7 +318,7 @@ brand_combobox.bind("<<ComboboxSelected>>", enable_entry)
 product_brand_entry=Entry(add_frame, state='readonly')
 product_brand_entry.grid(row=2,column=2)
 
-product_category_label=Label(add_frame,text="CATEGORY")
+product_category_label=CTkLabel(add_frame,text="CATEGORY",width=150,height=10,corner_radius=12,font=("Times New Roman",15,"bold"),fg_color='#373737',text_color='#e9e3d5')
 product_category_label.grid(row=3,column=0)
 category_combobox_var=StringVar()
 category_combobox =ttk.Combobox(add_frame,textvariable=category_combobox_var,state="readonly")
@@ -328,12 +329,12 @@ category_combobox.bind("<<ComboboxSelected>>", enable_entry)
 product_category_entry=Entry(add_frame, state='readonly')
 product_category_entry.grid(row=3,column=2)
 
-location_label=Label(add_frame,text="LOCATION")
+location_label=CTkLabel(add_frame,text="LOCATION",width=150,height=10,corner_radius=12,font=("Times New Roman",15,"bold"),fg_color='#373737',text_color='#e9e3d5')
 location_label.grid(row=4,column=0)
 location_entry=Entry(add_frame)
 location_entry.grid(row=4,column=1)
 
-quantity_label=Label(add_frame,text="QUANTITY")
+quantity_label=CTkLabel(add_frame,text="QUANTITY",width=150,height=10,corner_radius=12,font=("Times New Roman",15,"bold"),fg_color='#373737',text_color='#e9e3d5')
 quantity_label.grid(row=5,column=0)
 quantity_entry=Entry(add_frame)
 quantity_entry.grid(row=5,column=1)
@@ -349,9 +350,23 @@ view_product_attributes_frame.place(relx=0,rely=0,relwidth=1,relheight=0.15)
 view_product_attributes_frame.rowconfigure(0,weight=1)
 view_product_attributes_frame.columnconfigure((0,1,2,3,4,5),weight=1)
 
-select_type_combobox_var=StringVar()
-select_type_combobox =ttk.Combobox(view_product_attributes_frame,textvariable=select_type_combobox_var,state="readonly")
-select_type_combobox['values'] = ('Product ID', 'Product Name', 'Location')
+select_type_combobox_var=StringVar(value="SELECT")
+select_type_combobox=CTkComboBox(view_product_attributes_frame,variable=select_type_combobox_var,
+                                  values=['Product ID', 'Product Name', 'Location'],width=140,height=40,
+								   corner_radius=15,
+								   fg_color='#e9e3d5',text_color='#373737',
+								   border_color='#373737',
+								   button_color='#373737',
+								   font=("Times New Roman",12,"bold"),
+								   button_hover_color='#e9e3d5',
+								   dropdown_fg_color='white',
+								   dropdown_hover_color='#e9e3d5',
+								   dropdown_font=("Times New Roman",15,"bold"),
+								   dropdown_text_color='#373737',
+								   justify='center',
+								   state='readonly',
+								   border_width=3)
+
 select_type_combobox.grid(row=0,column=0)
 select_type_combobox.set("SELECT")
 
@@ -395,6 +410,15 @@ view_product_tree.configure(xscrollcommand=view_product_tree_x_scroll.set)
 view_product_tree_x_scroll.pack(side='bottom',fill=X)
 
 view_product_tree.pack()
+
+style=ttkthemes.ThemedStyle(view_product_tree)
+
+style.theme_use('clam')
+style.configure('Treeview',font=("Times New Roman",10),foreground='black',background="white")
+style.configure('Treeview.Heading',font=("Times New Roman",10,"bold"),foreground='#e9e3d5',background='#373737')
+style.map("Treeview", background= [('selected','#e9e3d5')], foreground= [('selected','#373737')])
+style.map("Treeview.Heading", background= [('selected','#373737')], foreground= [('selected','#e9e3d5')])
+
         
 view_product_button_frame = Frame(view_product_frame,bg="white")
 view_product_button_frame.place(relx=0,rely=0.85,relheight=0.15,relwidth=1)

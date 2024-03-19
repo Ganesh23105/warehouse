@@ -179,25 +179,43 @@ image_original = Image.open('image\\select_role.png')
 image_ratio = image_original.size[0] / image_original.size[1]
 image_tk = ImageTk.PhotoImage(image_original)
 
-canvas = Canvas(select_role, background = 'black', bd = 0, highlightthickness = 0, relief = 'ridge')
+canvas = Canvas(select_role, 
+                background = 'black', 
+                bd = 0, 
+                highlightthickness = 0, 
+                relief = 'ridge')
 canvas.grid(column = 0, row = 0, sticky = 'nsew')
 
 canvas.bind('<Configure>', fill_image)
 
-qr_label=CTkLabel(select_role,text='',fg_color='#373737',corner_radius=30)
+qr_label = CTkLabel(select_role,
+                  text='',
+                  fg_color='#373737',
+                  corner_radius=30)
 qr_label.place(relx=0.85,rely=0.1,anchor='w',relwidth=0.1,relheight=0.15)
 qr_img = Image.open('image\\qr_img.png').resize((80,80))
 cam_img = ImageTk.PhotoImage(qr_img)
-cam_btn = Button(select_role,width=75,height=75,image=cam_img,bd=0,command=scan_qr)
+cam_btn = Button(select_role,
+                 width=75,
+                 height=75,
+                 image=cam_img,
+                 bd=0,
+                 command=scan_qr)
 cam_btn.place(relx=0.9,rely=0.1,anchor='center')
 
-main_frame=CTkFrame(select_role,fg_color="#e9e3d5")
+main_frame = CTkFrame(select_role,
+                    fg_color="#e9e3d5")
 main_frame.place(relx=0.54,rely=0.25,relwidth=0.45,relheight=0.5)
 
 # main_frame.rowconfigure((0,1,2,3), weight = 1, uniform = 'a')
 # main_frame.columnconfigure((0,1),weight=1,uniform='a')
 
-select_role_name_label=CTkLabel(main_frame,text="SELECT A ROLE                                   ",fg_color="white",font=("Times New Roman",28,"bold"),text_color="#373737",corner_radius=25)
+select_role_name_label = CTkLabel(main_frame,
+                                text="SELECT A ROLE                                   ",
+                                fg_color="white",
+                                font=("Times New Roman",28,"bold"),
+                                text_color="#373737",
+                                corner_radius=25)
 select_role_name_label.place(relx=0.05,rely=0.1,anchor='w',relwidth=0.95,relheight=0.20)
 
 combobox_var = StringVar(value="SELECT")
@@ -221,23 +239,63 @@ select_role_combobox = CTkComboBox(main_frame,
 								   )
 select_role_combobox.place(relx=0.75,rely=0.1,anchor='center')
 
-username_label=CTkLabel(main_frame,text="USERNAME                                ",fg_color="white",font=("Times New Roman",25,"bold"),text_color="#373737",corner_radius=25)
+username_label = CTkLabel(main_frame,
+                          text="USERNAME                                ",
+                          fg_color="white",
+                          font=("Times New Roman",25,"bold"),
+                          text_color="#373737",
+                          corner_radius=25)
 username_label.place(rely=0.45,relx=0.09,anchor='w',relwidth=0.8,relheight=0.15)
-username_entry = CTkEntry(main_frame,width=185,height=35,corner_radius=10.5,border_color='#373737',fg_color='#e9e3d5',text_color='#373737',font=("Times New Roman",14,"bold"))
+username_entry = CTkEntry(main_frame,
+                          width=185,
+                          height=35,
+                          corner_radius=10.5,
+                          border_color='#373737',
+                          fg_color='#e9e3d5',
+                          text_color='#373737',
+                          font=("Times New Roman",14,"bold"))
 username_entry.place(relx=0.69,rely=0.45,anchor='center')
 
-password_label=CTkLabel(main_frame,text="PASSWORD                                ",fg_color="white",font=("Times New Roman",25,"bold"),text_color="#373737",corner_radius=25)
+password_label = CTkLabel(main_frame,
+                          text="PASSWORD                                ",
+                          fg_color="white",
+                          font=("Times New Roman",25,"bold"),
+                          text_color="#373737",
+                          corner_radius=25)
 password_label.place(rely=0.625,relx=0.09,anchor='w',relwidth=0.8,relheight=0.15)
-password_entry = CTkEntry(main_frame,width=185,height=35,corner_radius=10.5,border_color='#373737',show='*',fg_color='#e9e3d5',text_color='#373737',font=("Times New Roman",14,"bold"))
+password_entry = CTkEntry(main_frame,
+                          width=185,
+                          height=35,
+                          corner_radius=10.5,
+                          border_color='#373737',
+                          show='*',
+                          fg_color='#e9e3d5',
+                          text_color='#373737',
+                          font=("Times New Roman",14,"bold"))
 password_entry.place(relx=0.69,rely=0.625,anchor='center')
 
-login_btn = CTkButton(main_frame,text='LOGIN',command=login ,width=150,height=40,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='white')
+login_btn = CTkButton(main_frame,
+                      text='LOGIN',
+                      command=login ,
+                      width=150,
+                      height=40,
+                      corner_radius=12,
+                      font=("Times New Roman",25,"bold"),
+                      fg_color='#373737',
+                      text_color='#e9e3d5',
+                      hover_color='white')
 login_btn.place(relx=0.5,rely=0.85,anchor='center')
 
 # openeye = PhotoImage(file='openeye.png')
 eye_img_og = Image.open('image\\close_eye.png').resize((55,55))
 eye_img = ImageTk.PhotoImage(eye_img_og)
-eye_btn = Button(main_frame,image=eye_img,bd=0,cursor='hand2',bg='#e9e3d5',activebackground='#e9e3d5',command = show)
+eye_btn = Button(main_frame,
+                 image=eye_img,
+                 bd=0,
+                 cursor='hand2',
+                 bg='#e9e3d5',
+                 activebackground='#e9e3d5',
+                 command = show)
 eye_btn.place(rely=0.625,relx=0.9,anchor='w',relwidth=0.1,relheight=0.16)
 
 # run

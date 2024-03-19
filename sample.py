@@ -1,63 +1,24 @@
-import pymysql
-import random
-import string
+import matplotlib.pyplot as plt
+import numpy as np
 
-# Function to generate random product IDs
-def generate_product_id():
-    return ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
+x = np.linspace(-2*np.pi, 2*np.pi, 1000)
+y1 = np.sin(x)
+y2 = np.cos(x)
+y3 = np.tan(x)
+y4 = np.exp(x)
+y5 = np.log(x + np.pi)
 
-# Function to generate random product names for electronic appliances
-def generate_product_name():
-    products = ['Refrigerator', 'Television', 'Air Conditioner', 'Washing Machine', 'Microwave Oven']
-    return random.choice(products)
+fig = plt.figure()
+ax1 = fig.add_subplot(221)
+ax2 = fig.add_subplot(222)
+ax3 = fig.add_subplot(223)
+ax4 = fig.add_subplot(224)
 
-# Function to generate random brands for electronic appliances
-def generate_brand():
-    brands = ['LG', 'Samsung', 'Whirlpool', 'Sony', 'Voltas']
-    return random.choice(brands)
+ax1.plot(x, y1, color='blue')
+ax2.plot(x, y2, color='red')
+ax3.plot(x, y3, color='green')
+ax4.plot(x, y4, color='purple')
 
-# Function to generate random categories for electronic appliances
-def generate_category():
-    categories = ['Refrigerators', 'Televisions', 'Air Conditioners', 'Washing Machines', 'Microwave Ovens']
-    return random.choice(categories)
+ax4.plot(x[x > 0], y5[x > 0], color='orange')
 
-# Function to generate random locations
-def generate_location():
-    locations = ['Warehouse 1', 'Warehouse 2', 'Warehouse 3', 'Warehouse 4', 'Warehouse 5']
-    return random.choice(locations)
-
-# Function to generate random quantities
-def generate_quantity():
-    return str(random.randint(1, 100))
-
-# Connect to MySQL database
-conn = pymysql.connect(host='localhost',
-                       user='root',
-                       password='root',
-                       database='warehouse',
-                       charset='utf8mb4',
-                       cursorclass=pymysql.cursors.DictCursor)
-
-try:
-    with conn.cursor() as cursor:
-        # Delete existing data from the table
-        cursor.execute("DELETE FROM products")
-
-        # Generate and insert new random data for electronic appliances
-        for _ in range(10000):  # Adjust the number as needed
-            product_id = generate_product_id()
-            product_name = generate_product_name()
-            brand = generate_brand()
-            category = generate_category()
-            location = generate_location()
-            quantity = generate_quantity()
-
-            cursor.execute("INSERT INTO products VALUES (%s, %s, %s, %s, %s, %s)",
-                           (product_id, product_name, brand, category, location, quantity))
-    
-    # Commit changes
-    conn.commit()
-    print("Data inserted successfully.")
-finally:
-    # Close connection
-    conn.close()
+plt.show()

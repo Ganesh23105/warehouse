@@ -307,7 +307,7 @@ def retrieve_data():
     mycursor.execute(all_data)
     fetch_all = mycursor.fetchall()
     for i in fetch_all:
-        tree.insert("", "end", values=(i[2], i[0], i[3], i[5],i[6],i[7],i[8],[9]))
+        tree.insert("", "end", values=(i[2], i[0], i[3], i[5],i[6],i[7],i[8],i[9]))
 
     data = [(tree.set(child, 1),tree.set(child, 3), child) for child in tree.get_children('')]
     data.sort(key=lambda x: (x[0], x[1]))
@@ -425,7 +425,7 @@ employee_role_label=CTkLabel(search_attributes_frame,text="ROLE",fg_color="#3737
 employee_role_label.grid(row=0,column=0,sticky='e')
 search_role_combo_var=StringVar(value="SELECT")
 search_role_combo_box=CTkComboBox(search_attributes_frame,variable=search_role_combo_var,
-                                  values=["ADMIN", "EMPLOYEE"],width=140,height=40,
+                                  values=["ADMIN", "EMPLOYEE","NONE"],width=140,height=40,
 								   corner_radius=15,
 								   fg_color='#e9e3d5',text_color='#373737',
 								   border_color='#373737',
@@ -492,10 +492,59 @@ search_button_frame.place(relx=0,rely=0.85,relheight=0.15,relwidth=1)
 search_button_frame.rowconfigure(0,weight=1)
 search_button_frame.columnconfigure((0,1,2),weight=1)
 
-employee_reset_button=CTkButton(search_button_frame,text="RESET",width=150,height=40,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
+def reset_user():
+    search_role_combo_box.set("SELECT")
+    employee_year_entry.delete(0,END)
+    employee_username_entry.delete(0,END)
+    retrieve_data()
+
+
+
+employee_reset_button=CTkButton(search_button_frame,command=reset_user,text="RESET",width=150,height=40,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
 employee_reset_button.grid(row=0,column=0)
 
-employee_search_button=CTkButton(search_button_frame,text="SEARCH",width=150,height=40,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
+
+def search_user():
+    flag=0
+    string=""
+    lst=[]
+    if (search_role_combo_box.get()=="SELECT" or search_role_combo_box.get()=="NONE") and employee_username_entry.get()=="" and employee_year_entry.get()=="":
+        messagebox.showerror('Error','Fill Something to search.')
+    else:
+        try:
+            con = pymysql.connect(host='localhost',user='root',password='root',database="warehouse")
+            mycursor = con.cursor()
+        except:
+            messagebox.showerror('Error','Database Connectivity Issue, Try Again')
+            return 
+        if search_role_combo_box.get()!="NONE":
+            string=" role=%s "
+            lst.append(search_role_combo_box.get())
+            flag=1
+        if employee_username_entry.get()!="":
+            lst.append(employee_username_entry.get())
+            if flag==1:
+                string+="and"
+            string+=" username=%s "
+            flag=2
+        if employee_year_entry.get()!="":
+            lst.append(employee_year_entry.get())
+            if flag==2 or flag==1:
+                string+="and"
+            string+=" YEAR(date_of_joining)=%s " 
+            flag=0
+        query="SELECT * FROM user WHERE " + string
+        # print(query)
+        # print(tuple(lst))
+        mycursor.execute(query,tuple(lst))
+        fetch_row = mycursor.fetchall()
+        for item in tree.get_children():
+            tree.delete(item)
+        for i in fetch_row:
+            tree.insert("", "end", values=(i[2], i[0], i[3], i[5],i[6],i[7],i[8],i[9]))
+
+
+employee_search_button=CTkButton(search_button_frame,text="SEARCH",command=search_user,width=150,height=40,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
 employee_search_button.grid(row=0,column=1)
 
 employee_view_button=CTkButton(search_button_frame,text="VIEW",width=150,height=40,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
