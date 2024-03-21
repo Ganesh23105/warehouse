@@ -1,1 +1,1 @@
-import ttkthemes
+width=185,height=35,corner_radius=10.5,border_color='#373737',fg_color='#e9e3d5',text_color='#373737',font=("Times New Roman",14,"bold")

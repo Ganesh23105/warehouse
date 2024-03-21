@@ -352,7 +352,8 @@ view_product_attributes_frame.columnconfigure((0,1,2,3,4,5),weight=1)
 
 select_type_combobox_var=StringVar(value="SELECT")
 select_type_combobox=CTkComboBox(view_product_attributes_frame,variable=select_type_combobox_var,
-                                  values=['Product ID', 'Product Name', 'Location'],width=140,height=40,
+                                  values=['Product ID', 'Product Name', 'Location'],
+                                  width=140,height=40,
 								   corner_radius=15,
 								   fg_color='#e9e3d5',text_color='#373737',
 								   border_color='#373737',
@@ -370,22 +371,55 @@ select_type_combobox=CTkComboBox(view_product_attributes_frame,variable=select_t
 select_type_combobox.grid(row=0,column=0)
 select_type_combobox.set("SELECT")
 
-select_type_entry=Entry(view_product_attributes_frame)
+select_type_entry=CTkEntry(view_product_attributes_frame,width=185,height=35,corner_radius=10.5,border_color='#373737',fg_color='#e9e3d5',text_color='#373737',font=("Times New Roman",14,"bold"))
 select_type_entry.grid(row=0,column=1) 
 
-brand_label=Label(view_product_attributes_frame,text="BRAND")
+brand_label=CTkLabel(view_product_attributes_frame,text="BRAND",fg_color="#373737",font=("Times New Roman",20,"bold"),text_color="#e9e3d5",corner_radius=10)
 brand_label.grid(row=0,column=2)
-view_brand_combobox_var=StringVar()
-view_brand_combobox =ttk.Combobox(view_product_attributes_frame,textvariable=view_brand_combobox_var,state="readonly")
-view_brand_combobox['values'] = flatten_tuple(brand_nt)
+
+view_brand_combobox_var=StringVar(value="SELECT")
+view_brand_combobox =CTkComboBox(view_product_attributes_frame,variable=view_brand_combobox_var,
+                                 values= flatten_tuple(brand_nt),
+                                width=140,height=40,
+								corner_radius=15,
+								fg_color='#e9e3d5',text_color='#373737',
+								border_color='#373737',
+								button_color='#373737',
+								font=("Times New Roman",12,"bold"),
+								button_hover_color='#e9e3d5',
+								dropdown_fg_color='white',
+								dropdown_hover_color='#e9e3d5',
+								dropdown_font=("Times New Roman",15,"bold"),
+								dropdown_text_color='#373737',
+								justify='center',
+								state='readonly',
+								border_width=3)
+
+# view_brand_combobox['values'] = flatten_tuple(brand_nt)
+
 view_brand_combobox.grid(row=0,column=3)
 view_brand_combobox.set("SELECT")
 
-category_label=Label(view_product_attributes_frame,text="CATEGORY")
+category_label=CTkLabel(view_product_attributes_frame,text="CATEGORY",fg_color="#373737",font=("Times New Roman",20,"bold"),text_color="#e9e3d5",corner_radius=10)
 category_label.grid(row=0,column=4)
-view_category_combobox_var=StringVar()
-view_category_combobox =ttk.Combobox(view_product_attributes_frame,textvariable=view_category_combobox_var,state="readonly")
-view_category_combobox['values'] = flatten_tuple(category_nt)
+view_category_combobox_var=StringVar(value="SELECT")
+view_category_combobox =CTkComboBox(view_product_attributes_frame,variable=view_category_combobox_var,
+                                    values= flatten_tuple(category_nt),
+                                    width=140,height=40,
+								    corner_radius=15,
+								    fg_color='#e9e3d5',text_color='#373737',
+								    border_color='#373737',
+								    button_color='#373737',
+								    font=("Times New Roman",12,"bold"),
+								    button_hover_color='#e9e3d5',
+								    dropdown_fg_color='white',
+								    dropdown_hover_color='#e9e3d5',
+								    dropdown_font=("Times New Roman",15,"bold"),
+								    dropdown_text_color='#373737',
+								    justify='center',
+								    state='readonly',
+								    border_width=3)
+# view_category_combobox['values'] = flatten_tuple(category_nt)
 view_category_combobox.grid(row=0,column=5)
 view_category_combobox.set("SELECT")
 

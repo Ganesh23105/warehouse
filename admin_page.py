@@ -314,6 +314,7 @@ def retrieve_data():
     for index, (role,fname, child) in enumerate(data):
         tree.move(child, '', index)
 
+
 admin_page=Tk()
 admin_page.title("WAREHOUSE")
 admin_page.geometry("1200x675+0+0")
@@ -412,7 +413,6 @@ middle_name_entry.bind("<Return>",lambda event:last_name_entry.focus())
 contact_no_entry.bind("<Return>",lambda event:email_address_entry.focus())
 
 #---------------------------------------------------------------------------------------------------
-
 # search frame
 search_frame=Frame(admin_page_right_frame,borderwidth=5,relief='groove',bg="white")
 
@@ -498,11 +498,8 @@ def reset_user():
     employee_username_entry.delete(0,END)
     retrieve_data()
 
-
-
 employee_reset_button=CTkButton(search_button_frame,command=reset_user,text="RESET",width=150,height=40,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
 employee_reset_button.grid(row=0,column=0)
-
 
 def search_user():
     flag=0
@@ -543,11 +540,82 @@ def search_user():
         for i in fetch_row:
             tree.insert("", "end", values=(i[2], i[0], i[3], i[5],i[6],i[7],i[8],i[9]))
 
-
 employee_search_button=CTkButton(search_button_frame,text="SEARCH",command=search_user,width=150,height=40,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
 employee_search_button.grid(row=0,column=1)
 
-employee_view_button=CTkButton(search_button_frame,text="VIEW",width=150,height=40,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
+def view_users():
+    selected_item = tree.selection()[0]
+    values = tree.item(selected_item, 'values')
+
+    window = Toplevel()
+    window.title("Change Products")
+    window.geometry("500x500")
+
+
+    emp_role_label=CTkLabel(window,text="ROLE",fg_color="#373737",font=("Times New Roman",20,"bold"),text_color="#e9e3d5",corner_radius=10)
+    emp_role_label.grid(row=1,column=0,sticky='nsew',pady=5,padx=10)
+    emp_role_entry=Label(window, text=values[0])
+    emp_role_entry.grid(row=1,column=1,sticky='nsew')
+    # product_id_entry.insert(0,values[0])
+
+    emp_username_label=CTkLabel(window,text="USERNAME",fg_color="#373737",font=("Times New Roman",20,"bold"),text_color="#e9e3d5",corner_radius=10)
+    emp_username_label.grid(row=2,column=0,sticky='nsew',pady=5,padx=10)
+    emp_username_entry=Label(window, text=values[1])
+    emp_username_entry.grid(row=2,column=1,sticky='nsew')
+
+    emp_fname_label=CTkLabel(window,text="FIRST_NAME",fg_color="#373737",font=("Times New Roman",20,"bold"),text_color="#e9e3d5",corner_radius=10)
+    emp_fname_label.grid(row=3,column=0,sticky='nsew',pady=5,padx=10)
+    emp_fname_entry=Label(window, text=values[2])
+    emp_fname_entry.grid(row=3,column=1,sticky='nsew')
+
+    emp_lname_label=CTkLabel(window,text="LAST_NAME",fg_color="#373737",font=("Times New Roman",20,"bold"),text_color="#e9e3d5",corner_radius=10)
+    emp_lname_label.grid(row=4,column=0,sticky='nsew',pady=5,padx=10)
+    emp_lname_entry=Label(window, text=values[3])
+    emp_lname_entry.grid(row=4,column=1,sticky='nsew')
+
+    emp_email_address_label=CTkLabel(window,text="EMAIL",fg_color="#373737",font=("Times New Roman",20,"bold"),text_color="#e9e3d5",corner_radius=10)
+    emp_email_address_label.grid(row=5,column=0,sticky='nsew',pady=5,padx=10)
+    emp_email_address_entry=Label(window, text=values[4])
+    emp_email_address_entry.grid(row=5,column=1,sticky='nsew')
+
+    emp_contact_no_label=CTkLabel(window,text="PHONE_NO",fg_color="#373737",font=("Times New Roman",20,"bold"),text_color="#e9e3d5",corner_radius=10)
+    emp_contact_no_label.grid(row=6,column=0,sticky='nsew',pady=5,padx=10)
+    emp_contact_no_entry=Label(window, text=values[5])
+    emp_contact_no_entry.grid(row=6,column=1,sticky='nsew')
+
+    emp_birth_date_label=CTkLabel(window,text="BIRTH_DATE",fg_color="#373737",font=("Times New Roman",20,"bold"),text_color="#e9e3d5",corner_radius=10)
+    emp_birth_date_label.grid(row=7,column=0,sticky='nsew',pady=5,padx=10)
+    emp_birth_date_entry=Label(window, text=values[6])
+    emp_birth_date_entry.grid(row=7,column=1,sticky='nsew')
+
+    emp_join_date_label=CTkLabel(window,text="JOINING_DATE",fg_color="#373737",font=("Times New Roman",20,"bold"),text_color="#e9e3d5",corner_radius=10)
+    emp_join_date_label.grid(row=8,column=0,sticky='nsew',pady=5,padx=10)
+    emp_join_date_entry=Label(window, text=values[7])
+    emp_join_date_entry.grid(row=8,column=1,sticky='nsew')
+
+    emp_update_button=CTkButton(window,text="UPDATE",width=150,
+                                height=40,
+                                corner_radius=12,
+                                font=("Times New Roman",25,"bold"),
+                                fg_color='#373737',
+                                text_color='#e9e3d5',
+                                hover_color='white')
+    emp_update_button.grid(row=9,column=1)
+    
+    emp_delete_button=CTkButton(window,text="DELETE",
+                                width=150,
+                                height=40,
+                                corner_radius=12,
+                                font=("Times New Roman",25,"bold"),
+                                fg_color='#373737',
+                                text_color='#e9e3d5',
+                                hover_color='white')
+    emp_delete_button.grid(row=9,column=0)
+
+    
+    window.mainloop()
+
+employee_view_button=CTkButton(search_button_frame,text="VIEW",command = view_users,width=150,height=40,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
 employee_view_button.grid(row=0,column=2)
 
 admin_page.mainloop()
