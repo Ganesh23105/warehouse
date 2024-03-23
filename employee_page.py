@@ -63,12 +63,15 @@ def order_view():
     add_order_frame.place_forget()
     view_product_frame.place_forget()
     order_view_frame.place(relx=0.025,rely=0.05,relwidth=0.95,relheight=0.9)
+    show2_table
 
 def order_add():
+    
     order_view_frame.place_forget()
     add_frame.place_forget()
     view_product_frame.place_forget()
     add_order_frame.place(relx=0.025,rely=0.05,relwidth=0.95,relheight=0.9)
+    show1_table()
 
 def view_product():
     order_view_frame.place_forget()
@@ -278,6 +281,7 @@ order_Lframe = LabelFrame(left_frame,text="Orders")
 order_Lframe.grid(row=1,column=0,padx=10,pady=10,sticky="nsew")
 order_Lframe.columnconfigure(0,weight=1)
 
+
 order_add_button=CTkButton(order_Lframe,text="ADD",command=order_add,width=100,height=20,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
 order_add_button.grid(row=0,column=0)
 
@@ -479,18 +483,21 @@ empty_frame = Frame(right_frame)
 
 def show1_table():
 
-    def add_data(tree, product_id, product_name, location, quantity):
-        tree.insert("", "end", values=(product_id, product_name, location, quantity))
+    def add_data(tree, product_id, product_name, quantity,Location,Brand,Category):
+        tree.insert("", "end", values=(product_id, product_name, quantity,Location,Brand,Category))
 
     table_frame = Frame(add_order_frame)
     table_frame.grid(row=4, column=0,columnspan=3)
 
-    tree = ttk.Treeview(table_frame, columns=("Product ID", "Product Name", "Location", "Quantity"), show="headings")
+    tree = ttk.Treeview(table_frame, columns=("Product ID", "Product Name", "Quantity","Location","Brand","Category"), show="headings")
 
     tree.heading("Product ID", text="Product ID")
     tree.heading("Product Name", text="Product Name")
-    tree.heading("Location", text="Location")
     tree.heading("Quantity", text="Quantiy")
+    tree.heading("Location", text="Location")
+    tree.heading("Brand", text="Brand")
+    tree.heading("Category",text="Category")
+
             
     add_data(tree, "John Doe", "25", "USA","ui")
 
@@ -498,7 +505,9 @@ def show1_table():
     tree.configure(yscrollcommand=y_scrollbar.set)
         
     tree.pack(side="left", fill="both", expand=True)
-    y_scrollbar.pack(side="right", fill="y")
+    y_scrollbar.pack(side="bottom", fill="y")
+
+
 
 add_order_frame = Frame(right_frame)
 
@@ -507,22 +516,43 @@ order_id_label.grid(row=0,column=0)
 order_id_entry=Entry(add_order_frame)
 order_id_entry.grid(row=0,column=1)
 
-source_label=Label(add_order_frame,text="Source")
-source_label.grid(row=1,column=0)
-source_entry=Entry(add_order_frame)
-source_entry.grid(row=1,column=1)
 
-destination_label=Label(add_order_frame,text="Destination")
-destination_label.grid(row=2,column=0)
-destination_entry=Entry(add_order_frame)
-destination_entry.grid(row=2,column=1)
+customer_label=Label(add_order_frame,text="customer")
+customer_label.grid(row=0,column=2)
+customer_entry=Entry(add_order_frame)
+customer_entry.grid(row=0,column=3)
 
 products_in_order_label = Label(add_order_frame,text="Products")
-products_in_order_label.grid(row=3,column=0)
+products_in_order_label.grid(row=2,column=0)
 products_in_order_entry=Entry(add_order_frame)
-products_in_order_entry.grid(row=3,column=1)
-ok_button = Button(add_order_frame,text="Show",command=show1_table)
-ok_button.grid(row=3,column=2)
+products_in_order_entry.grid(row=2,column=1)
+
+def order_submit():
+        try:
+            con = pymysql.connect(host='localhost',user='root',password='root')
+            mycursor = con.cursor()
+        except:
+            messagebox.showerror('Error','Connection is not established try again.')
+            return
+        
+        query='use warehouse'
+        mycursor.execute(query) 
+        try:
+            create_query="create table order(order_id VARCHAR(255) NOT NULL PRIMARY KEY,customer VARCHAR(255) NOT NULL)"
+            mycursor.execute(create_query)
+        except:
+            pass
+
+        query="insert into order(order_id,customer) values(%s,%s)"
+        mycursor.execute(query,(order_id_entry.get(),customer_entry.get()))
+        con.commit()
+        con.close()
+        messagebox.showinfo('Success','order added')
+        clear()
+
+
+order_add_show_button = Button(add_order_frame,text="SUBMIT",command=order_submit)
+order_add_show_button.grid(row=2,column=2)
 
 #update status of order
 
@@ -543,6 +573,7 @@ def show2_table():
             
     add_data(tree, "John Doe", "25", "USA","ui")
 
+
     y_scrollbar = ttk.Scrollbar(order_view_frame, orient="vertical", command=tree.yview)
     tree.configure(yscrollcommand=y_scrollbar.set)
         
@@ -558,7 +589,7 @@ order_id_entry.grid(row=0,column=1)
 
 products_in_order_label = Label(order_view_frame,text="Products")
 products_in_order_label.grid(row=1,column=0)
-ok_button = Button(order_view_frame,text="Show",command=show2_table)
+ok_button = Button(order_view_frame,text="Show")
 ok_button.grid(row=1,column=1)
 
 show_frame(empty_frame)
