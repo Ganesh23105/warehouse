@@ -1,1 +1,5 @@
-width=185,height=35,corner_radius=10.5,border_color='#373737',fg_color='#e9e3d5',text_color='#373737',font=("Times New Roman",14,"bold")
+      # emp_lname_entry.grid_forget()
+        # emp_email_address_entry.grid_forget()
+        # emp_contact_no_entry.grid_forget()
+        # emp_birth_date_entry.grid_forget()
+        # emp_join_date_entry.grid_for

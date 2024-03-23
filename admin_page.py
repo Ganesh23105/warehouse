@@ -13,6 +13,7 @@ import qrcode
 from PIL import Image, ImageDraw, ImageFont
 import os
 import ttkthemes
+import io
 
 def generate_qrcode(data_tuple):
 
@@ -547,70 +548,246 @@ def view_users():
     selected_item = tree.selection()[0]
     values = tree.item(selected_item, 'values')
 
+    try:
+        con = pymysql.connect(host='localhost', user='root', password='root',database="warehouse")
+        mycursor = con.cursor()
+    except:
+        messagebox.showerror('Error', 'Connection is not established try again.')
+        return
+    
+    query="select * from user where username=%s"
+    mycursor.execute(query,(values[1]))
+    fetch_data=mycursor.fetchone()
+
+    # Convert binary data to image
+    image = Image.open(io.BytesIO(fetch_data[10]))
+
+    # Resize image if necessary
+    image = image.resize((85, 85))
+
+    # Convert image to PhotoImage
+    photo = ImageTk.PhotoImage(image)
+
+    # Update label with image
+    # label.config(image=photo)
+    # label.image = photo
+
+
     window = Toplevel()
     window.title("Change Products")
     window.geometry("500x500")
+    window.grab_set()
 
+    photo_lbl=Label(window)
+    photo_lbl.config(image=photo)
+    photo_lbl.image = photo
+    photo_lbl.grid(row=0,column=0,columnspan=2)
 
-    emp_role_label=CTkLabel(window,text="ROLE",fg_color="#373737",font=("Times New Roman",20,"bold"),text_color="#e9e3d5",corner_radius=10)
-    emp_role_label.grid(row=1,column=0,sticky='nsew',pady=5,padx=10)
-    emp_role_entry=Label(window, text=values[0])
-    emp_role_entry.grid(row=1,column=1,sticky='nsew')
-    # product_id_entry.insert(0,values[0])
+    emp_role_label=CTkLabel(window,text="ROLE",fg_color="white",font=("Times New Roman",20,"bold"),text_color="#373737",corner_radius=10)
+    emp_role_label.grid(row=1,column=0,sticky='nsew',pady=5,padx=20)
+    emp_role_entry=Label(window, text=values[0],background="white",
+                          font=("Times New Roman",15,"bold"),
+                          fg="#373737",bd=2,relief="solid"
+                          )
+    emp_role_entry.grid(row=1,column=1,sticky='ew')
 
-    emp_username_label=CTkLabel(window,text="USERNAME",fg_color="#373737",font=("Times New Roman",20,"bold"),text_color="#e9e3d5",corner_radius=10)
-    emp_username_label.grid(row=2,column=0,sticky='nsew',pady=5,padx=10)
-    emp_username_entry=Label(window, text=values[1])
-    emp_username_entry.grid(row=2,column=1,sticky='nsew')
+    emp_username_label=CTkLabel(window,text="USERNAME",fg_color="white",font=("Times New Roman",20,"bold"),text_color="#373737",corner_radius=10)
+    emp_username_label.grid(row=2,column=0,sticky='nsew',pady=5,padx=20)
+    emp_username_entry=Label(window, text=values[1],background="white",
+                          font=("Times New Roman",15,"bold"),
+                          fg="#373737",bd=2,relief="solid")
+    emp_username_entry.grid(row=2,column=1,sticky='ew')
 
     emp_fname_label=CTkLabel(window,text="FIRST_NAME",fg_color="#373737",font=("Times New Roman",20,"bold"),text_color="#e9e3d5",corner_radius=10)
-    emp_fname_label.grid(row=3,column=0,sticky='nsew',pady=5,padx=10)
-    emp_fname_entry=Label(window, text=values[2])
-    emp_fname_entry.grid(row=3,column=1,sticky='nsew')
+    emp_fname_label=CTkLabel(window,text="FIRST_NAME",fg_color="white",font=("Times New Roman",20,"bold"),text_color="#373737",corner_radius=10)
+    emp_fname_label.grid(row=3,column=0,sticky='nsew',pady=5,padx=20)
+    emp_fname_entry=Label(window, text=values[2],background="white",
+                          font=("Times New Roman",15,"bold"),
+                          fg="#373737",bd=2,relief="solid")
+    emp_fname_entry.grid(row=3,column=1,sticky='ew')
 
-    emp_lname_label=CTkLabel(window,text="LAST_NAME",fg_color="#373737",font=("Times New Roman",20,"bold"),text_color="#e9e3d5",corner_radius=10)
-    emp_lname_label.grid(row=4,column=0,sticky='nsew',pady=5,padx=10)
-    emp_lname_entry=Label(window, text=values[3])
-    emp_lname_entry.grid(row=4,column=1,sticky='nsew')
+    emp_Mname_label=CTkLabel(window,text="MIDDLE_NAME",fg_color="white",font=("Times New Roman",20,"bold"),text_color="#373737",corner_radius=10)
+    emp_Mname_label.grid(row=4,column=0,sticky='nsew',pady=5,padx=20)
+    emp_Mname_entry=Label(window,text=fetch_data[4],
+                          background="white",
+                          font=("Times New Roman",15,"bold"),
+                          fg="#373737",bd=2,relief="solid")
+    emp_Mname_entry.grid(row=4,column=1,sticky='ew')
 
-    emp_email_address_label=CTkLabel(window,text="EMAIL",fg_color="#373737",font=("Times New Roman",20,"bold"),text_color="#e9e3d5",corner_radius=10)
-    emp_email_address_label.grid(row=5,column=0,sticky='nsew',pady=5,padx=10)
-    emp_email_address_entry=Label(window, text=values[4])
-    emp_email_address_entry.grid(row=5,column=1,sticky='nsew')
+    emp_lname_label=CTkLabel(window,text="LAST_NAME",fg_color="white",font=("Times New Roman",20,"bold"),text_color="#373737",corner_radius=10)
+    emp_lname_label.grid(row=5,column=0,sticky='nsew',pady=5,padx=20)
+    emp_lname_entry=Label(window, text=values[3],background="white",
+                          font=("Times New Roman",15,"bold"),
+                          fg="#373737",bd=2,relief="solid")
+    emp_lname_entry.grid(row=5,column=1,sticky='ew')
 
-    emp_contact_no_label=CTkLabel(window,text="PHONE_NO",fg_color="#373737",font=("Times New Roman",20,"bold"),text_color="#e9e3d5",corner_radius=10)
-    emp_contact_no_label.grid(row=6,column=0,sticky='nsew',pady=5,padx=10)
-    emp_contact_no_entry=Label(window, text=values[5])
-    emp_contact_no_entry.grid(row=6,column=1,sticky='nsew')
+    emp_email_address_label=CTkLabel(window,text="EMAIL",fg_color="white",font=("Times New Roman",20,"bold"),text_color="#373737",corner_radius=10)
+    emp_email_address_label.grid(row=6,column=0,sticky='nsew',pady=5,padx=20)
+    emp_email_address_entry=Label(window, text=values[4],background="white",
+                          font=("Times New Roman",15,"bold"),
+                          fg="#373737",bd=2,relief="solid")
+    emp_email_address_entry.grid(row=6,column=1,sticky='ew')
 
-    emp_birth_date_label=CTkLabel(window,text="BIRTH_DATE",fg_color="#373737",font=("Times New Roman",20,"bold"),text_color="#e9e3d5",corner_radius=10)
-    emp_birth_date_label.grid(row=7,column=0,sticky='nsew',pady=5,padx=10)
-    emp_birth_date_entry=Label(window, text=values[6])
-    emp_birth_date_entry.grid(row=7,column=1,sticky='nsew')
+    emp_contact_no_label=CTkLabel(window,text="PHONE_NO",fg_color="white",font=("Times New Roman",20,"bold"),text_color="#373737",corner_radius=10)
+    emp_contact_no_label.grid(row=7,column=0,sticky='nsew',pady=5,padx=20)
+    emp_contact_no_entry=Label(window, text=values[5],background="white",
+                          font=("Times New Roman",15,"bold"),
+                          fg="#373737",bd=2,relief="solid")
+    emp_contact_no_entry.grid(row=7,column=1,sticky='ew')
 
-    emp_join_date_label=CTkLabel(window,text="JOINING_DATE",fg_color="#373737",font=("Times New Roman",20,"bold"),text_color="#e9e3d5",corner_radius=10)
-    emp_join_date_label.grid(row=8,column=0,sticky='nsew',pady=5,padx=10)
-    emp_join_date_entry=Label(window, text=values[7])
-    emp_join_date_entry.grid(row=8,column=1,sticky='nsew')
+    emp_birth_date_label=CTkLabel(window,text="BIRTH_DATE",fg_color="white",font=("Times New Roman",20,"bold"),text_color="#373737",corner_radius=10)
+    emp_birth_date_label.grid(row=8,column=0,sticky='nsew',pady=5,padx=20)
+    emp_birth_date_entry=Label(window, text=values[6],background="white",
+                          font=("Times New Roman",15,"bold"),
+                          fg="#373737",bd=2,relief="solid")
+    emp_birth_date_entry.grid(row=8,column=1,sticky='ew')
 
-    emp_update_button=CTkButton(window,text="UPDATE",width=150,
+    emp_join_date_label=CTkLabel(window,text="JOINING_DATE",fg_color="white",font=("Times New Roman",20,"bold"),text_color="#373737",corner_radius=10)
+    emp_join_date_label.grid(row=9,column=0,sticky='nsew',pady=(5,20),padx=20)
+    emp_join_date_entry=Label(window, text=values[7],background="white",
+                          font=("Times New Roman",15,"bold"),
+                          fg="#373737",bd=2,relief="solid")
+    emp_join_date_entry.grid(row=9,column=1,sticky='ew',pady=(5,20))
+
+
+    def update_emp_admin():
+        emp_fname_entry.grid_forget()
+        emp_Mname_entry.grid_forget()
+        emp_lname_entry.grid_forget()
+        emp_email_address_entry.grid_forget()
+        emp_contact_no_entry.grid_forget()
+        emp_birth_date_entry.grid_forget()
+        emp_join_date_entry.grid_forget()
+        # emp_delete_button.grid_forget()
+        # emp_update_button.grid_forget()
+
+        emp_fname_entr=Entry(window)
+        emp_fname_entr.grid(row=3,column=1,sticky='nsew')
+        emp_fname_entr.insert(0,values[2])
+
+        emp_Mname_entr=Entry(window)
+        emp_Mname_entr.grid(row=4,column=1,sticky='nsew')
+        emp_Mname_entr.insert(0,fetch_data[4])
+
+        emp_lname_entr=Entry(window)
+        emp_lname_entr.grid(row=5,column=1,sticky='nsew')
+        emp_lname_entr.insert(0,values[3])
+
+        emp_email_address_entr=Entry(window)
+        emp_email_address_entr.grid(row=6,column=1,sticky='nsew')
+        emp_email_address_entr.insert(0,values[4])
+
+        emp_contact_no_entr=Entry(window)
+        emp_contact_no_entr.grid(row=7,column=1,sticky='nsew')
+        emp_contact_no_entr.insert(0,values[5])
+
+        emp_birth_date_entr=Entry(window)
+        emp_birth_date_entr.grid(row=8,column=1,sticky='nsew')
+        emp_birth_date_entr.insert(0,values[6])
+
+        emp_join_date_entr=Entry(window)
+        emp_join_date_entr.grid(row=9,column=1,sticky='nsew')
+        emp_join_date_entr.insert(0,values[7])
+
+        def cancel_emp_admin():
+            emp_submit_button.grid_forget()
+            emp_cancel_button.grid_forget()
+            emp_fname_entr.grid_forget()
+            emp_Mname_entr.grid_forget()
+            emp_lname_entr.grid_forget()
+            emp_email_address_entr.grid_forget()
+            emp_contact_no_entr.grid_forget()
+            emp_birth_date_entr.grid_forget()
+            emp_join_date_entr.grid_forget()
+            emp_join_date_entry.grid(row=9,column=1,sticky='ew',pady=(5,20))
+            emp_birth_date_entry.grid(row=8,column=1,sticky='ew')
+            emp_contact_no_entry.grid(row=7,column=1,sticky='ew')
+            emp_email_address_entry.grid(row=6,column=1,sticky='ew')
+            emp_lname_entry.grid(row=5,column=1,sticky='ew')
+            emp_Mname_entry.grid(row=4,column=1,sticky='ew')
+            emp_fname_entry.grid(row=3,column=1,sticky='ew')
+
+        emp_cancel_button=CTkButton(window,text="CANCEL",
+                                    command=cancel_emp_admin,
+                                    width=150,
+                                    height=40,
+                                    corner_radius=12,
+                                    font=("Times New Roman",25,"bold"),
+                                    fg_color='#373737',
+                                    text_color='#e9e3d5',
+                                    hover_color='black')
+        emp_cancel_button.grid(row=10,column=0)
+
+        def submit_emp_admin():
+            update_query = "UPDATE user SET first_name = %s, middle_name = %s, last_name = %s, email_address = %s, contact_no = %s, birth_date = %s, date_of_joining = %s WHERE username = %s"
+            mycursor.execute(update_query,(emp_fname_entr.get().capitalize(),emp_Mname_entr.get().capitalize(),emp_lname_entr.get().capitalize(),emp_email_address_entr.get(),emp_contact_no_entr.get(),emp_birth_date_entr.get(),emp_join_date_entr.get(),values[1]))
+            resp=messagebox.askyesno("CONFIRMATION","DO YOU WANT TO UPDATE?")
+            if resp==1:
+                emp_fname_entry.config(text=emp_fname_entr.get().capitalize())
+                emp_Mname_entry.config(text=emp_Mname_entr.get().capitalize())
+                emp_lname_entry.config(text=emp_lname_entr.get().capitalize)
+                emp_email_address_entry.config(text=emp_email_address_entr.get())
+                emp_contact_no_entry.config(text=emp_contact_no_entr.get())
+                emp_birth_date_entry.config(text=emp_birth_date_entr.get())
+                emp_join_date_entry.config(text=emp_join_date_entr.get())
+                con.commit()
+                messagebox.showinfo("SUCCESS",values[0]+" UPDATED SUCCESSFULLY!")
+                cancel_emp_admin()
+                reset_user()
+                # window.destroy()
+            else:
+                pass
+
+        emp_submit_button=CTkButton(window,text="SUBMIT",
+                                    command=submit_emp_admin,
+                                    height=40,
+                                    corner_radius=12,
+                                    font=("Times New Roman",25,"bold"),
+                                    fg_color='#373737',
+                                    text_color='#e9e3d5',
+                                    hover_color='black')
+        emp_submit_button.grid(row=10,column=1)
+
+        # update_query = "UPDATE user SET first_name = %s, last_name = %s, email_address = %s, contact_no = %s, birth_date = %s, date_of_joining = %s WHERE username = %s"
+        # mycursor.execute(update_query,(emp_fname_entry.get(),emp_lname_entry.get(),emp_email_address_entry.get(),emp_contact_no_entry.get(),emp_birth_date_entry.get(),emp_join_date_entry.get(),values[1]))
+        # con.commit()
+        # messagebox.showinfo("SUCCESS","EMPLOYEE DATA UPDATED SUCCESFULLY!")
+        # window.destroy()
+
+
+    emp_update_button=CTkButton(window,text="UPDATE",
+                                command=update_emp_admin,
                                 height=40,
                                 corner_radius=12,
                                 font=("Times New Roman",25,"bold"),
                                 fg_color='#373737',
                                 text_color='#e9e3d5',
-                                hover_color='white')
-    emp_update_button.grid(row=9,column=1)
-    
+                                hover_color='black')
+    emp_update_button.grid(row=10,column=1)
+
+    def delete_emp_admin():
+        delete_query="DELETE FROM user WHERE username=%s"
+        mycursor.execute(delete_query,values[1])
+        response=messagebox.askyesno("CONFIRMATION","DO YOU WANT TO DELETE?")
+        if response==1:
+            con.commit()
+            messagebox.showinfo("SUCCESS",values[0]+" DELETED SUCCESSFULLY!")
+            window.destroy()
+            reset_user()
+        else:
+            pass
+        
+
     emp_delete_button=CTkButton(window,text="DELETE",
+                                command=delete_emp_admin,
                                 width=150,
                                 height=40,
                                 corner_radius=12,
                                 font=("Times New Roman",25,"bold"),
                                 fg_color='#373737',
                                 text_color='#e9e3d5',
-                                hover_color='white')
-    emp_delete_button.grid(row=9,column=0)
+                                hover_color='black')
+    emp_delete_button.grid(row=10,column=0)
 
     
     window.mainloop()
