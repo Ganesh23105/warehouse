@@ -516,20 +516,22 @@ def search_user():
             messagebox.showerror('Error','Database Connectivity Issue, Try Again')
             return 
         if search_role_combo_box.get()!="NONE":
-            string=" role=%s "
+            string="role=%s"
             lst.append(search_role_combo_box.get())
             flag=1
         if employee_username_entry.get()!="":
             lst.append(employee_username_entry.get())
             if flag==1:
-                string+="and"
-            string+=" username=%s "
+                string+=" and username=%s"
+            else:
+                string+="username=%s" 
             flag=2
         if employee_year_entry.get()!="":
             lst.append(employee_year_entry.get())
             if flag==2 or flag==1:
-                string+="and"
-            string+=" YEAR(date_of_joining)=%s " 
+                string+=" and YEAR(date_of_joining)=%s"
+            else:
+                string+="YEAR(date_of_joining)=%s" 
             flag=0
         query="SELECT * FROM user WHERE " + string
         # print(query)
@@ -545,6 +547,12 @@ employee_search_button=CTkButton(search_button_frame,text="SEARCH",command=searc
 employee_search_button.grid(row=0,column=1)
 
 def view_users():
+
+    # Check if any item is selected in the treeview
+    if not tree.selection():
+        messagebox.showerror('Error', 'Please select an Admin/Employee from the list.')
+        return
+    
     selected_item = tree.selection()[0]
     values = tree.item(selected_item, 'values')
 

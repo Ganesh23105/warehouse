@@ -151,6 +151,12 @@ def retrieve_product_data():
         view_product_tree.move(child, '', index)
 
 def change_selected_row():
+
+    # Check if any item is selected in the treeview
+    if not view_product_tree.selection():
+        messagebox.showerror('Error', 'Please select an item from the list.')
+        return
+    
     selected_item = view_product_tree.selection()[0]
     # print(selected_item)
     values = view_product_tree.item(selected_item, 'values')
@@ -158,14 +164,11 @@ def change_selected_row():
 
     def products_updation():
         try:
-            con = pymysql.connect(host='localhost',user='root',password='root')
+            con = pymysql.connect(host='localhost',user='root',password='root',database='warehouse')
             mycursor = con.cursor()
         except:
             messagebox.showerror('Error','Connection is not established try again.')
             return
-
-        query='use warehouse'
-        mycursor.execute(query)
 
         query="UPDATE products SET product_name = %s, location = %s, quantity = %s WHERE product_id = %s"
         # print(product_id_entry)
@@ -205,54 +208,7 @@ def change_selected_row():
     update_button=Button(window,text="UPDATE",command=products_updation)
     update_button.grid(row=4,column=0,columnspan=2)
 
-def search_product():
-    for item in view_product_tree.get_children():
-        view_product_tree.delete(item)
 
-    if select_type_combobox.get()=='Select' or select_type_entry.get()=='':
-        messagebox.showerror('Error','All Fields should be filled.')
-    else:
-        try:
-            con = pymysql.connect(host='localhost',user='root',password='root')
-            mycursor = con.cursor()
-        except:
-            messagebox.showerror('Error','Connection is not established try again.')
-            return
-        
-        query='use warehouse'
-        mycursor.execute(query)
-
-        def add_data(tree, product_id, product_name, location, quantity):
-            tree.insert("", "end", values=(product_id, product_name, location, quantity))
-
-                
-        if select_type_combobox.get()=='Product ID':
-            query='select * from products where product_id=%s'
-            mycursor.execute(query,select_type_entry.get())
-            row = mycursor.fetchall()
-            if row==None:
-                messagebox.showerror('Error','Filled credantials does not present')
-            else:
-                for i in row:
-                    view_product_tree.insert("", "end", values=(i[0], i[1], i[4], i[5],i[2],i[3]))
-        elif select_type_combobox.get()=="Product Name":
-            query='select * from products where product_name=%s'
-            mycursor.execute(query,select_type_entry.get())
-            row = mycursor.fetchall()
-            if row==None:
-                messagebox.showerror('Error','Filled credantials does not present')
-            else:
-                for i in row:
-                    view_product_tree.insert("", "end", values=(i[0], i[1], i[4], i[5],i[2],i[3]))
-        elif select_type_combobox.get()=="Location":
-            query='select * from products where Location=%s'
-            mycursor.execute(query,select_type_entry.get())
-            row = mycursor.fetchall()
-            if row==None:
-                messagebox.showerror('Error','Filled credantials does not present')
-            else:
-                for i in row:
-                    view_product_tree.insert("", "end", values=(i[0], i[1], i[4], i[5],i[2],i[3]))
 
 root = Tk()
 root.title("employee page")
@@ -351,7 +307,7 @@ quantity_entry.grid(row=5,column=1)
 submit_button=Button(add_frame,text="SUBMIT",command=database_add_products)
 submit_button.grid(row=6,column=0,columnspan=2)
 
-#retrieve product 
+#view product 
 view_product_frame=Frame(right_frame)
 
 view_product_attributes_frame = Frame(view_product_frame,bg="white")
@@ -466,17 +422,84 @@ style.map("Treeview.Heading", background= [('selected','#373737')], foreground= 
 view_product_button_frame = Frame(view_product_frame,bg="white")
 view_product_button_frame.place(relx=0,rely=0.85,relheight=0.15,relwidth=1)
 view_product_button_frame.rowconfigure(0,weight=1)
-view_product_button_frame.columnconfigure((0,1,2),weight=1)
+view_product_button_frame.columnconfigure((0,1,2,3),weight=1)
 
-product_reset_button=CTkButton(view_product_button_frame,text="RESET",command=retrieve_product_data,width=150,height=40,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
+def view_product_reset():
+    view_category_combobox.set("SELECT")
+    view_brand_combobox.set("SELECT")
+    select_type_combobox.set("SELECT")
+    select_type_entry.delete(0,END)
+    retrieve_product_data()
+
+product_reset_button=CTkButton(view_product_button_frame,text="RESET",command=view_product_reset,width=150,height=40,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
 product_reset_button.grid(row=0,column=0)
+
+def search_product():
+    # for item in view_product_tree.get_children():
+    #     view_product_tree.delete(item)
+
+    if select_type_entry.get()=='' and (view_brand_combobox.get()=='SELECT' or view_brand_combobox.get()=='NONE') and (view_category_combobox.get()=='SELECT' or view_category_combobox.get()=='NONE'):
+        messagebox.showerror('Error','All Fields should be filled.')
+    else:
+        try:
+            con = pymysql.connect(host='localhost',user='root',password='root',database='warehouse')
+            mycursor = con.cursor()
+        except:
+            messagebox.showerror('Error','Connection is not established try again.')
+            return
+        flag=0
+        string=""
+        lst=[]
+                
+        if select_type_combobox.get()=='Product ID' and select_type_entry.get()!='':
+            string = 'product_id = %s'
+            lst.append(select_type_entry.get())
+            flag=1
+        elif select_type_combobox.get()=="Product Name" and select_type_entry.get()!='':
+            string = 'product_name = %s'
+            lst.append(select_type_entry.get())
+            flag=1
+        elif select_type_combobox.get()=="Location" and select_type_entry.get()!='':
+            string = 'location = %s'
+            lst.append(select_type_entry.get())
+            flag=1
+
+        if view_brand_combobox.get()!='SELECT' and view_brand_combobox.get()!='NONE':
+            lst.append(view_brand_combobox.get())
+            if flag==1:
+                string+=" and brand=%s"
+            else:
+                string+="brand=%s"
+            flag=2
+
+        if view_category_combobox.get()!='SELECT' and view_category_combobox.get()!='NONE':
+            lst.append(view_category_combobox.get())
+            if flag==1 or flag==2:
+                string+=" and category=%s"
+            else:
+                string+="category=%s"
+            # flag=0
+
+        query="select * from products where " + string
+        # print(query)
+        # print(tuple(lst))
+        mycursor.execute(query,tuple(lst))
+        fetch_row = mycursor.fetchall()
+        for item in view_product_tree.get_children():
+            view_product_tree.delete(item)
+        for i in fetch_row:
+            view_product_tree.insert("", "end", values=(i[0], i[1], i[4], i[5],i[2],i[3]))
 
 product_search_button=CTkButton(view_product_button_frame,text="SEARCH",command=search_product,width=150,height=40,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
 product_search_button.grid(row=0,column=1)
 
+
+
 product_view_button=CTkButton(view_product_button_frame,text="VIEW",command=change_selected_row,width=150,height=40,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
 product_view_button.grid(row=0,column=2)
 
+product_barcode_button=CTkButton(view_product_button_frame,text="BARCODE",width=150,height=40,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
+product_barcode_button.grid(row=0,column=3)
 
 # bgfImage= ImageTk.PhotoImage(file='image\\4.2.jpg')
 empty_frame = Frame(right_frame)
