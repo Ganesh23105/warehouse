@@ -583,8 +583,9 @@ def view_users():
 
     window = Toplevel()
     window.title("Change Products")
-    window.geometry("500x500")
+    window.geometry("400x500")
     window.grab_set()
+    window.config(bg='#e9e3d5')
 
     photo_lbl=Label(window)
     photo_lbl.config(image=photo)
@@ -669,32 +670,32 @@ def view_users():
         # emp_delete_button.grid_forget()
         # emp_update_button.grid_forget()
 
-        emp_fname_entr=Entry(window)
-        emp_fname_entr.grid(row=3,column=1,sticky='nsew')
+        emp_fname_entr=CTkEntry(window,width=150,height=30,corner_radius=10.5,border_color='#373737',fg_color='white',text_color='#373737',font=("Times New Roman",14,"bold"))
+        emp_fname_entr.grid(row=3,column=1,sticky='ew')
         emp_fname_entr.insert(0,values[2])
 
-        emp_Mname_entr=Entry(window)
-        emp_Mname_entr.grid(row=4,column=1,sticky='nsew')
+        emp_Mname_entr=CTkEntry(window,width=150,height=30,corner_radius=10.5,border_color='#373737',fg_color='white',text_color='#373737',font=("Times New Roman",14,"bold"))
+        emp_Mname_entr.grid(row=4,column=1,sticky='ew')
         emp_Mname_entr.insert(0,fetch_data[4])
 
-        emp_lname_entr=Entry(window)
-        emp_lname_entr.grid(row=5,column=1,sticky='nsew')
+        emp_lname_entr=CTkEntry(window,width=150,height=30,corner_radius=10.5,border_color='#373737',fg_color='white',text_color='#373737',font=("Times New Roman",14,"bold"))
+        emp_lname_entr.grid(row=5,column=1,sticky='ew')
         emp_lname_entr.insert(0,values[3])
 
-        emp_email_address_entr=Entry(window)
-        emp_email_address_entr.grid(row=6,column=1,sticky='nsew')
+        emp_email_address_entr=CTkEntry(window,width=150,height=30,corner_radius=10.5,border_color='#373737',fg_color='white',text_color='#373737',font=("Times New Roman",14,"bold"))
+        emp_email_address_entr.grid(row=6,column=1,sticky='ew')
         emp_email_address_entr.insert(0,values[4])
 
-        emp_contact_no_entr=Entry(window)
-        emp_contact_no_entr.grid(row=7,column=1,sticky='nsew')
+        emp_contact_no_entr=CTkEntry(window,width=150,height=30,corner_radius=10.5,border_color='#373737',fg_color='white',text_color='#373737',font=("Times New Roman",14,"bold"))
+        emp_contact_no_entr.grid(row=7,column=1,sticky='ew')
         emp_contact_no_entr.insert(0,values[5])
 
-        emp_birth_date_entr=Entry(window)
-        emp_birth_date_entr.grid(row=8,column=1,sticky='nsew')
+        emp_birth_date_entr=CTkEntry(window,width=150,height=30,corner_radius=10.5,border_color='#373737',fg_color='white',text_color='#373737',font=("Times New Roman",14,"bold"))
+        emp_birth_date_entr.grid(row=8,column=1,sticky='ew')
         emp_birth_date_entr.insert(0,values[6])
 
-        emp_join_date_entr=Entry(window)
-        emp_join_date_entr.grid(row=9,column=1,sticky='nsew')
+        emp_join_date_entr=CTkEntry(window,width=150,height=30,corner_radius=10.5,border_color='#373737',fg_color='white',text_color='#373737',font=("Times New Roman",14,"bold"))
+        emp_join_date_entr.grid(row=9,column=1,sticky='ew',pady=(5,20))
         emp_join_date_entr.insert(0,values[7])
 
         def cancel_emp_admin():
@@ -731,9 +732,9 @@ def view_users():
             mycursor.execute(update_query,(emp_fname_entr.get().capitalize(),emp_Mname_entr.get().capitalize(),emp_lname_entr.get().capitalize(),emp_email_address_entr.get(),emp_contact_no_entr.get(),emp_birth_date_entr.get(),emp_join_date_entr.get(),values[1]))
             resp=messagebox.askyesno("CONFIRMATION","DO YOU WANT TO UPDATE?")
             if resp==1:
-                emp_fname_entry.config(text=emp_fname_entr.get().capitalize())
-                emp_Mname_entry.config(text=emp_Mname_entr.get().capitalize())
-                emp_lname_entry.config(text=emp_lname_entr.get().capitalize)
+                emp_fname_entry.config(text=emp_fname_entr.get())
+                emp_Mname_entry.config(text=emp_Mname_entr.get())
+                emp_lname_entry.config(text=emp_lname_entr.get())
                 emp_email_address_entry.config(text=emp_email_address_entr.get())
                 emp_contact_no_entry.config(text=emp_contact_no_entr.get())
                 emp_birth_date_entry.config(text=emp_birth_date_entr.get())
