@@ -71,7 +71,6 @@ def order_add():
     add_frame.place_forget()
     view_product_frame.place_forget()
     add_order_frame.place(relx=0.025,rely=0.05,relwidth=0.95,relheight=0.9)
-    show1_table()
 
 def view_product():
     order_view_frame.place_forget()
@@ -306,16 +305,22 @@ product_name_entry=CTkEntry(add_frame,width=120,height=10,corner_radius=10.5,bor
 product_name_entry.grid(row=1,column=1)
 
 brand_nt, category_nt = combo_group_by()
-brand_values = flatten_tuple(brand_nt)
-category_values = flatten_tuple(category_nt)
-brand_values.append('NEW')
-category_values.append('NEW')
+brand_values_view_frame = flatten_tuple(brand_nt)
+brand_values_add_frame = flatten_tuple(brand_nt)
+category_values_view_frame = flatten_tuple(category_nt)
+category_values_add_frame = flatten_tuple(category_nt)
+
+brand_values_add_frame.append('NEW')
+category_values_add_frame.append('NEW')
+
+brand_values_view_frame.append('NONE')
+category_values_view_frame.append('NONE')
 
 product_brand_label=CTkLabel(add_frame,text="BRAND",width=150,height=10,corner_radius=12,font=("Times New Roman",15,"bold"),fg_color='#373737',text_color='#e9e3d5')
 product_brand_label.grid(row=2,column=0)
 brand_combobox_var=StringVar()
 brand_combobox =ttk.Combobox(add_frame,textvariable=brand_combobox_var,state="readonly")
-brand_combobox['values'] = brand_values
+brand_combobox['values'] = brand_values_add_frame
 brand_combobox.grid(row=2,column=1)
 brand_combobox.set("SELECT")
 brand_combobox.bind("<<ComboboxSelected>>", enable_entry)
@@ -326,7 +331,7 @@ product_category_label=CTkLabel(add_frame,text="CATEGORY",width=150,height=10,co
 product_category_label.grid(row=3,column=0)
 category_combobox_var=StringVar()
 category_combobox =ttk.Combobox(add_frame,textvariable=category_combobox_var,state="readonly")
-category_combobox['values'] = category_values
+category_combobox['values'] = category_values_add_frame
 category_combobox.grid(row=3,column=1)
 category_combobox.set("SELECT")
 category_combobox.bind("<<ComboboxSelected>>", enable_entry)
@@ -383,7 +388,7 @@ brand_label.grid(row=0,column=2)
 
 view_brand_combobox_var=StringVar(value="SELECT")
 view_brand_combobox =CTkComboBox(view_product_attributes_frame,variable=view_brand_combobox_var,
-                                 values= flatten_tuple(brand_nt),
+                                 values= brand_values_view_frame,
                                 width=140,height=40,
 								corner_radius=15,
 								fg_color='#e9e3d5',text_color='#373737',
@@ -408,7 +413,7 @@ category_label=CTkLabel(view_product_attributes_frame,text="CATEGORY",fg_color="
 category_label.grid(row=0,column=4)
 view_category_combobox_var=StringVar(value="SELECT")
 view_category_combobox =CTkComboBox(view_product_attributes_frame,variable=view_category_combobox_var,
-                                    values= flatten_tuple(category_nt),
+                                    values= category_values_view_frame,
                                     width=140,height=40,
 								    corner_radius=15,
 								    fg_color='#e9e3d5',text_color='#373737',
@@ -480,79 +485,218 @@ empty_frame = Frame(right_frame)
 # image_label.pack(side=RIGHT,fill=BOTH,expand=True)
 
 # add order
+add_order_frame = Frame(right_frame,borderwidth=5,relief='groove',bg="white")
 
-def show1_table():
+add_order_attributes_frame = Frame(add_order_frame,bg="white")
+add_order_attributes_frame.place(relx=0,rely=0,relwidth=0.75,relheight=0.15)
+add_order_attributes_frame.rowconfigure(0,weight=1,uniform='a')
+add_order_attributes_frame.columnconfigure((0,1),weight=4,uniform='a')
+add_order_attributes_frame.columnconfigure((2,3),weight=5,uniform='a')
 
-    def add_data(tree, product_id, product_name, quantity,Location,Brand,Category):
-        tree.insert("", "end", values=(product_id, product_name, quantity,Location,Brand,Category))
+select_type_combobox_order_var=StringVar(value="SELECT")
+select_type_combobox_order=CTkComboBox(add_order_attributes_frame,variable=select_type_combobox_order_var,
+                                  values=['Product ID', 'Product Name', 'Location'],
+                                  width=140,height=40,
+								   corner_radius=15,
+								   fg_color='#e9e3d5',text_color='#373737',
+								   border_color='#373737',
+								   button_color='#373737',
+								   font=("Times New Roman",12,"bold"),
+								   button_hover_color='#e9e3d5',
+								   dropdown_fg_color='white',
+								   dropdown_hover_color='#e9e3d5',
+								   dropdown_font=("Times New Roman",15,"bold"),
+								   dropdown_text_color='#373737',
+								   justify='center',
+								   state='readonly',
+								   border_width=3)
 
-    table_frame = Frame(add_order_frame)
-    table_frame.grid(row=4, column=0,columnspan=3)
+select_type_combobox_order.grid(row=0,column=0,sticky='nsew',padx=5,pady=25) 
+select_type_combobox_order.set("SELECT")
 
-    tree = ttk.Treeview(table_frame, columns=("Product ID", "Product Name", "Quantity","Location","Brand","Category"), show="headings")
+select_type_order_entry=CTkEntry(add_order_attributes_frame,width=140,height=40,corner_radius=10.5,border_color='#373737',fg_color='#e9e3d5',text_color='#373737',font=("Times New Roman",14,"bold"))
+select_type_order_entry.grid(row=0,column=1,sticky='nsew',padx=5,pady=25) 
 
-    tree.heading("Product ID", text="Product ID")
-    tree.heading("Product Name", text="Product Name")
-    tree.heading("Quantity", text="Quantiy")
-    tree.heading("Location", text="Location")
-    tree.heading("Brand", text="Brand")
-    tree.heading("Category",text="Category")
+brandorder_label=LabelFrame(add_order_attributes_frame,text="BRAND",bg="white",font=("Times New Roman",10,"bold"),fg="#373737")
+brandorder_label.grid(row=0,column=2,sticky='nsew',padx=(0,10),pady=5)
 
-            
-    add_data(tree, "John Doe", "25", "USA","ui")
+add_brand_order_combobox_var=StringVar(value="SELECT")
+add_brand_order_combobox =CTkComboBox(brandorder_label,variable=add_brand_order_combobox_var,
+                                 values= brand_values_view_frame,
+                                width=160,height=40,
+								corner_radius=10,
+								fg_color='#e9e3d5',text_color='#373737',
+								border_color='#373737',
+								button_color='#373737',
+								font=("Times New Roman",12,"bold"),
+								button_hover_color='#e9e3d5',
+								dropdown_fg_color='white',
+								dropdown_hover_color='#e9e3d5',
+								dropdown_font=("Times New Roman",15,"bold"),
+								dropdown_text_color='#373737',
+								justify='center',
+								state='readonly',
+								border_width=3)
+add_brand_order_combobox.pack(expand=True)
+add_brand_order_combobox.set("SELECT")
 
-    y_scrollbar = ttk.Scrollbar(add_order_frame, orient="vertical", command=tree.yview)
-    tree.configure(yscrollcommand=y_scrollbar.set)
+category_order_label=LabelFrame(add_order_attributes_frame,text="CATEGORY",bg="white",font=("Times New Roman",10,"bold"),fg="#373737")
+category_order_label.grid(row=0,column=3,sticky='nsew',padx=(0,10),pady=5)
+add_category_order_combobox_var=StringVar(value="SELECT")
+add_category_order_combobox =CTkComboBox(category_order_label,variable=add_category_order_combobox_var,
+                                    values= category_values_view_frame,
+                                    width=160,height=40,
+								    corner_radius=10,
+								    fg_color='#e9e3d5',text_color='#373737',
+								    border_color='#373737',
+								    button_color='#373737',
+								    font=("Times New Roman",12,"bold"),
+								    button_hover_color='#e9e3d5',
+								    dropdown_fg_color='white',
+								    dropdown_hover_color='#e9e3d5',
+								    dropdown_font=("Times New Roman",15,"bold"),
+								    dropdown_text_color='#373737',
+								    justify='center',
+								    state='readonly',
+								    border_width=3)
+add_category_order_combobox.pack(expand=True)
+add_category_order_combobox.set("SELECT")
+
+add_order_table_products_frame = Frame(add_order_frame)
+add_order_table_products_frame.place(relx=0,rely=0.15,relwidth=0.75,relheight=0.47)
+
+add_order_product_tree = ttk.Treeview(add_order_table_products_frame, columns=("Product ID", "Product Name", "Quantity","Location","Brand","Category"), show="headings",height=100)
+
+add_order_product_tree.heading("Product ID", text="Product ID")
+add_order_product_tree.heading("Product Name", text="Product Name")
+add_order_product_tree.heading("Quantity", text="Quantiy")
+add_order_product_tree.heading("Location", text="Location")
+add_order_product_tree.heading("Brand", text="Brand")
+add_order_product_tree.heading("Category",text="Category")
+
+add_order_product_y_scrollbar = Scrollbar(add_order_table_products_frame, orient="vertical", command=add_order_product_tree.yview)
+add_order_product_tree.configure(yscrollcommand=add_order_product_y_scrollbar.set)
+add_order_product_y_scrollbar.pack(side='right',fill=Y)
+
+add_order_product_x_scrollbar = Scrollbar(add_order_table_products_frame, orient="horizontal", command=add_order_product_tree.xview)
+add_order_product_tree.configure(xscrollcommand=add_order_product_x_scrollbar.set)
+add_order_product_x_scrollbar.pack(side='bottom',fill=X)
         
-    tree.pack(side="left", fill="both", expand=True)
-    y_scrollbar.pack(side="bottom", fill="y")
+add_order_product_tree.pack()
 
+##
+add_order_buttons_frame = CTkFrame(add_order_frame,fg_color="#e9e3d5",corner_radius=15)
+add_order_buttons_frame.place(relx=0.76,rely=0.01,relwidth=0.23,relheight=0.24)
+add_order_buttons_frame.rowconfigure((0,1,2),weight=1,uniform='a')
+add_order_buttons_frame.columnconfigure((0),weight=1,uniform='a')
 
+employee_barcode_button=CTkButton(add_order_buttons_frame,text="BARCODE",width=150,height=40,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
+employee_barcode_button.grid(row=0,column=0)
 
-add_order_frame = Frame(right_frame)
+employee_search_button=CTkButton(add_order_buttons_frame,text="SEARCH",width=150,height=40,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
+employee_search_button.grid(row=1,column=0)
 
-order_id_label=Label(add_order_frame,text="Order ID")
-order_id_label.grid(row=0,column=0)
-order_id_entry=Entry(add_order_frame)
-order_id_entry.grid(row=0,column=1)
+employee_reset_button=CTkButton(add_order_buttons_frame,text="RESET",width=150,height=40,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
+employee_reset_button.grid(row=2,column=0)
 
+add_order_quantity_frame = CTkFrame(add_order_frame,fg_color="#e9e3d5",corner_radius=15)
+add_order_quantity_frame.place(relx=0.76,rely=0.26,relwidth=0.23,relheight=0.36)
+add_order_quantity_frame.rowconfigure((0,1),weight=3,uniform='a')
+add_order_quantity_frame.rowconfigure((2),weight=2,uniform='a')
+add_order_quantity_frame.columnconfigure((0),weight=1,uniform='a')
 
-customer_label=Label(add_order_frame,text="customer")
-customer_label.grid(row=0,column=2)
-customer_entry=Entry(add_order_frame)
-customer_entry.grid(row=0,column=3)
+product_id_order_labelFrame=LabelFrame(add_order_quantity_frame,text="PRODUCT ID",bg="#E9E3D5",font=("Times New Roman",10,"bold"),fg="black")
+product_id_order_labelFrame.grid(row=0,column=0,sticky='nsew',padx=5,pady=(0,5))
 
-products_in_order_label = Label(add_order_frame,text="Products")
-products_in_order_label.grid(row=2,column=0)
-products_in_order_entry=Entry(add_order_frame)
-products_in_order_entry.grid(row=2,column=1)
+product_id_order_entry=CTkEntry(product_id_order_labelFrame,width=175,height=35,corner_radius=10,border_color='#373737',fg_color='white',text_color='#373737',font=("Times New Roman",14,"bold"))
+product_id_order_entry.pack(expand=TRUE) 
+
+quantity_order_labelFrame=LabelFrame(add_order_quantity_frame,text="QUANTITY",bg="#E9E3D5",font=("Times New Roman",10,"bold"),fg="black")
+quantity_order_labelFrame.grid(row=1,column=0,sticky='nsew',padx=5)
+
+quantity_order_entry=CTkEntry(quantity_order_labelFrame,width=175,height=35,corner_radius=10,border_color='#373737',fg_color='white',text_color='#373737',font=("Times New Roman",14,"bold"))
+quantity_order_entry.pack(expand=TRUE) 
+
+add_product_button=CTkButton(add_order_quantity_frame,text="ADD",width=100,height=20,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
+add_product_button.grid(row=2,column=0)
+
+##
+add_order_main_attributes_frame = CTkFrame(add_order_frame,fg_color="#e9e3d5",corner_radius=15)
+add_order_main_attributes_frame.place(relx=0.01,rely=0.63,relwidth=0.23,relheight=0.36)
+add_order_main_attributes_frame.rowconfigure((0,1,2),weight=1,uniform='a')
+# add_order_main_attributes_frame.rowconfigure((2),weight=5,uniform='a')
+add_order_main_attributes_frame.columnconfigure((0),weight=1,uniform='a')
+
+order_id_order_labelFrame=LabelFrame(add_order_main_attributes_frame,text="ORDER ID",bg="#E9E3D5",font=("Times New Roman",10,"bold"),fg="black")
+order_id_order_labelFrame.grid(row=0,column=0,sticky='nsew',padx=5,pady=(0,5))
+
+order_id_order_entry=CTkEntry(order_id_order_labelFrame,width=175,height=35,corner_radius=10,border_color='#373737',fg_color='white',text_color='#373737',font=("Times New Roman",14,"bold"))
+order_id_order_entry.pack(expand=TRUE) 
+
+customer_order_labelFrame=LabelFrame(add_order_main_attributes_frame,text="CUSTOMER",bg="#E9E3D5",font=("Times New Roman",10,"bold"),fg="black")
+customer_order_labelFrame.grid(row=1,column=0,sticky='nsew',padx=5)
+
+customer_order_entry=CTkEntry(customer_order_labelFrame,width=175,height=35,corner_radius=10,border_color='#373737',fg_color='white',text_color='#373737',font=("Times New Roman",14,"bold"))
+customer_order_entry.pack(expand=TRUE) 
 
 def order_submit():
-        try:
-            con = pymysql.connect(host='localhost',user='root',password='root')
-            mycursor = con.cursor()
-        except:
-            messagebox.showerror('Error','Connection is not established try again.')
-            return
+        if order_id_entry.get()=='' and customer_order_entry.get()=='':
+            messagebox.showerror('Error',"Please fill all the details.")
+        else:
+            try:
+                con = pymysql.connect(host='localhost',user='root',password='root')
+                mycursor = con.cursor()
+            except:
+                messagebox.showerror('Error','Connection is not established try again.')
+                return
+            
+            query='use warehouse'
+            mycursor.execute(query) 
+            try:
+                create_query="create table `order`(orderid VARCHAR(255) NOT NULL PRIMARY KEY,customer VARCHAR(255) NOT NULL)"
+                mycursor.execute(create_query)
+            except:
+                pass
+
+            check_order_id_query = 'select * from `order` where orderid = %s'
+            mycursor.execute(check_order_id_query,order_id_order_entry.get())
+            row = mycursor.fetchone()
+            print(row)
+
+            if row!=None:
+                messagebox.showerror('Error', 'Order ID '+order_id_order_entry.get()+' already exists.')
+            else:
+                query="insert into `order`(orderid,customer) values(%s,%s)"
+                mycursor.execute(query,(order_id_order_entry.get(),customer_order_entry.get()))
+                con.commit()
+                con.close()
+                messagebox.showinfo('Success','Order '+order_id_order_entry.get()+' successfully added!')
+                clear()
+                
+submit_product_button=CTkButton(add_order_main_attributes_frame,text="SUBMIT",command=order_submit,width=150,height=40,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
+submit_product_button.grid(row=2,column=0)
+
+##
+add_order_table_bill_frame = Frame(add_order_frame)
+add_order_table_bill_frame.place(relx=0.25,rely=0.62,relwidth=0.75,relheight=0.38)
+
+add_order_bill_tree = ttk.Treeview(add_order_table_bill_frame, columns=("Product ID", "Product Name", "Quantity","Brand","Category"), show="headings",height=100)
+
+add_order_bill_tree.heading("Product ID", text="Product ID")
+add_order_bill_tree.heading("Product Name", text="Product Name")
+add_order_bill_tree.heading("Quantity", text="Quantiy")
+add_order_bill_tree.heading("Brand", text="Brand")
+add_order_bill_tree.heading("Category",text="Category")
+
+add_order_bill_y_scrollbar = Scrollbar(add_order_table_bill_frame, orient="vertical", command=add_order_bill_tree.yview)
+add_order_bill_tree.configure(yscrollcommand=add_order_bill_y_scrollbar.set)
+add_order_bill_y_scrollbar.pack(side='right',fill=Y)
+
+add_order_bill_x_scrollbar = Scrollbar(add_order_table_bill_frame, orient="horizontal", command=add_order_bill_tree.xview)
+add_order_bill_tree.configure(xscrollcommand=add_order_bill_x_scrollbar.set)
+add_order_bill_x_scrollbar.pack(side='bottom',fill=X)
         
-        query='use warehouse'
-        mycursor.execute(query) 
-        try:
-            create_query="create table order(order_id VARCHAR(255) NOT NULL PRIMARY KEY,customer VARCHAR(255) NOT NULL)"
-            mycursor.execute(create_query)
-        except:
-            pass
-
-        query="insert into order(order_id,customer) values(%s,%s)"
-        mycursor.execute(query,(order_id_entry.get(),customer_entry.get()))
-        con.commit()
-        con.close()
-        messagebox.showinfo('Success','order added')
-        clear()
-
-
-order_add_show_button = Button(add_order_frame,text="SUBMIT",command=order_submit)
-order_add_show_button.grid(row=2,column=2)
+add_order_bill_tree.pack()
 
 #update status of order
 
