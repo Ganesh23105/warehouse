@@ -117,26 +117,26 @@ left_frame.place(relx=0,rely=0,relwidth=0.2,relheight=1)
 left_frame.columnconfigure(0,weight=1)
 
 #product Lframe
-product_Lframe = LabelFrame(left_frame, text="Products")
+product_Lframe = LabelFrame(left_frame, text="Products",bg='#e9e3d5')
 product_Lframe.grid(row=0,column=0,pady=10,padx=10,sticky="nsew")
 product_Lframe.columnconfigure(0,weight=1)
 
-product_add_button=CTkButton(product_Lframe,text="ADD",command=add_product,width=100,height=20,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
-product_add_button.grid(row=0,column=0)
+product_add_button=CTkButton(product_Lframe,text="ADD",command=add_product,width=150,height=40,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
+product_add_button.grid(row=0,column=0,pady=10)
 
-product_view_button=CTkButton(product_Lframe,text="VIEW",command=view_product,width=100,height=20,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
-product_view_button.grid(row=1,column=0)
+product_view_button=CTkButton(product_Lframe,text="VIEW",command=view_product,width=150,height=40,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
+product_view_button.grid(row=1,column=0,pady=(0,10))
 
 #order Lframe
-order_Lframe = LabelFrame(left_frame,text="Orders")
+order_Lframe = LabelFrame(left_frame,text="Orders",bg='#e9e3d5')
 order_Lframe.grid(row=1,column=0,padx=10,pady=10,sticky="nsew")
 order_Lframe.columnconfigure(0,weight=1)
 
-order_add_button=CTkButton(order_Lframe,text="ADD",command=order_add,width=100,height=20,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
-order_add_button.grid(row=0,column=0)
+order_add_button=CTkButton(order_Lframe,text="ADD",command=order_add,width=150,height=40,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
+order_add_button.grid(row=0,column=0,pady=10)
 
-order_view_button=CTkButton(order_Lframe,text="VIEW",command=order_view,width=100,height=20,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
-order_view_button.grid(row=1,column=0)
+order_view_button=CTkButton(order_Lframe,text="VIEW",command=order_view,width=150,height=40,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
+order_view_button.grid(row=1,column=0,pady=(0,10))
 
 right_frame=Frame(root,bg ="#E9E3D5")
 right_frame.place(relx=0.2,rely=0,relwidth=0.8,relheight=1)
@@ -870,20 +870,18 @@ order_view_x_scrollbar.pack(side="bottom", fill="x")
 order_view_table.pack()
 
 order_attribute_frame = Frame(order_view_frame, bg="white")
-order_attribute_frame.place(relx=0.4, rely=0, relwidth=0.6, relheight=0.15)
+order_attribute_frame.place(relx=0.4, rely=0, relwidth=0.6, relheight=0.1)
 
 order_attribute_frame.columnconfigure((0,1,2),weight=1,uniform='a')
 order_attribute_frame.rowconfigure((0),weight=1,uniform='a')
 
-order_id_label=CTkLabel(order_attribute_frame,text="Order ID",fg_color="#373737",font=("Times New Roman",20,"bold"),text_color="#e9e3d5",corner_radius=10)
+order_id_label=CTkLabel(order_attribute_frame,text="Order ID",fg_color="#e9e3d5",font=("Times New Roman",20,"bold"),text_color="#373737",corner_radius=10,width=160,height=35)
 order_id_label.grid(row=0,column=0)
-
 
 order_id_entry=CTkEntry(order_attribute_frame,width=185,height=35,corner_radius=10.5,border_color='#373737',fg_color='#e9e3d5',text_color='#373737',font=("Times New Roman",14,"bold"))
 order_id_entry.grid(row=0,column=1)
 
-
-show_order_button = CTkButton(order_attribute_frame,text="Show",corner_radius=10,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
+show_order_button = CTkButton(order_attribute_frame,text="Show",width=150,height=40,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
 show_order_button.grid(row=0,column=2)
 
 show_frame(empty_frame)
