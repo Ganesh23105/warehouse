@@ -21,7 +21,7 @@ def order_view():
     order_view_frame.place(relx=0.025,rely=0.05,relwidth=0.95,relheight=0.9)
 
 def order_add():
-    
+    retrieve_product_data(add_order_product_tree)
     order_view_frame.place_forget()
     add_frame.place_forget()
     view_product_frame.place_forget()
@@ -32,7 +32,7 @@ def view_product():
     add_frame.place_forget()
     add_order_frame.place_forget()
     view_product_frame.place(relx=0.025,rely=0.05,relwidth=0.95,relheight=0.9)
-    retrieve_product_data()
+    retrieve_product_data(view_product_tree)
     
 def add_product():
     order_view_frame.place_forget()
@@ -80,10 +80,10 @@ def combo_group_by():
     # print(brand_values, category_values)
     return brand_ntup, category_ntup
 
-def retrieve_product_data():
+def retrieve_product_data(given):
     # Iterate over all items in the treeview and delete them
-    for item in view_product_tree.get_children():
-        view_product_tree.delete(item)
+    for item in given.get_children():
+        given.delete(item)
     try:
         con = pymysql.connect(host='localhost',user='root',password='root')
         mycursor = con.cursor()
@@ -98,12 +98,12 @@ def retrieve_product_data():
     mycursor.execute(all_data)
     fetch_all = mycursor.fetchall()
     for i in fetch_all:
-        view_product_tree.insert("", "end", values=(i[0], i[1], i[4], i[5],i[2],i[3]))
+        given.insert("", "end", values=(i[0], i[1], i[5], i[4],i[2],i[3]))
 
-    data = [(view_product_tree.set(child, 1),view_product_tree.set(child, 0), child) for child in view_product_tree.get_children('')]
+    data = [(given.set(child, 1),given.set(child, 0), child) for child in given.get_children('')]
     data.sort(key=lambda x: (x[0], x[1]))
     for index, (name,id, child) in enumerate(data):
-        view_product_tree.move(child, '', index)
+        given.move(child, '', index)
 
 
 root = Tk()
@@ -359,14 +359,14 @@ view_category_combobox.set("SELECT")
 table_frame = Frame(view_product_frame)
 table_frame.place(relx=0,rely=0.15,relwidth=1,relheight=0.7)
 
-view_product_tree = ttk.Treeview(table_frame, columns=("Product ID", "Product Name", "Location","Quantity","Brand","Category"), show="headings",height=100)
+view_product_tree = ttk.Treeview(table_frame, columns=(1,2,3,4,5,6), show="headings",height=100)
 
-view_product_tree.heading("Product ID", text="Product ID")
-view_product_tree.heading("Product Name", text="Product Name")
-view_product_tree.heading("Location", text="Location")
-view_product_tree.heading("Quantity", text="Quantity")
-view_product_tree.heading("Category",text="Category")
-view_product_tree.heading("Brand",text="Brand")
+view_product_tree.heading(1, text="Product ID")
+view_product_tree.heading(2, text="Product Name")
+view_product_tree.heading(3, text="Quantity")
+view_product_tree.heading(4, text="Location")
+view_product_tree.heading(5,text="Category")
+view_product_tree.heading(6,text="Brand")
 
 view_product_tree_y_scroll = Scrollbar(table_frame, orient="vertical", command=view_product_tree.yview)
 view_product_tree.configure(yscrollcommand=view_product_tree_y_scroll.set)
@@ -397,7 +397,7 @@ def view_product_reset():
     view_brand_combobox.set("SELECT")
     select_type_combobox.set("SELECT")
     select_type_entry.delete(0,END)
-    retrieve_product_data()
+    retrieve_product_data(view_product_tree)
 
 product_reset_button=CTkButton(view_product_button_frame,text="RESET",command=view_product_reset,width=150,height=40,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
 product_reset_button.grid(row=0,column=0)
@@ -456,7 +456,7 @@ def search_product():
         for item in view_product_tree.get_children():
             view_product_tree.delete(item)
         for i in fetch_row:
-            view_product_tree.insert("", "end", values=(i[0], i[1], i[4], i[5],i[2],i[3]))
+            view_product_tree.insert("", "end", values=(i[0], i[1], i[5], i[4],i[2],i[3]))
 
 product_search_button=CTkButton(view_product_button_frame,text="SEARCH",command=search_product,width=150,height=40,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
 product_search_button.grid(row=0,column=1)
@@ -503,14 +503,14 @@ def change_selected_row():
 
     location_label=CTkLabel(window,text="LOCATION",fg_color="white",font=("Times New Roman",20,"bold"),text_color="#373737",corner_radius=10)
     location_label.grid(row=2,column=0,sticky='nsew',pady=5,padx=20)
-    location_entry=Label(window,background="white",text=values[2],
+    location_entry=Label(window,background="white",text=values[3],
                           font=("Times New Roman",15,"bold"),
                           fg="#373737",bd=2,relief="solid")
     location_entry.grid(row=2,column=1,sticky='ew')
 
     quantity_label=CTkLabel(window,text="QUANTITY",fg_color="white",font=("Times New Roman",20,"bold"),text_color="#373737",corner_radius=10)
     quantity_label.grid(row=3,column=0,sticky='nsew',pady=5,padx=20)
-    quantity_entry=Label(window,background="white",text=values[3],
+    quantity_entry=Label(window,background="white",text=values[2],
                           font=("Times New Roman",15,"bold"),
                           fg="#373737",bd=2,relief="solid")
     quantity_entry.grid(row=3,column=1,sticky='ew')
@@ -535,11 +535,11 @@ def change_selected_row():
 
         location_entr=CTkEntry(window,width=150,height=30,corner_radius=10.5,border_color='#373737',fg_color='white',text_color='#373737',font=("Times New Roman",14,"bold"))
         location_entr.grid(row=2,column=1,sticky='ew')
-        location_entr.insert(0,values[2])
+        location_entr.insert(0,values[3])
         
         quantity_entr=CTkEntry(window,width=150,height=30,corner_radius=10.5,border_color='#373737',fg_color='white',text_color='#373737',font=("Times New Roman",14,"bold"))
         quantity_entr.grid(row=3,column=1,sticky='ew')
-        quantity_entr.insert(0,values[3])
+        quantity_entr.insert(0,values[2])
 
         def cancel_product():
             product_submit_button.grid_forget()
@@ -570,7 +570,7 @@ def change_selected_row():
                 con.commit()
                 messagebox.showinfo("SUCCESS",values[0]+" UPDATED SUCCESSFULLY!")
                 cancel_product()
-                retrieve_product_data()
+                retrieve_product_data(view_product_tree)
                 # window.destroy()
             else:
                 pass
@@ -603,7 +603,7 @@ def change_selected_row():
             con.commit()
             messagebox.showinfo("SUCCESS",values[0]+" DELETED SUCCESSFULLY!")
             window.destroy()
-            retrieve_product_data()
+            retrieve_product_data(view_product_tree)
         else:
             pass
 
@@ -712,6 +712,21 @@ add_category_order_combobox.set("SELECT")
 add_order_table_products_frame = Frame(add_order_frame)
 add_order_table_products_frame.place(relx=0,rely=0.15,relwidth=0.75,relheight=0.47)
 
+def on_order_tree_select(event):
+    global available_stock
+    try:
+        selected_item = add_order_product_tree.selection()[0]  
+        values = add_order_product_tree.item(selected_item)['values']
+        # print("Selected Data:", values)
+        available_stock = values[2]
+        product_id_order_entry.delete(0,END)
+        quantity_order_entry.delete(0,END)
+        product_id_order_entry.insert(0,values[0])
+        # quantity_order_entry.insert(0,values[2])
+        quantity_order_label.config(text='Available Stocks : '+str(values[2]))
+    except:
+        pass
+
 add_order_product_tree = ttk.Treeview(add_order_table_products_frame, columns=("Product ID", "Product Name", "Quantity","Location","Brand","Category"), show="headings",height=100)
 
 add_order_product_tree.heading("Product ID", text="Product ID")
@@ -728,6 +743,8 @@ add_order_product_y_scrollbar.pack(side='right',fill=Y)
 add_order_product_x_scrollbar = Scrollbar(add_order_table_products_frame, orient="horizontal", command=add_order_product_tree.xview)
 add_order_product_tree.configure(xscrollcommand=add_order_product_x_scrollbar.set)
 add_order_product_x_scrollbar.pack(side='bottom',fill=X)
+
+add_order_product_tree.bind("<<TreeviewSelect>>", on_order_tree_select)
         
 add_order_product_tree.pack()
 
@@ -737,14 +754,82 @@ add_order_buttons_frame.place(relx=0.76,rely=0.01,relwidth=0.23,relheight=0.24)
 add_order_buttons_frame.rowconfigure((0,1,2),weight=1,uniform='a')
 add_order_buttons_frame.columnconfigure((0),weight=1,uniform='a')
 
-employee_barcode_button=CTkButton(add_order_buttons_frame,text="BARCODE",width=150,height=40,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
-employee_barcode_button.grid(row=0,column=0)
+products_add_barcode_button=CTkButton(add_order_buttons_frame,text="BARCODE",width=150,height=40,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
+products_add_barcode_button.grid(row=0,column=0)
 
-employee_search_button=CTkButton(add_order_buttons_frame,text="SEARCH",width=150,height=40,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
-employee_search_button.grid(row=1,column=0)
+def search_order_product():
+    # for item in view_product_tree.get_children():
+    #     view_product_tree.delete(item)
 
-employee_reset_button=CTkButton(add_order_buttons_frame,text="RESET",width=150,height=40,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
-employee_reset_button.grid(row=2,column=0)
+    if select_type_order_entry.get()=='' and (add_brand_order_combobox.get()=='SELECT' or add_brand_order_combobox.get()=='NONE') and (add_category_order_combobox.get()=='SELECT' or add_category_order_combobox.get()=='NONE'):
+        messagebox.showerror('Error','All Fields should be filled.')
+    else:
+        try:
+            con = pymysql.connect(host='localhost',user='root',password='root',database='warehouse')
+            mycursor = con.cursor()
+        except:
+            messagebox.showerror('Error','Connection is not established try again.')
+            return
+        flag=0
+        string=""
+        lst=[]
+                
+        if select_type_combobox_order.get()=='Product ID' and select_type_order_entry.get()!='':
+            string = 'product_id = %s'
+            lst.append(select_type_order_entry.get())
+            flag=1
+        elif select_type_combobox_order.get()=="Product Name" and select_type_order_entry.get()!='':
+            string = 'product_name = %s'
+            lst.append(select_type_order_entry.get())
+            flag=1
+        elif select_type_combobox_order.get()=="Location" and select_type_order_entry.get()!='':
+            string = 'location = %s'
+            lst.append(select_type_order_entry.get())
+            flag=1
+
+        if add_brand_order_combobox.get()!='SELECT' and add_brand_order_combobox.get()!='NONE':
+            lst.append(add_brand_order_combobox.get())
+            if flag==1:
+                string+=" and brand=%s"
+            else:
+                string+="brand=%s"
+            flag=2
+
+        if add_category_order_combobox.get()!='SELECT' and add_category_order_combobox.get()!='NONE':
+            lst.append(add_category_order_combobox.get())
+            if flag==1 or flag==2:
+                string+=" and category=%s"
+            else:
+                string+="category=%s"
+            # flag=0
+
+        query="select * from products where " + string
+        # print(query)
+        # print(tuple(lst))
+        mycursor.execute(query,tuple(lst))
+        fetch_row = mycursor.fetchall()
+        for item in add_order_product_tree.get_children():
+            add_order_product_tree.delete(item)
+        for i in fetch_row:
+            add_order_product_tree.insert("", "end", values=(i[0], i[1], i[5], i[4],i[2],i[3]))
+
+products_add_search_button=CTkButton(add_order_buttons_frame,text="SEARCH",command=search_order_product,width=150,height=40,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
+products_add_search_button.grid(row=1,column=0)
+
+def products_add_reset_frame():
+    available_stock = 0
+    retrieve_product_data(add_order_product_tree)
+    add_category_order_combobox.set("SELECT")
+    add_brand_order_combobox.set("SELECT")
+    select_type_combobox_order.set("SELECT")
+    select_type_order_entry.delete(0,END)
+    product_id_order_entry.delete(0,END)
+    quantity_order_entry.delete(0,END)
+    quantity_order_label.config(text='Available Stocks : ')
+    quantity_order_label.config(fg='#373737')
+
+products_add_reset_button=CTkButton(add_order_buttons_frame,text="RESET",command=products_add_reset_frame,width=150,height=40,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
+products_add_reset_button.grid(row=2,column=0)
 
 add_order_quantity_frame = CTkFrame(add_order_frame,fg_color="#e9e3d5",corner_radius=15)
 add_order_quantity_frame.place(relx=0.76,rely=0.26,relwidth=0.23,relheight=0.36)
@@ -761,10 +846,89 @@ product_id_order_entry.pack(expand=TRUE)
 quantity_order_labelFrame=LabelFrame(add_order_quantity_frame,text="QUANTITY",bg="#E9E3D5",font=("Times New Roman",10,"bold"),fg="black")
 quantity_order_labelFrame.grid(row=1,column=0,sticky='nsew',padx=5)
 
+def update_available_stock(event):
+    global flag_of_unavailable_stock
+    flag_of_unavailable_stock = 0
+    try:
+        entered_quantity = int(quantity_order_entry.get())
+        # available_stock = 100  # replace with your actual available stock value
+        if entered_quantity > available_stock:
+            quantity_order_label.config(fg='red')
+            quantity_order_label.config(text="No available stock")
+            flag_of_unavailable_stock = 1
+        else:
+            quantity_order_label.config(fg='#373737')
+            remaining_stock = available_stock - entered_quantity
+            quantity_order_label.config(text="Available Stocks : " + str(remaining_stock))
+    except ValueError:
+        if quantity_order_entry.get() == '':
+            quantity_order_label.config(fg='#373737')
+            quantity_order_label.config(text="Available Stocks : " + str(available_stock))
+            # Handle non-integer input
+        else:
+            quantity_order_label.config(fg='red')
+            quantity_order_label.config(text="Invalid input")
+
 quantity_order_entry=CTkEntry(quantity_order_labelFrame,width=175,height=35,corner_radius=10,border_color='#373737',fg_color='white',text_color='#373737',font=("Times New Roman",14,"bold"))
 quantity_order_entry.pack(expand=TRUE) 
 
-add_product_button=CTkButton(add_order_quantity_frame,text="ADD",width=100,height=20,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
+# Bind the update function to the KeyRelease event of the entry widget
+quantity_order_entry.bind("<KeyRelease>", update_available_stock)
+
+quantity_order_label=Label(quantity_order_labelFrame,text="Available Stocks : ",width=175,bd=0,bg='#e9e3d5',fg='#373737',font=("Times New Roman",10))
+quantity_order_label.pack(expand=TRUE) 
+
+def add_product_in_bill():
+
+    def replace_tree_item(tree, column_name, target_value, new_data):
+        # Find the item with the target value in the specified column
+        items = tree.get_children()
+        for item in items:
+            if tree.item(item)['values'][tree['columns'].index(column_name)] == target_value:
+                # Delete the found item
+                tree.delete(item)
+                
+                # Insert new data at the same position
+                tree.insert("", items.index(item), values=new_data)
+                break
+
+    if product_id_order_entry.get() == '':
+        messagebox.showerror('ERROR','Please fill the Product ID.')
+    elif quantity_order_entry.get() == '':
+        messagebox.showerror('ERROR','Please fill the Quantity.')
+    elif not str(quantity_order_entry.get()).isdigit():
+        # print(quantity_order_entry.get())
+        messagebox.showerror('ERROR','Quantity should be the Digit.')
+    elif flag_of_unavailable_stock == 1:
+        messagebox.showerror('ERROR','Unavailable Stock.')
+    else:
+        try:
+            con = pymysql.connect(host='localhost',user='root',password='root',database='warehouse')
+            mycursor = con.cursor()
+        except:
+            messagebox.showerror('Error','Connection is not established try again.')
+            return       
+        
+        fetch_data_query = 'select * from products where product_id = %s'
+        mycursor.execute(fetch_data_query,product_id_order_entry.get())
+
+        row = mycursor.fetchone()
+
+        if row == None:
+            messagebox.showerror('Error', "Product ID "+product_id_order_entry.get()+" doesn't exists.")
+        else:
+            add_order_bill_tree.insert("", "end", values=(row[0], row[1], quantity_order_entry.get(), row[2],row[3]))
+            # print(row)
+            new_stock = int(row[5]) - int(quantity_order_entry.get())
+            # print(remaining_stock)
+            update_query = 'UPDATE products SET quantity = %s WHERE product_id = %s'
+            # print(row[0])
+            mycursor.execute(update_query,(str(new_stock),row[0]))
+            con.commit()
+            replace_tree_item(add_order_product_tree,"Product ID",row[0],(row[0], row[1], new_stock, row[4], row[2],row[3]))
+
+
+add_product_button=CTkButton(add_order_quantity_frame,text="ADD",command=add_product_in_bill,width=100,height=20,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
 add_product_button.grid(row=2,column=0)
 
 ##
@@ -808,7 +972,7 @@ def order_submit():
             check_order_id_query = 'select * from `order` where orderid = %s'
             mycursor.execute(check_order_id_query,order_id_order_entry.get())
             row = mycursor.fetchone()
-            print(row)
+            # print(row)
 
             if row!=None:
                 messagebox.showerror('Error', 'Order ID '+order_id_order_entry.get()+' already exists.')
