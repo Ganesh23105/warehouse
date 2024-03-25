@@ -715,6 +715,7 @@ add_order_table_products_frame.place(relx=0,rely=0.15,relwidth=0.75,relheight=0.
 def on_order_tree_select(event):
     global available_stock
     try:
+        # add_order_bill_tree.selection_remove(add_order_bill_tree.selection())
         selected_item = add_order_product_tree.selection()[0]  
         values = add_order_product_tree.item(selected_item)['values']
         # print("Selected Data:", values)
@@ -724,6 +725,7 @@ def on_order_tree_select(event):
         product_id_order_entry.insert(0,values[0])
         # quantity_order_entry.insert(0,values[2])
         quantity_order_label.config(text='Available Stocks : '+str(values[2]))
+        # add_order_product_tree.selection_set(selected_item)
     except:
         pass
 
@@ -878,19 +880,19 @@ quantity_order_entry.bind("<KeyRelease>", update_available_stock)
 quantity_order_label=Label(quantity_order_labelFrame,text="Available Stocks : ",width=175,bd=0,bg='#e9e3d5',fg='#373737',font=("Times New Roman",10))
 quantity_order_label.pack(expand=TRUE) 
 
-def add_product_in_bill():
-
-    def replace_tree_item(tree, column_name, target_value, new_data):
-        # Find the item with the target value in the specified column
-        items = tree.get_children()
-        for item in items:
-            if tree.item(item)['values'][tree['columns'].index(column_name)] == target_value:
-                # Delete the found item
-                tree.delete(item)
+def replace_tree_item(tree, column_name, target_value, new_data):
+    # Find the item with the target value in the specified column
+    items = tree.get_children()
+    for item in items:
+        if tree.item(item)['values'][tree['columns'].index(column_name)] == target_value:
+            # Delete the found item
+            tree.delete(item)
                 
-                # Insert new data at the same position
-                tree.insert("", items.index(item), values=new_data)
-                break
+            # Insert new data at the same position
+            tree.insert("", items.index(item), values=new_data)
+            break
+
+def add_product_in_bill():
 
     if product_id_order_entry.get() == '':
         messagebox.showerror('ERROR','Please fill the Product ID.')
@@ -991,6 +993,12 @@ submit_product_button.grid(row=2,column=0)
 add_order_table_bill_frame = Frame(add_order_frame)
 add_order_table_bill_frame.place(relx=0.25,rely=0.62,relwidth=0.75,relheight=0.38)
 
+def on_bill_tree_select(event):
+    try:
+        add_order_product_tree.selection_remove(add_order_product_tree.selection())
+    except:
+        pass
+
 add_order_bill_tree = ttk.Treeview(add_order_table_bill_frame, columns=("Product ID", "Product Name", "Quantity","Brand","Category"), show="headings",height=100)
 
 add_order_bill_tree.heading("Product ID", text="Product ID")
@@ -1007,6 +1015,8 @@ add_order_bill_x_scrollbar = Scrollbar(add_order_table_bill_frame, orient="horiz
 add_order_bill_tree.configure(xscrollcommand=add_order_bill_x_scrollbar.set)
 add_order_bill_x_scrollbar.pack(side='bottom',fill=X)
         
+add_order_bill_tree.bind("<<TreeviewSelect>>", on_bill_tree_select)
+
 add_order_bill_tree.pack()
 
 #update status of order
