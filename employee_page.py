@@ -6,6 +6,12 @@ import pymysql
 from PIL import Image, ImageTk
 import ttkthemes
 import datetime
+import barcode
+from barcode.writer import ImageWriter
+import os
+import cv2
+from pyzbar import pyzbar
+
 
 def clear():
     product_id_entry.delete(0, END)
@@ -189,7 +195,7 @@ brand_combobox = CTkComboBox(product_brand_labelFrame, variable=brand_combobox_v
 								state='readonly',
 								border_width=3)
 #brand_combobox['values'] = brand_values_add_frame
-brand_combobox.grid(row=0, column=0, padx=(5, 0))  # Adjust padx to your preference
+brand_combobox.grid(row=0, column=0, padx=(5, 0)) 
 brand_combobox.set("SELECT")
 brand_combobox.bind("<<ComboboxSelected>>", enable_entry)
 
@@ -232,6 +238,20 @@ quantity_labelFrame.grid(row=5,column=0,padx=5,pady=5)
 quantity_entry=CTkEntry(quantity_labelFrame,width=175,height=35,corner_radius=10,border_color='#373737',fg_color='#E9E3D5',text_color='#373737',font=("Times New Roman",14,"bold"))
 quantity_entry.pack(expand=TRUE,pady=8,padx=10) 
 
+def generate_barcode(data, folder_path='./bar'):
+    # Create the folder if it doesn't exist
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path)
+
+    # Create a Code 128 barcode object
+    code128 = barcode.get_barcode_class('code128')
+    code128_instance = code128(data, writer=ImageWriter())
+
+    # Save the Code 128 barcode to the specified folder
+    full_filename = os.path.join(folder_path, f"{data}")
+    code128_instance.save(full_filename)
+    # print(f"Code 128 Barcode saved as {full_filename}")
+
 def database_add_products():
     if product_id_entry.get()=='' or product_name_entry.get()=='' or location_entry.get()=='' or quantity_entry.get()=='' or brand_combobox.get()=='SELECT' or category_combobox.get()=='SELECT' or (brand_combobox.get()=='NEW' and product_brand_entry.get()=='') or (category_combobox.get()=='NEW' and product_category_entry.get()==''):
         messagebox.showerror('Error','All Fields should be filled.')
@@ -262,17 +282,15 @@ def database_add_products():
         else:
             category = category_combobox.get()
 
-        if row != None:
-            query = "select product_name from products where product_id=%s"
-            mycursor.execute(query,product_id_entry.get())  
-            value = mycursor.fetchone()        
-            messagebox.showerror('Error','Product ID Already Exists as '+str(value[0]))
+        if row != None:     
+            messagebox.showerror('Error','Product ID Already Exists as '+str(row[1]))
         else:
             query = 'insert into products(product_id, product_name, brand, category, location, quantity) values(%s,%s,%s,%s,%s,%s)'
             mycursor.execute(query,(product_id_entry.get(),product_name_entry.get(),brand,category,location_entry.get(),quantity_entry.get()))
             con.commit()
             con.close()
             messagebox.showinfo('Success','Product added')
+            generate_barcode(product_id_entry.get())
             clear()
             quantity_entry.bind('<Return>',product_id_entry.focus())
 
@@ -473,15 +491,17 @@ def change_selected_row():
     # print(selected_item)
     values = view_product_tree.item(selected_item, 'values')
     # print(values)
+
+    view_product_in_view_frame(values)
+
+
+def view_product_in_view_frame(values):
     try:
-        con = pymysql.connect(host='localhost',user='root',password='root')
+        con = pymysql.connect(host='localhost',user='root',password='root',database='warehouse')
         mycursor = con.cursor()
     except:
         messagebox.showerror('Error','Connection is not established try again.')
         return
-
-    query='use warehouse'
-    mycursor.execute(query)
 
     window = Toplevel()
     window.title("Change Products")
@@ -621,10 +641,94 @@ def change_selected_row():
                                 hover_color='black')
     product_delete_button.grid(row=6,column=0)
 
+
 product_view_button=CTkButton(view_product_button_frame,text="VIEW",command=change_selected_row,width=150,height=40,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
 product_view_button.grid(row=0,column=2)
 
-product_barcode_button=CTkButton(view_product_button_frame,text="BARCODE",width=150,height=40,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
+def scan_barcode_from_camera():
+    flag = None
+    try:
+        con = pymysql.connect(host='localhost',user='root',password='root',database='warehouse')
+        mycursor = con.cursor()
+    except:
+        messagebox.showerror('Error','Connection is not established try again.')
+        return
+
+    # Initialize the camera
+    cap = cv2.VideoCapture(0)
+
+    # Set window flags to disable close, minimize, maximize buttons
+    # cv2.namedWindow("QR Code Scanner", cv2.WINDOW_NORMAL | cv2.WINDOW_GUI_NORMAL)
+
+    if not cap.isOpened():
+        print("Error: Could not open camera.")
+        return
+
+    while flag is None:
+        # Read a frame from the camera
+        ret, frame = cap.read()
+
+        if not ret:
+            print("Error: Could not read frame.")
+            break
+
+        # Convert the frame to grayscale
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+        # Find Code 128 barcodes in the grayscale frame
+        code128_barcodes = pyzbar.decode(gray, symbols=[pyzbar.ZBarSymbol.CODE128])
+
+        # if not code128_barcodes:
+        cv2.putText(frame, "CLICK esc TO CLOSE", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
+        # else:
+        for code128_barcode in code128_barcodes:
+                # Extract the bounding box location of the Code 128 barcode
+            (x, y, w, h) = code128_barcode.rect
+
+                # Decode the Code 128 barcode data
+            code128_barcode_data = code128_barcode.data.decode("utf-8")
+            # print(code128_barcode_data)
+
+            query = 'select * from products where product_id = %s'
+            mycursor.execute(query, code128_barcode_data)
+            result = mycursor.fetchone()
+            # print(result)
+
+            if result:              
+                flag = (result[0], result[1], result[5], result[4], result[2], result[3])
+                break
+            else:
+                # print("QR Code not found in the database.")
+
+                # Print the Code 128 barcode data
+            # cv2.putText(frame, f"Data: {code128_barcode_data}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
+                
+                # Draw a rectangle around the Code 128 barcode on the original frame
+                cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
+                cv2.putText(frame, "NOT IN DATABASE", (10, 450), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 255), 2)
+
+        # Display the original frame
+        cv2.imshow('Code 128 Barcode Scanner', frame)
+
+        # Break the loop if the escape key (27) is pressed
+        if cv2.waitKey(1) == 27:
+            break
+
+    # Release the camera and close all OpenCV windows
+    cap.release()
+    cv2.destroyAllWindows()
+
+    return flag
+
+def view_barcode_scan():
+    flag = scan_barcode_from_camera()
+    if flag == None:
+        pass
+    else:
+        view_product_in_view_frame(flag)
+
+
+product_barcode_button=CTkButton(view_product_button_frame,text="BARCODE",command=view_barcode_scan,width=150,height=40,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
 product_barcode_button.grid(row=0,column=3)
 
 # bgfImage= ImageTk.PhotoImage(file='image\\4.2.jpg')
@@ -719,7 +823,6 @@ def on_order_tree_select(event):
     try:
         delete_product_button.grid_forget()
         add_product_button.grid(row=2,column=0)
-        # quantity_order_label.pack(expand=TRUE) 
     except:
         pass
     try:
@@ -770,7 +873,36 @@ add_order_buttons_frame.place(relx=0.76,rely=0.01,relwidth=0.23,relheight=0.24)
 add_order_buttons_frame.rowconfigure((0,1,2),weight=1,uniform='a')
 add_order_buttons_frame.columnconfigure((0),weight=1,uniform='a')
 
-products_add_barcode_button=CTkButton(add_order_buttons_frame,text="BARCODE",width=150,height=40,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
+def scan_barcode_in_add_order_frame():
+    global available_stock
+    flag = scan_barcode_from_camera()
+    if flag == None:
+        pass
+    else:
+        try:
+            delete_product_button.grid_forget()
+            add_product_button.grid(row=2,column=0)
+        except:
+            pass
+        try:
+            quantity_order_entry.configure(state="normal")
+            product_id_order_entry.configure(state="normal")
+        except:
+            pass
+        try:
+            available_stock = flag[2]
+            product_id_order_entry.delete(0,END)
+            quantity_order_entry.delete(0,END)
+            product_id_order_entry.insert(0,flag[0])
+            # quantity_order_entry.insert(0,values[2])
+            quantity_order_label.config(text='Available Stocks : '+str(flag[2]))
+            # add_order_product_tree.selection_set(selected_item)
+            quantity_order_entry.focus()
+        except:
+            pass
+        
+
+products_add_barcode_button=CTkButton(add_order_buttons_frame,text="BARCODE",command= scan_barcode_in_add_order_frame,width=150,height=40,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
 products_add_barcode_button.grid(row=0,column=0)
 
 def search_order_product():
@@ -1080,7 +1212,6 @@ submit_product_button.grid(row=2,column=0)
 ##
 add_order_table_bill_frame = Frame(add_order_frame)
 add_order_table_bill_frame.place(relx=0.25,rely=0.62,relwidth=0.75,relheight=0.38)
-
 
 def on_bill_tree_select(event):
     try:

@@ -122,6 +122,8 @@ def scan_qr():
         # Decode QR code
         decoded_objects = decode(frame)
 
+        cv2.putText(frame, "CLICK esc TO CLOSE", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
+
         for obj in decoded_objects:
             data = obj.data.decode('utf-8')
 
@@ -140,7 +142,8 @@ def scan_qr():
                     flag = 'e'
                 break
             else:
-                print("QR Code not found in the database.")
+                cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
+                cv2.putText(frame, "NOT IN DATABASE", (10, 450), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 255), 2)
 
         # Display the frame
         cv2.imshow("QR Code Scanner", frame)

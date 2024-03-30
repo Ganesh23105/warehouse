@@ -265,9 +265,9 @@ def upload_photo():
     file_path = filedialog.askopenfilename()
     if file_path:
 
-        uploaded_label.grid(row=9,column=2)
+        uploaded_label.grid(row=1,column=0)
         image = Image.open(file_path)
-        image.thumbnail((50, 50))  
+        image.thumbnail((150, 150))  
         # print(image)
         photo = ImageTk.PhotoImage(image)
         uploaded_label.config(image=photo)
@@ -342,72 +342,94 @@ admin_page_right_frame.place(relx=0.20,rely=0,relwidth=0.80,relheight=1)
 
 # add frame
 add_frame=Frame(admin_page_right_frame,borderwidth=5,relief='groove',bg="white")
+add_frame.columnconfigure((0,1),weight=1,uniform='a')
 
 personal_details_Lframe=LabelFrame(add_frame,text= "Personal Details",font=("Poppins",12,"bold"),bg="white")
 personal_details_Lframe.pack(expand = True, fill=BOTH,padx=25,pady=25)
+personal_details_Lframe.columnconfigure((0,1),weight=1,uniform='a')
+personal_details_Lframe.rowconfigure((0,1,2,3,4,4,6),weight=1,uniform='a')
 
-role_selection_label=Label(personal_details_Lframe,text="ROLE",bd=0,font=("Times New Roman",15,"bold"),bg="white",fg="#021530",activeforeground='#373737',width=40)
-role_selection_label.grid(row=0,column=0,pady=8)
+
+
+role_selection_labelFrame=LabelFrame(personal_details_Lframe,text="ROLE",font=("Times New Roman",15,"bold"),bg="white",fg="black",width=40)
+role_selection_labelFrame.grid(row=0,column=0)
+
 role_combo_var=StringVar()
-role_combo_box =ttk.Combobox(personal_details_Lframe,textvariable=role_combo_var,state="readonly")
+role_combo_box =CTkComboBox(role_selection_labelFrame,variable=role_combo_var,
+                                width=175,height=35,
+								corner_radius=15,
+								fg_color='#e9e3d5',text_color='#373737',
+								border_color='#373737',
+								button_color='#373737',
+								font=("Times New Roman",12,"bold"),
+								button_hover_color='#e9e3d5',
+								dropdown_fg_color='white',
+								dropdown_hover_color='#e9e3d5',
+								dropdown_font=("Times New Roman",15,"bold"),
+								dropdown_text_color='#373737',
+								justify='center',
+								state='readonly',
+								border_width=3)
 role_combo_box['values'] = ('Admin', 'Employee')
-role_combo_box.grid(row=0,column=1)
+role_combo_box.grid(row=0,column=1,padx=5,pady=8)
 role_combo_box.set("Select")
 
-first_name_label=Label(personal_details_Lframe,text="FIRST NAME",bd=0,font=("Times New Roman",15,"bold"),bg="white",fg="#021530",activeforeground='#373737',width=40)
-first_name_label.grid(row=1,column=0,pady=8)
-first_name_entry=Entry(personal_details_Lframe,bd=4,relief=GROOVE,width=25)
-first_name_entry.grid(row=1,column=1)
+first_name_labelFrame=LabelFrame(personal_details_Lframe,text="FIRST NAME",font=("Times New Roman",15,"bold"),bg="white",fg="black",width=40)
+first_name_labelFrame.grid(row=1,column=0)
+first_name_entry=CTkEntry(first_name_labelFrame,width=175,height=35,corner_radius=10,border_color='#373737',fg_color='#E9E3D5',text_color='#373737',font=("Times New Roman",14,"bold"))
+first_name_entry.grid(row=1,column=1,padx=5,pady=8)
 
-middle_name_label=Label(personal_details_Lframe,text="MIDDLE NAME",bd=0,font=("Times New Roman",15,"bold"),bg="white",fg="#021530",activeforeground='#373737',width=40)
-middle_name_label.grid(row=2,column=0,pady=8)
-middle_name_entry=Entry(personal_details_Lframe,bd=4,relief=GROOVE,width=25)
-middle_name_entry.grid(row=2,column=1)
+middle_name_labelFrame=LabelFrame(personal_details_Lframe,text="MIDDLE NAME",font=("Times New Roman",15,"bold"),bg="white",fg="black",width=40)
+middle_name_labelFrame.grid(row=2,column=0)
+middle_name_entry=CTkEntry(middle_name_labelFrame,width=175,height=35,corner_radius=10,border_color='#373737',fg_color='#E9E3D5',text_color='#373737',font=("Times New Roman",14,"bold"))
+middle_name_entry.grid(row=2,column=1,padx=5,pady=8)
 
-last_name_label=Label(personal_details_Lframe,text="LAST NAME",bd=0,font=("Times New Roman",15,"bold"),bg="white",fg="#021530",activeforeground='#373737',width=40)
-last_name_label.grid(row=3,column=0,pady=8)
-last_name_entry=Entry(personal_details_Lframe,bd=4,relief=GROOVE,width=25)
-last_name_entry.grid(row=3,column=1)
+last_name_labelFrame=LabelFrame(personal_details_Lframe,text="LAST NAME",font=("Times New Roman",15,"bold"),bg="white",fg="black",width=40)
+last_name_labelFrame.grid(row=3,column=0)
+last_name_entry=CTkEntry(last_name_labelFrame,width=175,height=35,corner_radius=10,border_color='#373737',fg_color='#E9E3D5',text_color='#373737',font=("Times New Roman",14,"bold"))
+last_name_entry.grid(row=3,column=1,padx=5,pady=8)
 
-date_of_birth_label=Label(personal_details_Lframe,text="DATE OF BIRTH",bd=0,font=("Times New Roman",15,"bold"),bg="white",fg="#021530",activeforeground='#373737',width=40)
-date_of_birth_label.grid(row=4,column=0,pady=8)
-birth_date = DateEntry(personal_details_Lframe,state='readonly', date_pattern='yyyy-mm-dd')
-birth_date.grid(row=4,column=1)
+date_of_birth_labelFrame=LabelFrame(personal_details_Lframe,text="DATE OF BIRTH",font=("Times New Roman",15,"bold"),bg="white",fg="#021530",width=40)
+date_of_birth_labelFrame.grid(row=4,column=0)
+birth_date = DateEntry(date_of_birth_labelFrame,state='readonly', date_pattern='yyyy-mm-dd',width=26,height=70)
+birth_date.grid(row=4,column=1,padx=5,pady=8)
 
 eighteen_years_ago = now_date()
 birth_date.set_date(eighteen_years_ago.date())
 birth_date.configure(maxdate=eighteen_years_ago.date())
 birth_date.bind("<<DateEntrySelected>>", update_age)
 
-age_label=Label(personal_details_Lframe,text="AGE",bd=0,font=("Times New Roman",15,"bold"),bg="white",fg="#021530",activeforeground='#373737',width=40)
-age_label.grid(row=5,column=0,pady=8)
-age_entry=Entry(personal_details_Lframe, state='readonly',bd=4,relief=GROOVE,width=25)
-age_entry.grid(row=5,column=1)
+age_labelFrame=LabelFrame(personal_details_Lframe,text="AGE",font=("Times New Roman",15,"bold"),bg="white",fg="black",width=40)
+age_labelFrame.grid(row=5,column=0)
+age_entry=CTkEntry(age_labelFrame,state='readonly',width=175,height=35,corner_radius=10,border_color='#373737',fg_color='#E9E3D5',text_color='#373737',font=("Times New Roman",14,"bold"))
+age_entry.grid(row=5,column=1,padx=5,pady=8)
 
-contact_no_label=Label(personal_details_Lframe,text="CONTACT NO",bd=0,font=("Times New Roman",15,"bold"),bg="white",fg="#021530",activeforeground='#373737',width=40)
-contact_no_label.grid(row=6,column=0,pady=8)
-contact_no_entry=Entry(personal_details_Lframe,bd=4,relief=GROOVE,width=25)
-contact_no_entry.grid(row=6,column=1)
+contact_no_labelFrame=LabelFrame(personal_details_Lframe,text="CONTACT NO",font=("Times New Roman",15,"bold"),bg="white",fg="black",width=40)
+contact_no_labelFrame.grid(row=0,column=1)
+contact_no_entry=CTkEntry(contact_no_labelFrame,width=175,height=35,corner_radius=10,border_color='#373737',fg_color='#E9E3D5',text_color='#373737',font=("Times New Roman",14,"bold"))
+contact_no_entry.grid(row=6,column=1,padx=5,pady=8)
 
-email_address_label=Label(personal_details_Lframe,text="EMAIL",bd=0,font=("Times New Roman",15,"bold"),bg="white",fg="#021530",activeforeground='#373737',width=40)
-email_address_label.grid(row=7,column=0,pady=8)
-email_address_entry=Entry(personal_details_Lframe,bd=4,relief=GROOVE,width=25)
-email_address_entry.grid(row=7,column=1)
+email_address_labelFrame=LabelFrame(personal_details_Lframe,text="EMAIL",font=("Times New Roman",15,"bold"),bg="white",fg="black",width=40)
+email_address_labelFrame.grid(row=1,column=1)
+email_address_entry=CTkEntry(email_address_labelFrame,width=175,height=35,corner_radius=10,border_color='#373737',fg_color='#E9E3D5',text_color='#373737',font=("Times New Roman",14,"bold"))
+email_address_entry.grid(row=7,column=1,padx=5,pady=8)
     
-date_of_joining_label=Label(personal_details_Lframe,text="DATE OF JOINING",bd=0,font=("Times New Roman",15,"bold"),bg="white",fg="#021530",activeforeground='#373737',width=40)
-date_of_joining_label.grid(row=8,column=0,pady=8)
-join_date = DateEntry(personal_details_Lframe,state='readonly', date_pattern='yyyy-mm-dd')
-join_date.grid(row=8,column=1)
+date_of_joining_labelFrame=LabelFrame(personal_details_Lframe,text="DATE OF JOINING",font=("Times New Roman",15,"bold"),bg="white",fg="black",width=40)
+date_of_joining_labelFrame.grid(row=2,column=1)
+join_date = DateEntry(date_of_joining_labelFrame,state='readonly', date_pattern='yyyy-mm-dd',width=26,height=70)
+join_date.grid(row=8,column=1,padx=5,pady=8)
 
-photo_label=Label(personal_details_Lframe,text="PASSPORT PHOTO",bd=0,font=("Times New Roman",15,"bold"),bg="white",fg="#021530",activeforeground='#373737',width=40)
-photo_label.grid(row=9, column=0,pady=8)
-upload_button=Button(personal_details_Lframe,text="UPLOAD",command=upload_photo)
-upload_button.grid(row=9,column=1)
+photo_labelFrame=LabelFrame(personal_details_Lframe,text="PASSPORT PHOTO",font=("Times New Roman",15,"bold"),bg="white",fg="black",width=40)
+photo_labelFrame.grid(row=3, column=1,rowspan=3,sticky="n")
+photo_labelFrame.columnconfigure((0),weight=1,uniform='a')
+upload_button=CTkButton(photo_labelFrame,text="UPLOAD",command=upload_photo,width=100,height=20,corner_radius=8,font=("Times New Roman",20,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
+upload_button.grid(row=0,column=0,padx=5,pady=8)
 
-uploaded_label = Label(personal_details_Lframe)
+uploaded_label = Label(photo_labelFrame)
 
-submit_button=Button(personal_details_Lframe,text="SUBMIT",font=10,command=confirm_dialog,width=15,bg="white",fg="#033043")
-submit_button.grid(row=11,column=1,sticky="w")
+
+submit_button=CTkButton(personal_details_Lframe,text="SUBMIT",command=confirm_dialog,width=150,height=40,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
+submit_button.grid(row=6,column=0,columnspan=2)
 
 first_name_entry.bind("<Return>",lambda event:middle_name_entry.focus())
 middle_name_entry.bind("<Return>",lambda event:last_name_entry.focus())
