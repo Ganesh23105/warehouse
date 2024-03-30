@@ -1,71 +1,53 @@
 import tkinter as tk
+from tkinter import ttk
 
-# Define colors
-WHITE = "#FFFFFF"
-GRAY = "#C0C0C0"
-BLACK = "#000000"
+class ScrollableCombobox:
+    def __init__(self, master, values, dropdown_height=10):
+        self.master = master
+        self.values = values
+        self.dropdown_height = dropdown_height
 
-# Define cube dimensions
-CUBE_SIZE = 50
+        self.combobox_frame = ttk.Frame(master)
+        self.combobox_frame.pack(fill='x')
 
-# Define initial warehouse dimensions
-INITIAL_NUM_RACKS = 1
-NUM_SHELVES = 5
+        self.combobox = ttk.Combobox(self.combobox_frame)
+        self.combobox.pack(side='left', fill='x', expand=True)
+        self.combobox.bind('<Button-1>', self.show_dropdown)
 
-class Product:
-    def _init_(self, name, quantity):
-        self.name = name
-        self.quantity = quantity
+        self.dropdown = None
+        self.create_dropdown()
 
-def draw_cube(canvas, x, y, z, color=GRAY):
-    # Draw top face
-    canvas.create_polygon(x, y, x + CUBE_SIZE, y, x + CUBE_SIZE, y + CUBE_SIZE, x, y + CUBE_SIZE, fill=color)
+    def create_dropdown(self):
+        self.dropdown = tk.Listbox(self.combobox_frame, height=self.dropdown_height)
+        self.dropdown_scrollbar = tk.Scrollbar(self.combobox_frame, orient='vertical', command=self.dropdown.yview)
+        self.dropdown.config(yscrollcommand=self.dropdown_scrollbar.set)
 
-    # Draw left face
-    canvas.create_polygon(x, y, x, y + CUBE_SIZE, x, y + CUBE_SIZE + z, x, y + z, fill=color, outline=BLACK)
+        for value in self.values:
+            self.dropdown.insert('end', value)
 
-    # Draw right face
-    canvas.create_polygon(x + CUBE_SIZE, y, x + CUBE_SIZE, y + CUBE_SIZE, x + CUBE_SIZE, y + CUBE_SIZE + z, x + CUBE_SIZE, y + z, fill=color, outline=BLACK)
+        self.dropdown.bind('<Double-Button-1>', self.select_item)
 
-    # Draw front face
-    canvas.create_polygon(x, y + CUBE_SIZE, x + CUBE_SIZE, y + CUBE_SIZE, x + CUBE_SIZE, y + CUBE_SIZE + z, x, y + CUBE_SIZE + z, fill=color, outline=BLACK)
+    def show_dropdown(self, event=None):
+        self.dropdown.place(in_=self.combobox, relx=0, rely=1, relwidth=1)
+        self.dropdown_scrollbar.pack(side='right', fill='y')
 
-def draw_warehouse(canvas, num_racks):
-    canvas.delete("all")
-    canvas_width = (CUBE_SIZE + 10) * num_racks
-    canvas_height = (CUBE_SIZE + 10) * NUM_SHELVES * 2  # Double canvas height for upper and lower part
-    for i in range(num_racks):
-        for j in range(NUM_SHELVES):
-            draw_cube(canvas, i * (CUBE_SIZE + 10), j * (CUBE_SIZE + 10), 50)
-    canvas.config(width=canvas_width, height=canvas_height)
+    def hide_dropdown(self):
+        self.dropdown.place_forget()
+        self.dropdown_scrollbar.pack_forget()
 
-def add_rack(canvas):
-    global INITIAL_NUM_RACKS
-    INITIAL_NUM_RACKS += 1
-    draw_warehouse(canvas, INITIAL_NUM_RACKS)
+    def select_item(self, event=None):
+        selected_index = self.dropdown.curselection()
+        if selected_index:
+            selected_index = int(selected_index[0])  # Convert to integer
+            selected_value = self.values[selected_index]
+            self.combobox.set(selected_value)
+        self.hide_dropdown()
 
-def change_row(canvas):
-    global NUM_SHELVES
-    NUM_SHELVES += 1
-    canvas_height = (CUBE_SIZE + 10) * NUM_SHELVES * 2  # Double canvas height for upper and lower part
-    canvas.config(height=canvas_height)
+root = tk.Tk()
+root.geometry("300x200")
 
-def main():
-    root = tk.Tk()
-    root.title("3D Warehouse Visualization")
+values = [str(i) for i in range(1000)]  # Example: 1000 values
 
-    canvas = tk.Canvas(root, bg=WHITE)
-    canvas.pack(expand=True, fill="both")
+scrollable_combobox = ScrollableCombobox(root, values, dropdown_height=5)  # Set dropdown height to 5
 
-    draw_warehouse(canvas, INITIAL_NUM_RACKS)
-
-    add_rack_button = tk.Button(root, text="Add", command=lambda: add_rack(canvas))
-    add_rack_button.pack()
-
-    change_row_button = tk.Button(root, text="Change Row", command=lambda: change_row(canvas))
-    change_row_button.pack()
-
-    root.mainloop()
-
-if __name__ == "__main__":
-    main()
+root.mainloop()

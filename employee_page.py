@@ -5,6 +5,7 @@ from tkinter import ttk
 import pymysql
 from PIL import Image, ImageTk
 import ttkthemes
+import datetime
 
 def clear():
     product_id_entry.delete(0, END)
@@ -12,9 +13,8 @@ def clear():
     location_entry.delete(0,END)
     quantity_entry.delete(0, END)
 
-
-
 def order_view():
+    view_order_data(order_view_table)
     add_frame.place_forget()
     add_order_frame.place_forget()
     view_product_frame.place_forget()
@@ -26,6 +26,9 @@ def order_add():
     add_frame.place_forget()
     view_product_frame.place_forget()
     add_order_frame.place(relx=0.025,rely=0.05,relwidth=0.95,relheight=0.9)
+    # for item in add_order_product_tree.get_children():
+    #     values = add_order_product_tree.item(item)
+    #     print(values)
 
 def view_product():
     order_view_frame.place_forget()
@@ -104,7 +107,6 @@ def retrieve_product_data(given):
     data.sort(key=lambda x: (x[0], x[1]))
     for index, (name,id, child) in enumerate(data):
         given.move(child, '', index)
-
 
 root = Tk()
 root.title("employee page")
@@ -327,7 +329,7 @@ view_brand_combobox =CTkComboBox(view_product_attributes_frame,variable=view_bra
 								dropdown_font=("Times New Roman",15,"bold"),
 								dropdown_text_color='#373737',
 								justify='center',
-								state='readonly',
+								# state='readonly',
 								border_width=3)
 
 view_brand_combobox.grid(row=0,column=3)
@@ -350,7 +352,7 @@ view_category_combobox =CTkComboBox(view_product_attributes_frame,variable=view_
 								    dropdown_font=("Times New Roman",15,"bold"),
 								    dropdown_text_color='#373737',
 								    justify='center',
-								    state='readonly',
+								    # state='readonly',
 								    border_width=3)
 # view_category_combobox['values'] = flatten_tuple(category_nt)
 view_category_combobox.grid(row=0,column=5)
@@ -715,6 +717,17 @@ add_order_table_products_frame.place(relx=0,rely=0.15,relwidth=0.75,relheight=0.
 def on_order_tree_select(event):
     global available_stock
     try:
+        delete_product_button.grid_forget()
+        add_product_button.grid(row=2,column=0)
+        # quantity_order_label.pack(expand=TRUE) 
+    except:
+        pass
+    try:
+        quantity_order_entry.configure(state="normal")
+        product_id_order_entry.configure(state="normal")
+    except:
+        pass
+    try:
         # add_order_bill_tree.selection_remove(add_order_bill_tree.selection())
         selected_item = add_order_product_tree.selection()[0]  
         values = add_order_product_tree.item(selected_item)['values']
@@ -726,6 +739,7 @@ def on_order_tree_select(event):
         # quantity_order_entry.insert(0,values[2])
         quantity_order_label.config(text='Available Stocks : '+str(values[2]))
         # add_order_product_tree.selection_set(selected_item)
+        quantity_order_entry.focus()
     except:
         pass
 
@@ -819,8 +833,13 @@ products_add_search_button=CTkButton(add_order_buttons_frame,text="SEARCH",comma
 products_add_search_button.grid(row=1,column=0)
 
 def products_add_reset_frame():
+    global available_stock
     available_stock = 0
+    quantity_order_entry.configure(state="normal")
+    product_id_order_entry.configure(state="normal")
     retrieve_product_data(add_order_product_tree)
+    delete_product_button.grid_forget()
+    add_product_button.grid(row=2,column=0)
     add_category_order_combobox.set("SELECT")
     add_brand_order_combobox.set("SELECT")
     select_type_combobox_order.set("SELECT")
@@ -849,6 +868,7 @@ quantity_order_labelFrame=LabelFrame(add_order_quantity_frame,text="QUANTITY",bg
 quantity_order_labelFrame.grid(row=1,column=0,sticky='nsew',padx=5)
 
 def update_available_stock(event):
+    global available_stock
     global flag_of_unavailable_stock
     flag_of_unavailable_stock = 0
     try:
@@ -893,7 +913,7 @@ def replace_tree_item(tree, column_name, target_value, new_data):
             break
 
 def add_product_in_bill():
-
+    global available_stock
     if product_id_order_entry.get() == '':
         messagebox.showerror('ERROR','Please fill the Product ID.')
     elif quantity_order_entry.get() == '':
@@ -919,19 +939,64 @@ def add_product_in_bill():
         if row == None:
             messagebox.showerror('Error', "Product ID "+product_id_order_entry.get()+" doesn't exists.")
         else:
-            add_order_bill_tree.insert("", "end", values=(row[0], row[1], quantity_order_entry.get(), row[2],row[3]))
+            flag = 0
+            for item in add_order_bill_tree.get_children():
+                name = add_order_bill_tree.item(item)['values'][0]  # Extract the value from the 'Name' column
+                if name == row[0]:
+                    already_quantity = add_order_bill_tree.item(item)['values'][2]
+                    add_order_bill_tree.delete(item)
+                    add_order_bill_tree.insert("", "end", values=(row[0], row[1], int(quantity_order_entry.get())+int(already_quantity), row[2],row[3]))
+                    flag = 1
+            if flag == 0:
+                add_order_bill_tree.insert("", "end", values=(row[0], row[1], quantity_order_entry.get(), row[2],row[3]))
             # print(row)
-            new_stock = int(row[5]) - int(quantity_order_entry.get())
+            available_stock = int(row[5]) - int(quantity_order_entry.get())
+            # available_stock = new_stock
             # print(remaining_stock)
             update_query = 'UPDATE products SET quantity = %s WHERE product_id = %s'
             # print(row[0])
-            mycursor.execute(update_query,(str(new_stock),row[0]))
+            mycursor.execute(update_query,(str(available_stock),row[0]))
             con.commit()
-            replace_tree_item(add_order_product_tree,"Product ID",row[0],(row[0], row[1], new_stock, row[4], row[2],row[3]))
+            replace_tree_item(add_order_product_tree,"Product ID",row[0],(row[0], row[1], available_stock, row[4], row[2],row[3]))
+            quantity_order_entry.delete(0,END)
+            quantity_order_label.config(text="Available Stocks : " + str(available_stock))
 
 
 add_product_button=CTkButton(add_order_quantity_frame,text="ADD",command=add_product_in_bill,width=100,height=20,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
 add_product_button.grid(row=2,column=0)
+
+def delete_product_from_bill():
+    res=messagebox.askyesno("CONFIRMATION","DO YOU WANT TO DELETE THE PRODUCT FROM BILL?")
+    if res == 1:    
+        quantity_order_entry.configure(state="normal")
+        product_id_order_entry.configure(state="normal")
+
+        items = add_order_bill_tree.get_children()
+        for item in items:
+            if add_order_bill_tree.item(item)['values'][add_order_bill_tree['columns'].index("Product ID")] == product_id_order_entry.get():
+                add_order_bill_tree.delete(item)
+                break   
+        try:
+            con = pymysql.connect(host='localhost',user='root',password='root', database='warehouse')
+            mycursor = con.cursor()
+        except:
+            messagebox.showerror('Error','Connection is not established try again.')
+            return
+
+        select_query = 'select * from products where product_id = %s'
+        mycursor.execute(select_query,product_id_order_entry.get())
+        r = mycursor.fetchone()[5]
+
+        update_query = 'UPDATE products SET quantity = %s WHERE product_id = %s'
+        mycursor.execute(update_query,(int(quantity_order_entry.get())+int(r),product_id_order_entry.get()))
+        con.commit()
+        products_add_reset_frame()
+    else:
+        pass
+    
+
+delete_product_button=CTkButton(add_order_quantity_frame,text="DELETE",command=delete_product_from_bill,width=100,height=20,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
+# delete_product_button.grid(row=2,column=0)
 
 ##
 add_order_main_attributes_frame = CTkFrame(add_order_frame,fg_color="#e9e3d5",corner_radius=15)
@@ -957,19 +1022,26 @@ def order_submit():
             messagebox.showerror('Error',"Please fill all the details.")
         else:
             try:
-                con = pymysql.connect(host='localhost',user='root',password='root')
+                con = pymysql.connect(host='localhost',user='root',password='root',database='warehouse')
                 mycursor = con.cursor()
             except:
                 messagebox.showerror('Error','Connection is not established try again.')
                 return
+
+            create_query="create table if not exists `order`(orderid VARCHAR(255) NOT NULL PRIMARY KEY,customer VARCHAR(255) NOT NULL,time TIME,date DATE)"
+            mycursor.execute(create_query)
             
-            query='use warehouse'
-            mycursor.execute(query) 
-            try:
-                create_query="create table `order`(orderid VARCHAR(255) NOT NULL PRIMARY KEY,customer VARCHAR(255) NOT NULL)"
-                mycursor.execute(create_query)
-            except:
-                pass
+            product_in_order_query = """
+            CREATE TABLE IF NOT EXISTS order_details (
+                order_id VARCHAR(255) NOT NULL, 
+                product_id VARCHAR(255) NOT NULL, 
+                quantity INT NOT NULL, 
+                PRIMARY KEY (order_id, product_id), 
+                FOREIGN KEY (order_id) REFERENCES `order`(orderid), 
+                FOREIGN KEY (product_id) REFERENCES products(product_id)
+                )
+                """
+            mycursor.execute(product_in_order_query)
 
             check_order_id_query = 'select * from `order` where orderid = %s'
             mycursor.execute(check_order_id_query,order_id_order_entry.get())
@@ -978,13 +1050,29 @@ def order_submit():
 
             if row!=None:
                 messagebox.showerror('Error', 'Order ID '+order_id_order_entry.get()+' already exists.')
+            elif add_order_bill_tree.get_children()==():
+                messagebox.showerror('Error', 'NO PRODUCT IN ORDER.')
             else:
-                query="insert into `order`(orderid,customer) values(%s,%s)"
-                mycursor.execute(query,(order_id_order_entry.get(),customer_order_entry.get()))
+                query="insert into `order`(orderid,customer,time,date) values(%s,%s,%s,%s)"
+                mycursor.execute(query,(order_id_order_entry.get(),customer_order_entry.get(),datetime.datetime.now(),datetime.date.today()))
                 con.commit()
+
+                insert_product_in_order = "insert into order_details(order_id,product_id,quantity) values(%s,%s,%s)"
+                for item in add_order_bill_tree.get_children():
+                    pro_id = add_order_bill_tree.item(item)['values'][0]
+                    quan = add_order_bill_tree.item(item)['values'][2]
+                    mycursor.execute(insert_product_in_order,(order_id_order_entry.get(),pro_id,quan))
+                    con.commit()
+                
                 con.close()
                 messagebox.showinfo('Success','Order '+order_id_order_entry.get()+' successfully added!')
-                clear()
+                products_add_reset_frame()
+                order_id_order_entry.delete(0,END)
+                customer_order_entry.delete(0,END)
+                
+                items = add_order_bill_tree.get_children()
+                for item in items:
+                    add_order_bill_tree.delete(item)
                 
 submit_product_button=CTkButton(add_order_main_attributes_frame,text="SUBMIT",command=order_submit,width=150,height=40,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
 submit_product_button.grid(row=2,column=0)
@@ -993,9 +1081,32 @@ submit_product_button.grid(row=2,column=0)
 add_order_table_bill_frame = Frame(add_order_frame)
 add_order_table_bill_frame.place(relx=0.25,rely=0.62,relwidth=0.75,relheight=0.38)
 
+
 def on_bill_tree_select(event):
     try:
+        add_product_button.grid_forget()
+        delete_product_button.grid(row=2,column=0)
+    except:
+        pass
+    try:
+        quantity_order_label.config(fg='#373737')
+        quantity_order_label.config(text="Delete product from bill?")
         add_order_product_tree.selection_remove(add_order_product_tree.selection())
+        selected_item = add_order_bill_tree.selection()[0]  
+        values = add_order_bill_tree.item(selected_item)['values']
+        # print("Selected Data:", values)
+        # available_stock = values[2]
+        product_id_order_entry.delete(0,END)
+        quantity_order_entry.delete(0,END)
+        product_id_order_entry.insert(0,values[0])
+        quantity_order_entry.insert(0,values[2])
+        # quantity_order_label.config(text='Available Stocks : '+str(values[2]))    
+    except:
+        pass
+    try:
+        # quantity_order_label.pack_forget()
+        quantity_order_entry.configure(state="disabled")
+        product_id_order_entry.configure(state="disabled")
     except:
         pass
 
@@ -1019,19 +1130,43 @@ add_order_bill_tree.bind("<<TreeviewSelect>>", on_bill_tree_select)
 
 add_order_bill_tree.pack()
 
-#update status of order
+#VIEW ORDER
 
 order_view_frame = Frame(right_frame, bg="white",borderwidth=5,relief='groove')
 
 order_table_frame = Frame(order_view_frame, bg="white")
 order_table_frame.place(relx=0, rely=0, relwidth=0.4, relheight=1)
 
-order_view_table = ttk.Treeview(order_table_frame, columns=("Order ID", "Customer"), show="headings", height=100)
+def view_order_data(given):
+    # Iterate over all items in the treeview and delete them
+    for item in given.get_children():
+        given.delete(item)
+    try:
+        con = pymysql.connect(host='localhost',user='root',password='root',database='warehouse')
+        mycursor = con.cursor()
+    except:
+        messagebox.showerror('Error','Database Connectivity Issue, Try Again')
+        return 
+
+    all_data = "select * from `order`"
+    mycursor.execute(all_data)
+    fetch_all = mycursor.fetchall()
+    for i in fetch_all:
+        given.insert("", "end", values=(i[0], i[1], i[3], i[2]))
+
+    data = [(given.set(child, 3),given.set(child, 2), child) for child in given.get_children('')]
+    data.sort(key=lambda x: (x[0], x[1]))
+    for index, (name,id, child) in enumerate(data):
+        given.move(child, '', index)
+
+order_view_table = ttk.Treeview(order_table_frame, columns=("Order ID", "Customer","Date","Time"), show="headings", height=100)
 
 order_view_table.heading("Order ID", text="Order ID")
 order_view_table.heading("Customer", text="Customer")
-order_view_table.column("Order ID", width=170)
-order_view_table.column("Customer", width=170)            
+order_view_table.heading("Date", text="Date")
+order_view_table.heading("Time", text="Time")
+# order_view_table.column("Order ID", width=170)
+# order_view_table.column("Customer", width=170)            
 
 order_view_y_scrollbar = Scrollbar(order_table_frame, orient="vertical", command=order_view_table.yview)
 order_view_table.configure(yscrollcommand=order_view_y_scrollbar.set)
@@ -1040,6 +1175,18 @@ order_view_y_scrollbar.pack(side="right", fill="y")
 order_view_x_scrollbar = Scrollbar(order_table_frame, orient="horizontal", command=order_view_table.xview)
 order_view_table.configure(xscrollcommand=order_view_x_scrollbar.set)
 order_view_x_scrollbar.pack(side="bottom", fill="x")   
+
+def view_order_tree_select(event):
+    try:
+        selected_item = order_view_table.selection()[0]  
+        values = order_view_table.item(selected_item)['values']
+        order_id_entry.delete(0,END)
+        order_id_entry.insert(0,values[0])
+        bill_area()
+    except:
+        pass
+
+order_view_table.bind("<<TreeviewSelect>>", view_order_tree_select)
 
 order_view_table.pack()
 
@@ -1055,8 +1202,68 @@ order_id_label.grid(row=0,column=0)
 order_id_entry=CTkEntry(order_attribute_frame,width=185,height=35,corner_radius=10.5,border_color='#373737',fg_color='#e9e3d5',text_color='#373737',font=("Times New Roman",14,"bold"))
 order_id_entry.grid(row=0,column=1)
 
-show_order_button = CTkButton(order_attribute_frame,text="Show",width=150,height=40,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
+def bill_area():
+    if order_id_entry.get() == '':
+        messagebox.showerror('Error', 'Customer Details Are Required')
+    else:
+        try:
+            con = pymysql.connect(host='localhost',user='root',password='root',database='warehouse')
+            mycursor = con.cursor()
+        except:
+            messagebox.showerror('Error','Database Connectivity Issue, Try Again')
+            return 
+
+        check_data = "select * from `order` where orderid=%s"
+        mycursor.execute(check_data,order_id_entry.get())
+        row = mycursor.fetchone()
+
+        if row==None:
+            messagebox.showerror('Error', 'Order ID '+order_id_order_entry.get()+" doesn't exists.")
+        else:
+            textArea.delete(1.0,END)
+            textArea.insert(END,f'Order ID : {row[0]}')
+            textArea.insert(END,f'\t\t\tCustomer Name : {row[1]}')
+            textArea.insert(END,f'\nDate : {row[3]}')
+            textArea.insert(END,f'\t\t\tTime : {row[2]}')
+            textArea.insert(END,f'\n==============================================================')
+            textArea.insert(END,f'\nProduct ID\t\tQuantity\t\tProduct Name')
+            textArea.insert(END,f'\n==============================================================')
+
+            # Fetch product details related to the order
+            order_details_query = """
+            SELECT p.product_id, od.quantity, p.product_name
+            FROM products p
+            JOIN order_details od ON p.product_id = od.product_id
+            WHERE od.order_id = %s
+            """
+            mycursor.execute(order_details_query, (row[0],))
+            product_rows = mycursor.fetchall()
+
+            for row in product_rows:
+                textArea.insert(END, f'\n{row[0]}\t\t{row[1]}\t\t{row[2][:30]}')
+
+            # for row in product_rows:
+            #     name = row[2][:30]
+            #     formatted_row = f'\n{row[0]}\t\t{row[1]}\t\t{name}'
+            #     textArea.insert(END, formatted_row)
+            #     while row[2]:
+            #         name= row[2][31:61]
+            #         formatted_row = f'\n\t\t\t\t{name}'
+                
+
+            con.close()
+
+show_order_button = CTkButton(order_attribute_frame,text="Show",command=bill_area,width=150,height=40,corner_radius=12,font=("Times New Roman",25,"bold"),fg_color='#373737',text_color='#e9e3d5',hover_color='black')
 show_order_button.grid(row=0,column=2)
+
+billFrame = Frame(order_view_frame,bd = 5, relief='groove')
+billFrame.place(relx=0.4, rely=0.1, relwidth=0.6, relheight=0.9)
+
+scrollbar = Scrollbar(billFrame,orient='vertical')
+scrollbar.place(relx=0.95, rely=0, relwidth=0.05, relheight=1)
+textArea = Text(billFrame, yscrollcommand= scrollbar.set)
+textArea.place(relx=0, rely=0, relwidth=0.95, relheight=1)
+scrollbar.config(command=textArea.yview)
 
 show_frame(empty_frame)
 

@@ -1,1 +1,1 @@
-,fg_color="white",font=("Times New Roman",20,"bold"),text_color="#373737",corner_radius=10
+Adapter
