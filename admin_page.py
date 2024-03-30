@@ -321,6 +321,7 @@ admin_page.title("WAREHOUSE")
 admin_page.geometry("1200x675+0+0")
 admin_page.title("admin_page")
 admin_page.resizable(0,0)
+admin_page.iconbitmap('image\\page_icon.ico')
 
 # left frame
 admin_page_left_frame=Frame(admin_page,bg ="#E9E3D5")

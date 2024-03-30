@@ -171,6 +171,7 @@ select_role = Tk()
 select_role.geometry('1200x650')
 select_role.title('Images')
 select_role.minsize(1200,650)
+select_role.iconbitmap('image\\page_icon.ico')
 select_role.configure(bg='#e9e3d5')
 
 # grid layout

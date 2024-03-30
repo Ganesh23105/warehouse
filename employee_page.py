@@ -118,6 +118,7 @@ root = Tk()
 root.title("employee page")
 root.geometry("1200x675")
 root.resizable(0,0)
+root.iconbitmap('image\\page_icon.ico')
 
 left_frame = Frame(root,bg ="#E9E3D5")
 left_frame.place(relx=0,rely=0,relwidth=0.2,relheight=1)

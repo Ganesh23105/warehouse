@@ -1049,6 +1049,119 @@ try:
     # Commit changes
     conn.commit()
     print("Data inserted successfully.")
+
 finally:
     conn.close()
-    # Close connectionconn.close()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+# Establish a conn to the MySQL database
+conn = pymysql.connect(
+    host='localhost',
+    user='root',
+    password='root',
+    database='warehouse'
+)
+
+# Create a cursor object
+cursor = conn.cursor()
+
+# SQL query to delete all data from the user table
+delete_query = "DELETE FROM user"
+
+try:
+    # Execute the SQL query
+    cursor.execute(delete_query)
+    
+    # Commit the changes
+    conn.commit()
+    print("All data deleted successfully!")
+
+except Exception as e:
+    # Rollback the changes in case of any error
+    conn.rollback()
+    print(f"Error: {e}")
+
+# Function to read image file as binary data
+def read_image(filename):
+    with open(filename, 'rb') as file:
+        return file.read()
+
+data = [
+    ('aditya_raj', 'password123', 'Employee', 'Aditya', 'Raj', '', 'aditya.raj@gmail.com', '1234567890', '1990-05-15', '2020-01-10', read_image('PASSPORT_PHOTO\\MALE1.jpg')),
+    ('deepak_advani', 'password456', 'Admin', 'Deepak', 'Shanker', 'Advani', 'deepak.advani@gmail.com', '0987654321', '1985-08-20', '2021-02-15', read_image('PASSPORT_PHOTO\\MALE2.jpg')),
+    ('mohit_ailani', 'password789', 'Employee', 'Mohit', 'Ram', 'Ailani', 'mohit.ailani@gmail.com', '1122334455', '1992-11-25', '2019-07-05', read_image('PASSPORT_PHOTO\\MALE3.jpg')),
+    ('harsh_andhale', 'passwordABC', 'Employee', 'Harsh', '', 'Andhale', 'harsh.andhale@gmail.com', '5544332211', '1988-04-10', '2022-03-20', read_image('PASSPORT_PHOTO\\MALE4.jpg')),
+    ('mohammed_ansari', 'passwordXYZ', 'Employee', 'Mohammed', 'Atif Khalid', 'Ansari', 'mohammed.ansari@gmail.com', '6655443322', '1987-09-12', '2020-04-25', read_image('PASSPORT_PHOTO\\MALE5.jpg')),
+    ('sahil_athwani', 'passwordLMN', 'Employee', 'Sahil', 'Chetan', 'Athwani', 'sahil.athwani@gmail.com', '7766554433', '1991-07-18', '2018-12-15', read_image('PASSPORT_PHOTO\\MALE6.jpg')),
+    ('vaibhav_boudh', 'passwordOPQ', 'Employee', 'Vaibhav', 'Vijay', 'Boudh', 'vaibhav.boudh@gmail.com', '8877665544', '1984-03-27', '2023-05-10', read_image('PASSPORT_PHOTO\\MALE7.png')),
+    ('girish_chougule', 'passwordRST', 'Employee', 'Girish', 'Vikram', 'Chougule', 'girish.chougule@gmail.com', '9988776655', '1993-06-05', '2017-09-20', read_image('PASSPORT_PHOTO\\MALE8.jpg')),
+    ('ajay_deshmukh', 'passwordUVW', 'Employee', 'Ajay', 'Ashokrao', 'Deshmukh', 'ajay.deshmukh@gmail.com', '1122334455', '1990-11-15', '2024-01-05', read_image('PASSPORT_PHOTO\\MALE9.jpg')),
+    ('pankaj_dhairyash', 'passwordABC', 'Admin', 'Pankaj', 'Jain', 'Dhairyash', 'pankaj.dhairyash@gmail.com', '6655443322', '1986-08-22', '2019-08-12', read_image('PASSPORT_PHOTO\\MALE10.jpg')),
+    ('rohan_ghadge', 'passwordXYZ', 'Employee', 'Rohan', 'Appasaheb', 'Ghadge', 'rohan.ghadge@gmail.com', '8877665544', '1990-04-20', '2021-10-05', read_image('PASSPORT_PHOTO\\MALE11.jpg')),
+    ('abhay_gupta', 'passwordLMN', 'Employee', 'Abhay', '', 'Gupta', 'abhay.gupta@gmail.com', '9988776655', '1987-11-25', '2018-06-15', read_image('PASSPORT_PHOTO\\MALE13.jpg')),
+    ('aditya_gupta', 'passwordOPQ', 'Employee', 'Aditya', 'Krishnamurari', 'Gupta', 'aditya.gupta@gmail.com', '8877665544', '1985-03-15', '2022-09-10', read_image('PASSPORT_PHOTO\\MALE14.jpeg')),
+    ('varun_gupta', 'passwordRST', 'Employee', 'Varun', 'Krishna', 'Gupta', 'varun.gupta@gmail.com', '7766554433', '1989-07-12', '2020-11-20', read_image('PASSPORT_PHOTO\\MALE15.jpg')),
+    ('vivek_gupta', 'password123', 'Employee', 'Vivek', 'Sachchelal', 'Gupta', 'vivek.gupta@gmail.com', '1234567890', '1990-05-15', '2020-01-10', read_image('PASSPORT_PHOTO\\MALE16.jpg')),
+    ('sarthak_harade', 'password456', 'Employee', 'Sarthak', 'Bharama', 'Harade', 'sarthak.harade@gmail.com', '0987654321', '1985-08-20', '2021-02-15', read_image('PASSPORT_PHOTO\\MALE17.jpg')),
+    ('rushabh_jain', 'password789', 'Employee', 'Rushabh', 'Dhiraj', 'Jain', 'rushabh.jain@gmail.com', '1122334455', '1992-11-25', '2019-07-05', read_image('PASSPORT_PHOTO\\MALE18.jpg')),
+    ('mayur_jaiswal', 'passwordABC', 'Employee', 'Mayur', 'Chunnilal', 'Jaiswal', 'mayur.jaiswal@gmail.com', '5544332211', '1988-04-10', '2022-03-20', read_image('PASSPORT_PHOTO\\MALE19.jpeg')),
+    ('siddharth_jha', 'passwordXYZ', 'Employee', 'Siddharth', 'Diwakar', 'Jha', 'siddharth.jha@gmail.com', '6655443322', '1987-09-12', '2020-04-25', read_image('PASSPORT_PHOTO\\MALE20.jpg')),
+    ('deepa_behrani', 'password123', 'Employee', 'Deepa', 'Prem', 'Behrani', 'deepa.behrani@gmail.com', '1234567890', '1990-05-15', '2020-01-10', read_image('PASSPORT_PHOTO\\FEMALE1.jpg')),
+    ('urvashi_changlani', 'password456', 'Employee', 'Urvashi', 'Manoharlal', 'Changlani', 'urvashi.changlani@gmail.com', '0987654321', '1985-08-20', '2021-02-15', read_image('PASSPORT_PHOTO\\FEMALE2.jpg')),
+    ('shruti_chintawar', 'password789', 'Employee', 'Shrusti', 'Ravikumar', 'Chintawar', 'shruti.chintawar@gmail.com', '1122334455', '1992-11-25', '2019-07-05', read_image('PASSPORT_PHOTO\\FEMALE3.jpg')),
+    ('harshita_dudani', 'passwordABC', 'Employee', 'Harshita', 'Jay', 'Dudani', 'harshita.dudani@gmail.com', '5544332211', '1988-04-10', '2022-03-20', read_image('PASSPORT_PHOTO\\FEMALE4.jpg')),
+    ('jyoti_fabiyani', 'passwordXYZ', 'Employee', 'Jyoti', 'Sunkilkumar', 'Fabiyani', 'jyoti.fabiyani@gmail.com', '6655443322', '1987-09-12', '2020-04-25', read_image('PASSPORT_PHOTO\\FEMALE5.jpg')),
+    ('vidhi_gulhane', 'passwordOPQ', 'Admin', 'Vidhi', 'Satish', 'Gulhane', 'vidhi.gulhane@gmail.com', '8877665544', '1984-03-27', '2023-05-10', read_image('PASSPORT_PHOTO\\FEMALE6.jpg')),
+    ('vanshika_kukreja', 'passwordRST', 'Employee', 'Vanshika', '', 'Kukreja', 'vanshika.kukreja@gmail.com', '9988776655', '1993-06-05', '2017-09-20', read_image('PASSPORT_PHOTO\\FEMALE7.jpg')),
+    ('arya_madhavi', 'passwordUVW', 'Employee', 'Arya', 'Manoj', 'Madhavi', 'arya.madhavi@gmail.com', '1122334455', '1990-11-15', '2024-01-05', read_image('PASSPORT_PHOTO\\FEMALE8.jpg')),
+    ('aditi_masand', 'passwordABC', 'Employee', 'Aditi', 'Rohit', 'Masand', 'aditi.masand@gmail.com', '6655443322', '1986-08-22', '2019-08-12', read_image('PASSPORT_PHOTO\\FEMALE9.jpg')),
+    ('sanika_mehetre', 'passwordXYZ', 'Employee', 'Sanika', 'Ramakant', 'Mehetre', 'sanika.mehetre@gmail.com', '8877665544', '1990-04-20', '2021-10-05', read_image('PASSPORT_PHOTO\\FEMALE10.jpg')),
+    ('sharvari_more', 'passwordLMN', 'Employee', 'Sharvari', 'Kishor', 'More', 'sharvari.more@gmail.com', '9988776655', '1987-11-25', '2018-06-15', read_image('PASSPORT_PHOTO\\FEMALE11.jpeg')),
+    ('maniya_motiramani', 'passwordOPQ', 'Admin', 'Maniya', 'Pradeep', 'Motiramani', 'maniya.motiramani@gmail.com', '8877665544', '1985-03-15', '2022-09-10', read_image('PASSPORT_PHOTO\\FEMALE12.jpeg')),
+    ('gungun_panjabi', 'passwordRST', 'Employee', 'Gungun', 'Kamlesh', 'Panjabi', 'gungun.panjabi@gmail.com', '7766554433', '1989-07-12', '2020-11-20', read_image('PASSPORT_PHOTO\\FEMALE13.jpeg')),
+    ('nidhi_pednekar', 'passwordUVW', 'Employee', 'Nidhi', 'Krishna', 'Pednekar', 'nidhi.pednekar@gmail.com', '9988776655', '1991-04-28', '2019-12-12', read_image('PASSPORT_PHOTO\\FEMALE14.jpeg')),
+    ('saachi_raheja', 'passwordXYZ', 'Employee', 'Saachi', 'Shankarlal', 'Raheja', 'saachi.raheja@gmail.com', '8877665544', '1986-10-10', '2022-05-05', read_image('PASSPORT_PHOTO\\FEMALE15.jpeg'))
+]
+
+# SQL query to insert data into the user table
+insert_query = """
+INSERT INTO user (username, password, role, first_name, middle_name, last_name, email_address, contact_no, birth_date, date_of_joining, image_data)
+VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+"""
+
+
+try:
+    # Execute the SQL query
+    cursor.executemany(insert_query, data)
+    
+    # Commit the changes
+    conn.commit()
+    print("Data inserted successfully!")
+
+except Exception as e:
+    # Rollback the changes in case of any error
+    conn.rollback()
+    print(f"Error: {e}")
+
+finally:
+    # Close the conn
+    conn.close()
