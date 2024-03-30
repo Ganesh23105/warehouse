@@ -320,7 +320,7 @@ admin_page=Tk()
 admin_page.title("WAREHOUSE")
 admin_page.geometry("1200x675+0+0")
 admin_page.title("admin_page")
-admin_page.resizable(0,0)
+# admin_page.resizable(0,0)
 
 # left frame
 admin_page_left_frame=Frame(admin_page,bg ="#E9E3D5")
@@ -422,7 +422,7 @@ search_attributes_frame.place(relx=0,rely=0,relwidth=1,relheight=0.15)
 search_attributes_frame.rowconfigure(0,weight=1)
 search_attributes_frame.columnconfigure((0,1,2,3,4,5),weight=1)
 
-employee_role_label=CTkLabel(search_attributes_frame,text="ROLE",fg_color="#373737",font=("Times New Roman",20,"bold"),text_color="#e9e3d5",corner_radius=10)
+employee_role_label=CTkLabel(search_attributes_frame,text="ROLE",fg_color="#e9e3d5",font=("Times New Roman",20,"bold"),text_color="#373737",corner_radius=10)
 employee_role_label.grid(row=0,column=0,sticky='e')
 search_role_combo_var=StringVar(value="SELECT")
 search_role_combo_box=CTkComboBox(search_attributes_frame,variable=search_role_combo_var,
@@ -444,12 +444,12 @@ search_role_combo_box=CTkComboBox(search_attributes_frame,variable=search_role_c
 search_role_combo_box.grid(row=0,column=1,padx=10,pady=5)
 search_role_combo_box.set("SELECT")
 
-employee_username_label=CTkLabel(search_attributes_frame,text="USERNAME",fg_color="#373737",font=("Times New Roman",20,"bold"),text_color="#e9e3d5",corner_radius=10)
+employee_username_label=CTkLabel(search_attributes_frame,text="USERNAME",fg_color="#e9e3d5",font=("Times New Roman",20,"bold"),text_color="#373737",corner_radius=10)
 employee_username_label.grid(row=0,column=2)
 employee_username_entry=CTkEntry(search_attributes_frame,width=185,height=35,corner_radius=10.5,border_color='#373737',fg_color='#e9e3d5',text_color='#373737',font=("Times New Roman",14,"bold"))
 employee_username_entry.grid(row=0,column=3)
 
-employee_year_label=CTkLabel(search_attributes_frame,text="YEAR",fg_color="#373737",font=("Times New Roman",20,"bold"),text_color="#e9e3d5",corner_radius=10)
+employee_year_label=CTkLabel(search_attributes_frame,text="YEAR",fg_color="#e9e3d5",font=("Times New Roman",20,"bold"),text_color="#373737",corner_radius=10)
 employee_year_label.grid(row=0,column=4)
 employee_year_entry=CTkEntry(search_attributes_frame,width=185,height=35,corner_radius=10.5,border_color='#373737',fg_color='#e9e3d5',text_color='#373737',font=("Times New Roman",14,"bold"))
 employee_year_entry.grid(row=0,column=5)   

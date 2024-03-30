@@ -311,7 +311,7 @@ select_type_combobox.set("SELECT")
 select_type_entry=CTkEntry(view_product_attributes_frame,width=185,height=35,corner_radius=10.5,border_color='#373737',fg_color='#e9e3d5',text_color='#373737',font=("Times New Roman",14,"bold"))
 select_type_entry.grid(row=0,column=1) 
 
-brand_label=CTkLabel(view_product_attributes_frame,text="BRAND",fg_color="#373737",font=("Times New Roman",20,"bold"),text_color="#e9e3d5",corner_radius=10)
+brand_label=CTkLabel(view_product_attributes_frame,text="BRAND",fg_color="#e9e3d5",font=("Times New Roman",20,"bold"),text_color="#373737",corner_radius=10)
 brand_label.grid(row=0,column=2)
 
 view_brand_combobox_var=StringVar(value="SELECT")
@@ -335,7 +335,7 @@ view_brand_combobox =CTkComboBox(view_product_attributes_frame,variable=view_bra
 view_brand_combobox.grid(row=0,column=3)
 view_brand_combobox.set("SELECT")
 
-category_label=CTkLabel(view_product_attributes_frame,text="CATEGORY",fg_color="#373737",font=("Times New Roman",20,"bold"),text_color="#e9e3d5",corner_radius=10)
+category_label=CTkLabel(view_product_attributes_frame,text="CATEGORY",fg_color="#e9e3d5",font=("Times New Roman",20,"bold"),text_color="#373737",corner_radius=10)
 category_label.grid(row=0,column=4)
 view_category_combobox_var=StringVar(value="SELECT")
 view_category_combobox =CTkComboBox(view_product_attributes_frame,variable=view_category_combobox_var,
