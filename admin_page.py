@@ -122,10 +122,10 @@ def update_age(event):
     today = datetime.today()
     age = today.year - selected_date.year - ((today.month, today.day) < (selected_date.month, selected_date.day))
 
-    age_entry.config(state=NORMAL)
+    age_entry.configure(state=NORMAL)
     age_entry.delete(0, END)
     age_entry.insert(0, str(age))
-    age_entry.config(state=DISABLED)
+    age_entry.configure(state=DISABLED)
 
 def confirm_dialog():
     def delete_info():
@@ -232,7 +232,7 @@ def submit_employee_details(username):
         return False
     else:
         insert_user_query="insert into user (username,password,role, first_name,middle_name,last_name,email_address,contact_no,birth_date,date_of_joining,image_data) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-        mycursor.execute(insert_user_query,(username,generate_password(),role_combo_box.get(),first_name_entry.get().capitalize(),middle_name_entry.get().capitalize(),last_name_entry.get().capitalize(),email_address_entry.get(),contact_no_entry.get(),birth_date.get_date(),join_date.get_date(),image_data))
+        mycursor.execute(insert_user_query,(username,generate_password(),role_combo_box.get(),first_name_entry.get(),middle_name_entry.get(),last_name_entry.get(),email_address_entry.get(),contact_no_entry.get(),birth_date.get_date(),join_date.get_date(),image_data))
         con.commit()
         con.close()
         messagebox.showinfo('Success','Registration is Successful')
@@ -605,8 +605,8 @@ def view_users():
 
 
     window = Toplevel()
-    window.title("Change Products")
-    window.geometry("400x500")
+    window.title("User Information")
+    window.geometry("480x500")
     window.grab_set()
     window.config(bg='#e9e3d5')
 
@@ -690,8 +690,7 @@ def view_users():
         emp_contact_no_entry.grid_forget()
         emp_birth_date_entry.grid_forget()
         emp_join_date_entry.grid_forget()
-        # emp_delete_button.grid_forget()
-        # emp_update_button.grid_forget()
+
 
         emp_fname_entr=CTkEntry(window,width=150,height=30,corner_radius=10.5,border_color='#373737',fg_color='white',text_color='#373737',font=("Times New Roman",14,"bold"))
         emp_fname_entr.grid(row=3,column=1,sticky='ew')
@@ -752,7 +751,7 @@ def view_users():
 
         def submit_emp_admin():
             update_query = "UPDATE user SET first_name = %s, middle_name = %s, last_name = %s, email_address = %s, contact_no = %s, birth_date = %s, date_of_joining = %s WHERE username = %s"
-            mycursor.execute(update_query,(emp_fname_entr.get().capitalize(),emp_Mname_entr.get().capitalize(),emp_lname_entr.get().capitalize(),emp_email_address_entr.get(),emp_contact_no_entr.get(),emp_birth_date_entr.get(),emp_join_date_entr.get(),values[1]))
+            mycursor.execute(update_query,(emp_fname_entr.get(),emp_Mname_entr.get(),emp_lname_entr.get(),emp_email_address_entr.get(),emp_contact_no_entr.get(),emp_birth_date_entr.get(),emp_join_date_entr.get(),values[1]))
             resp=messagebox.askyesno("CONFIRMATION","DO YOU WANT TO UPDATE?")
             if resp==1:
                 emp_fname_entry.config(text=emp_fname_entr.get())
